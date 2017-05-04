@@ -9,4 +9,4 @@ apt-get update
 apt-get install -y docker-ce
 
 pip3 install --upgrade pip
-pip3 install python-daemon docker
+pip3 install daemonize docker
