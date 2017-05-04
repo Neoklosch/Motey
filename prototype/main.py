@@ -1,19 +1,23 @@
 from time import sleep
 from daemonize import Daemonize
 from DockerVAL import DockerVAL
+from VALManager import VALManager
 
 
 def main():
-    f = open('/tmp/workfile.txt', 'w')
     dockerval = DockerVAL()
+    valmanager = VALManager()
+    subscription = valmanager.observeCommands().subscribe(lambda x: print("Got: %s" % x))
+    another = valmanager.observeCommands().subscribe(lambda x: print("Jo: %s" % x))
     for i in range(5):
+        if i >= 3:
+            another.dispose()
         print('round: %s' % str(i))
         sleep(2)
-        f.write('This is a test\n')
         print(dockerval.hasImage('46102226f2'))
+        valmanager.execCommand()
+    subscription.dispose()
 
-    f.write('the end')
-    f.close()
 
 if __name__ == '__main__':
     main()
