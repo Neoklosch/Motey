@@ -8,9 +8,9 @@ def main():
     dockerval = DockerVAL()
     for i in range(5):
         print('round: %s' % str(i))
-        sleep(5)
+        sleep(2)
         f.write('This is a test\n')
-        dockerval.hasImage('keks')
+        print(dockerval.hasImage('46102226f2'))
 
     f.write('the end')
     f.close()

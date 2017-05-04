@@ -1,18 +1,21 @@
 class AbstractVAL(object):
-    def hasImage(self):
+    def hasImage(self, image_name):
         raise NotImplementedError("Should have implemented this")
 
-    def getImage(self):
+    def loadImage(self, image_name):
         raise NotImplementedError("Should have implemented this")
 
-    def deleteImage(self):
+    def deleteImage(self, image_name):
         raise NotImplementedError("Should have implemented this")
 
-    def startInstance(self):
+    def createInstance(self, image_name):
         raise NotImplementedError("Should have implemented this")
 
-    def stopInstance(self):
+    def startInstance(self, container_name):
         raise NotImplementedError("Should have implemented this")
 
-    def getStats(self):
+    def stopInstance(self, container_name):
+        raise NotImplementedError("Should have implemented this")
+
+    def getStats(self, container_name):
         raise NotImplementedError("Should have implemented this")
