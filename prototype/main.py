@@ -1,10 +1,12 @@
 from time import sleep
 from daemonize import Daemonize
-from VALManager import VALManager
+from VALmanager import VALManager
+from labeling.labelingengine import LabelingEngine
 
 
 def main():
-    valmanager = VALManager()
+    labeling_engine = LabelingEngine()
+    valmanager = VALManager(labeling_engine)
     subscription = valmanager.observeCommands().subscribe(lambda x: print("Got: %s" % x))
     another = valmanager.observeCommands().subscribe(lambda x: print("Jo: %s" % x))
     for i in range(5):

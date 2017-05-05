@@ -1,6 +1,9 @@
 from yapsy.IPlugin import IPlugin
 
 class AbstractVAL(IPlugin):
+    def getPluginType(self):
+        raise NotImplementedError("Should have implemented this")
+
     def hasImage(self, image_name):
         raise NotImplementedError("Should have implemented this")
 

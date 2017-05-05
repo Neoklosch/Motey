@@ -1,10 +1,12 @@
 import docker
-import abstractVAL
-from VALManager import VALManager
+import valplugins.abstractVAL as abstractVAL
 
 class DockerVAL(abstractVAL.AbstractVAL):
     def __init__(self):
         self.client = docker.DockerClient(base_url='unix://var/run/docker.sock')
+
+    def getPluginType(self):
+        return 'docker'
 
     def hasImage(self, image_name):
         for image in self.client.images.list():
