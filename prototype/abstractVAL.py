@@ -1,4 +1,6 @@
-class AbstractVAL(object):
+from yapsy.IPlugin import IPlugin
+
+class AbstractVAL(IPlugin):
     def hasImage(self, image_name):
         raise NotImplementedError("Should have implemented this")
 
@@ -19,3 +21,9 @@ class AbstractVAL(object):
 
     def getStats(self, container_name):
         raise NotImplementedError("Should have implemented this")
+
+    def activate(self):
+        print("Plugin activated")
+
+    def deactivate(self):
+        print("Plugin deactivated")

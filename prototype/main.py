@@ -1,11 +1,9 @@
 from time import sleep
 from daemonize import Daemonize
-from DockerVAL import DockerVAL
 from VALManager import VALManager
 
 
 def main():
-    dockerval = DockerVAL()
     valmanager = VALManager()
     subscription = valmanager.observeCommands().subscribe(lambda x: print("Got: %s" % x))
     another = valmanager.observeCommands().subscribe(lambda x: print("Jo: %s" % x))
@@ -14,7 +12,6 @@ def main():
             another.dispose()
         print('round: %s' % str(i))
         sleep(2)
-        print(dockerval.hasImage('46102226f2'))
         valmanager.execCommand()
     subscription.dispose()
 

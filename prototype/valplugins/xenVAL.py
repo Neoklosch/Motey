@@ -1,6 +1,6 @@
-from AbstractVAL import AbstractVAL
+import abstractVAL
 
-class XenVAL(object):
+class XenVAL(abstractVAL.AbstractVAL):
     def hasImage(self, image_name):
         raise NotImplementedError("Should have implemented this")
 

@@ -1,7 +1,8 @@
 import docker
-from AbstractVAL import AbstractVAL
+import abstractVAL
+from VALManager import VALManager
 
-class DockerVAL(AbstractVAL):
+class DockerVAL(abstractVAL.AbstractVAL):
     def __init__(self):
         self.client = docker.DockerClient(base_url='unix://var/run/docker.sock')
 

@@ -7,3 +7,4 @@ requests==2.13.0
 Rx==1.5.9
 six==1.10.0
 websocket-client==0.40.0
+Yapsy==1.11.223
