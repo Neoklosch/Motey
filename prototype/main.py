@@ -5,7 +5,7 @@ from labeling.labelingengine import LabelingEngine
 
 
 def main():
-    labeling_engine = LabelingEngine()
+    labeling_engine = LabelingEngine.Instance()
     valmanager = VALManager(labeling_engine)
     subscription = valmanager.observeCommands().subscribe(lambda x: print("Got: %s" % x))
     another = valmanager.observeCommands().subscribe(lambda x: print("Jo: %s" % x))

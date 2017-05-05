@@ -1,6 +1,8 @@
 import os
 from tinydb import TinyDB, Query
+from decorators.singleton import Singleton
 
+@Singleton
 class LabelingEngine(object):
     def __init__(self):
         self.db = TinyDB(os.path.abspath("labels.json"))
