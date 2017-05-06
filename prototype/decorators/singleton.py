@@ -11,7 +11,6 @@ class Singleton:
 
     To get the singleton instance, use the `Instance` method. Trying
     to use `__call__` will result in a `TypeError` being raised.
-
     """
 
     def __init__(self, decorated):
@@ -22,7 +21,6 @@ class Singleton:
         Returns the singleton instance. Upon its first call, it creates a
         new instance of the decorated class and calls its `__init__` method.
         On all subsequent calls, the already created instance is returned.
-
         """
         try:
             return self._instance
