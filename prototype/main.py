@@ -1,11 +1,19 @@
 import sys
 import os
 import errno
+import signal
 from core import Core
 from api.apiserver import APIServer
 from logbook import Logger, FileHandler, StreamHandler
 from config import config
 
+
+core = apiserver = None
+
+def signal_handler(signal, frame):
+    if core:
+        core.stop()
+    sys.exit(0)
 
 def init_logger():
     logger = Logger(config['LOGGER']['name'])
@@ -24,12 +32,10 @@ def init_logger():
     return logger
 
 if __name__ == '__main__':
+    signal.signal(signal.SIGINT, signal_handler)
     logger = init_logger()
     apiserver = APIServer(logger)
     core = Core(apiserver, logger)
-    try:
-        core.start()
-    except KeyboardInterrupt as exc:
-        core.stop()
+    core.start()
 
 
