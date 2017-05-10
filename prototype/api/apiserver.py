@@ -1,7 +1,7 @@
 import threading
 from flask import Flask
 from flask_restful import Api
-from api.routes.helloworld import HelloWorld
+from api.routes.blueprintendpoint import BlueprintEndpoint
 from config import config
 
 
@@ -11,7 +11,7 @@ class APIServer(threading.Thread):
         self.logger = logger
         self.webserver = Flask(__name__)
         self.api = Api(self.webserver)
-        self.api.add_resource(HelloWorld, '/hello')
+        self.api.add_resource(BlueprintEndpoint, '/hello')
 
     def run(self):
         self.logger.info('Webserver started')
