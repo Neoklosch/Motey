@@ -1,13 +1,10 @@
 from flask import request
-from flask_restful import Resource, reqparse
+from flask.views import MethodView
 from rx.subjects import Subject
 
 
-class BlueprintEndpoint(Resource):
+class BlueprintEndpoint(MethodView):
     stream = Subject()
-
-    def __init__(self):
-        self.parser = reqparse.RequestParser()
 
     def post(self):
         if request.content_type == 'application/x-yaml':
