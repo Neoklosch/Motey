@@ -19,10 +19,11 @@ class Core(object):
         self.webserver.start()
 
         localOrchestrator = LocalOrchestrator(self.logger)
-        localOrchestrator.parse_template(os.path.abspath("data/test.yaml"))
+        localOrchestrator.parse_template_file(os.path.abspath("data/test.yaml"))
         hardwareEventEngine = HardwareEventEngine(self.labeling_engine)
         self.subscription = self.valmanager.observe_commands().subscribe(lambda x: print("Got: %s" % x))
         another = self.valmanager.observe_commands().subscribe(lambda x: print("Jo: %s" % x))
+
 
         while not self.stopped:
             for i in range(2):
