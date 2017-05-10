@@ -1,15 +1,26 @@
+sudo: false
+
 language: python
+
+os:
+  - linux
+
+cache: pip
+
 python:
-  - "3.2"
-  - "3.3"
-  - "3.4"
   - "3.5"
   - "3.5-dev" # 3.5 development branch
   - "3.6"
   - "3.6-dev" # 3.6 development branch
   - "3.7-dev" # 3.7 development branch
   - "nightly" # currently points to 3.7-dev
-# command to install dependencies
+
 install: "pip install -r docker-image/requirements.txt"
-# command to run tests
-# script: pytest
+
+script:
+  - pycodestyle --ignore=E241,E501
+  - python3 -m unittest tests/test_localorchestrator.py
+
+
+after_success:
+  - pip install python-coveralls && coveralls

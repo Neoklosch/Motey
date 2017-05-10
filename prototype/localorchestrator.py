@@ -1,5 +1,5 @@
 import yaml
-from api.routes.blueprintendpoint import BlueprintEndpoint
+from prototype.api.routes.blueprintendpoint import BlueprintEndpoint
 
 
 class LocalOrchestrator(object):
