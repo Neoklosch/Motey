@@ -19,4 +19,3 @@ def register_callback(callback):
 
 def register_heartbeat(flask_app):
     flask_app.register_blueprint(heartbeat)
-

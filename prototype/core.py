@@ -22,7 +22,6 @@ class Core(object):
         self.subscription = self.valmanager.observe_commands().subscribe(lambda x: print("Got: %s" % x))
         another = self.valmanager.observe_commands().subscribe(lambda x: print("Jo: %s" % x))
 
-
         while not self.stopped:
             for i in range(2):
                 if i >= 3:
@@ -36,6 +35,3 @@ class Core(object):
         self.subscription.dispose()
         self.valmanager.close()
         self.logger.info('App closed')
-
-
-

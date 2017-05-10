@@ -2,6 +2,7 @@ import os
 from tinydb import TinyDB, Query
 from prototype.decorators.singleton import Singleton
 
+
 @Singleton
 class LabelingEngine(object):
     def __init__(self):
@@ -14,7 +15,7 @@ class LabelingEngine(object):
         if not self.hasLabel(label):
             self.db.insert({'label': label, 'type': label_type})
 
-    def removeLabel(self, label, label_type = None):
+    def removeLabel(self, label, label_type=None):
         if label_type:
             self.db.remove((Query().label == label) & (Query().type == label_type))
         else:
