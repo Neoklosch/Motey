@@ -1,4 +1,3 @@
-import logging
 from flask import Blueprint, abort
 
 heartbeat = Blueprint('heartbeat', __name__)

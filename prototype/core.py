@@ -1,9 +1,8 @@
-import os
 from time import sleep
-from VALmanager import VALManager
-from labeling.labelingengine import LabelingEngine
-from hardwareevents.hardwareeventengine import HardwareEventEngine
-from localorchestrator import LocalOrchestrator
+from prototype.VALmanager import VALManager
+from prototype.labeling.labelingengine import LabelingEngine
+from prototype.hardwareevents.hardwareeventengine import HardwareEventEngine
+from prototype.localorchestrator import LocalOrchestrator
 
 
 class Core(object):
