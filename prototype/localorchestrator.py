@@ -1,10 +1,14 @@
 import yaml
 from api.routes.blueprintendpoint import BlueprintEndpoint
 
+
 class LocalOrchestrator(object):
     def __init__(self, logger):
         self.logger = logger
         self.blueprint_stream = BlueprintEndpoint.stream.subscribe(self.handle_blueprint)
+
+    def get_heartbeat(self):
+        pass
 
     def parse_template_file(self, template_path):
         with open(template_path, 'r') as stream:

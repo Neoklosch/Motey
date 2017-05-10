@@ -2,12 +2,19 @@ import os
 from rx.subjects import Subject
 from yapsy.PluginManager import PluginManager
 
+
 class VALManager(object):
-    def __init__(self, labeling_engine):
+    def __init__(self, logger, labeling_engine, local_orchestrator):
         self.plugin_stream = Subject()
+        self.logger = logger
         self.labeling_engine = labeling_engine
-        self.labeling_engine.removeAllFromType('plugin')
+        self.local_orchestrator = local_orchestrator
         self.plugin_manager = PluginManager()
+        self.register_plugins()
+
+
+    def register_plugins(self):
+        self.labeling_engine.removeAllFromType('plugin')
         self.plugin_manager.setPluginPlaces([os.path.abspath("valplugins")])
         self.plugin_manager.collectPlugins()
         for plugin in self.plugin_manager.getAllPlugins():

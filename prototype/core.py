@@ -12,14 +12,13 @@ class Core(object):
         self.logger = logger
         self.webserver = webserver
         self.labeling_engine = LabelingEngine.Instance()
-        self.valmanager = VALManager(self.labeling_engine)
+        self.local_orchestrator = LocalOrchestrator(self.logger)
+        self.valmanager = VALManager(self.logger, self.labeling_engine, self.local_orchestrator)
 
     def start(self):
         self.logger.info('App started')
         self.webserver.start()
 
-        localOrchestrator = LocalOrchestrator(self.logger)
-        localOrchestrator.parse_template_file(os.path.abspath("data/test.yaml"))
         hardwareEventEngine = HardwareEventEngine(self.labeling_engine)
         self.subscription = self.valmanager.observe_commands().subscribe(lambda x: print("Got: %s" % x))
         another = self.valmanager.observe_commands().subscribe(lambda x: print("Jo: %s" % x))

@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, abort
 from flask.views import MethodView
 from rx.subjects import Subject
 
@@ -11,6 +11,6 @@ class BlueprintEndpoint(MethodView):
             result = request.get_data(cache=False, as_text=True)
             print(result)
             self.stream.on_next(result)
-            return 'done', 201
+            return ('', 201)
         else:
-            return 400
+            return abort(400)
