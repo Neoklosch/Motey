@@ -1,6 +1,7 @@
 import threading
 from flask import Flask
-from api.routes import routes
+from flask_restful import Api
+from api.routes.helloworld import HelloWorld
 from config import config
 
 
@@ -9,7 +10,8 @@ class APIServer(threading.Thread):
         threading.Thread.__init__(self)
         self.logger = logger
         self.webserver = Flask(__name__)
-        self.webserver.register_blueprint(routes)
+        self.api = Api(self.webserver)
+        self.api.add_resource(HelloWorld, '/hello')
 
     def run(self):
         self.logger.info('Webserver started')
