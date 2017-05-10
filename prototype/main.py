@@ -33,11 +33,10 @@ def init_logger():
     log_handler.push_application()
     return logger
 
+
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)
     logger = init_logger()
     apiserver = APIServer(logger)
     core = Core(apiserver, logger)
     core.start()
-
-

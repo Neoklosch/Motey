@@ -12,7 +12,6 @@ class VALManager(object):
         self.plugin_manager = PluginManager()
         self.register_plugins()
 
-
     def register_plugins(self):
         self.labeling_engine.removeAllFromType('plugin')
         self.plugin_manager.setPluginPlaces([os.path.abspath("valplugins")])

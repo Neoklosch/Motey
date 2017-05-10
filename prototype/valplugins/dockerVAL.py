@@ -11,8 +11,7 @@ class DockerVAL(abstractVAL.AbstractVAL):
 
     def hasImage(self, image_name):
         for image in self.client.images.list():
-            if image.id == image_name or image.short_id == image_name or \
-            image.id == 'sha256:%s' % image_name or image.short_id == 'sha256:%s' % image_name:
+            if image.id == image_name or image.short_id == image_name or image.id == 'sha256:%s' % image_name or image.short_id == 'sha256:%s' % image_name:
                 return True
         return False
 
