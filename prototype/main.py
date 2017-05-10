@@ -2,18 +2,20 @@ import sys
 import os
 import errno
 import signal
-from core import Core
-from api.apiserver import APIServer
 from logbook import Logger, FileHandler, StreamHandler
-from config import config
+from prototype.core import Core
+from prototype.api.apiserver import APIServer
+from prototype.config import config
 
 
 core = apiserver = None
+
 
 def signal_handler(signal, frame):
     if core:
         core.stop()
     sys.exit(0)
+
 
 def init_logger():
     logger = Logger(config['LOGGER']['name'])

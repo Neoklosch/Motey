@@ -1,6 +1,6 @@
 import os
 from tinydb import TinyDB, Query
-from decorators.singleton import Singleton
+from prototype.decorators.singleton import Singleton
 
 @Singleton
 class LabelingEngine(object):

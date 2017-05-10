@@ -1,4 +1,5 @@
-import abstractVAL
+import prototype.valplugins.abstractVAL as abstractVAL
+
 
 class XenVAL(abstractVAL.AbstractVAL):
     def hasImage(self, image_name):

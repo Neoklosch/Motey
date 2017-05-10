@@ -1,8 +1,8 @@
 import threading
 from flask import Flask
-from api.routes.blueprintendpoint import BlueprintEndpoint
-from config import config
-from utils.heartbeat import register_callback, register_heartbeat
+from prototype.api.routes.blueprintendpoint import BlueprintEndpoint
+from prototype.config import config
+from prototype.utils.heartbeat import register_callback, register_heartbeat
 
 
 def check_heartbeat():

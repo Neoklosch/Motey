@@ -1,5 +1,6 @@
 import docker
-import valplugins.abstractVAL as abstractVAL
+import prototype.valplugins.abstractVAL as abstractVAL
+
 
 class DockerVAL(abstractVAL.AbstractVAL):
     def __init__(self):
