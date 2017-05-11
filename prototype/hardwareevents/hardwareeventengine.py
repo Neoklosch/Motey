@@ -3,4 +3,4 @@ class HardwareEventEngine(object):
         self.labeling_engine = labeling_engine
 
     def listen_for_events(self, event):
-        self.labeling_engine.addLabel(event, 'hardwareevent')
+        self.labeling_engine.add_label(event, 'hardwareevent')

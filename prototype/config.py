@@ -2,4 +2,4 @@ import configparser
 
 
 config = configparser.ConfigParser()
-config.read('config.ini')
+config.read('prototype/config.ini')

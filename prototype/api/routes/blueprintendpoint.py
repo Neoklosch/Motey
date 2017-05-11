@@ -11,6 +11,6 @@ class BlueprintEndpoint(MethodView):
             result = request.get_data(cache=False, as_text=True)
             print(result)
             self.stream.on_next(result)
-            return ('', 201)
+            return '', 201
         else:
             return abort(400)
