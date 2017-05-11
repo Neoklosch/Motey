@@ -2,28 +2,34 @@ from yapsy.IPlugin import IPlugin
 
 
 class AbstractVAL(IPlugin):
-    def getPluginType(self):
+    def get_plugin__type(self):
         raise NotImplementedError("Should have implemented this")
 
-    def hasImage(self, image_name):
+    def has_image(self, image_name):
         raise NotImplementedError("Should have implemented this")
 
-    def loadImage(self, image_name):
+    def load_image(self, image_name):
         raise NotImplementedError("Should have implemented this")
 
-    def deleteImage(self, image_name):
+    def delete_image(self, image_name):
         raise NotImplementedError("Should have implemented this")
 
-    def createInstance(self, image_name):
+    def create_instance(self, image_name):
         raise NotImplementedError("Should have implemented this")
 
-    def startInstance(self, container_name):
+    def start_instance(self, container_name):
         raise NotImplementedError("Should have implemented this")
 
-    def stopInstance(self, container_name):
+    def stop_instance(self, container_name):
         raise NotImplementedError("Should have implemented this")
 
-    def getStats(self, container_name):
+    def has_instance(self, container_name):
+        raise NotImplementedError("Should have implemented this")
+
+    def get_all_runing_instances(self):
+        raise NotImplementedError("Should have implemented this")
+
+    def get_stats(self, container_name):
         raise NotImplementedError("Should have implemented this")
 
     def activate(self):

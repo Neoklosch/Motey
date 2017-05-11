@@ -3,8 +3,9 @@ from prototype.api.routes.blueprintendpoint import BlueprintEndpoint
 
 
 class LocalOrchestrator(object):
-    def __init__(self, logger):
+    def __init__(self, logger, valmanager):
         self.logger = logger
+        self.valmanager = valmanager
         self.blueprint_stream = BlueprintEndpoint.stream.subscribe(self.handle_blueprint)
 
     def get_heartbeat(self):

@@ -1,8 +1,9 @@
 from time import sleep
-from prototype.VALmanager import VALManager
-from prototype.labeling.labelingengine import LabelingEngine
+
 from prototype.hardwareevents.hardwareeventengine import HardwareEventEngine
+from prototype.labeling.labelingengine import LabelingEngine
 from prototype.localorchestrator import LocalOrchestrator
+from prototype.val.valmanager import VALManager
 
 
 class Core(object):
@@ -11,8 +12,8 @@ class Core(object):
         self.logger = logger
         self.webserver = webserver
         self.labeling_engine = LabelingEngine.Instance()
-        self.local_orchestrator = LocalOrchestrator(self.logger)
-        self.valmanager = VALManager(self.logger, self.labeling_engine, self.local_orchestrator)
+        self.valmanager = VALManager(self.logger, self.labeling_engine)
+        self.local_orchestrator = LocalOrchestrator(self.logger, self.valmanager)
 
     def start(self):
         self.logger.info('App started')
