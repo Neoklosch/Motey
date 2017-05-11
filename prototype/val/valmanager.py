@@ -23,6 +23,8 @@ class VALManager(object):
         pass
 
     def exec_command(self):
+        for plugin in self.plugin_manager.getAllPlugins():
+            print(plugin.plugin_object.get_stats('4157ad15a9e9').ip)
         self.plugin_stream.on_next(42)
 
     def observe_commands(self):
