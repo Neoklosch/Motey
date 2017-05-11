@@ -1,6 +1,7 @@
 import docker
 
 import prototype.val.plugins.abstractVAL as abstractVAL
+from prototype.val.statusmodel import Status
 
 
 class DockerVAL(abstractVAL.AbstractVAL):
@@ -34,5 +35,20 @@ class DockerVAL(abstractVAL.AbstractVAL):
     def has_instance(self, container_name):
         raise NotImplementedError("Should have implemented this")
 
-    def get_stats(self, container_name):
+    def get_all_running_instances(self):
         raise NotImplementedError("Should have implemented this")
+
+    def get_stats(self, container_name):
+        container = self.client.containers.get(container_name)
+        service_stats = container.stats(decode=True, stream=False)
+        status = Status()
+        status.image_name = container.attrs['Name']
+        status.image = container.attrs['Image']
+        status.status = container.attrs['State']['Status']
+        status.created_at = container.attrs['Created']
+        status.ip = container.attrs['NetworkSettings']['IPAddress']
+        status.used_memory = service_stats['memory_stats']['usage']
+        status.used_cpu = service_stats['cpu_stats']['cpu_usage']['total_usage']
+        status.network_tx_bytes = service_stats['networks']['eth0']['tx_bytes']
+        status.network_rx_bytes = service_stats['networks']['eth0']['rx_bytes']
+        return status

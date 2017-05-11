@@ -26,7 +26,7 @@ class AbstractVAL(IPlugin):
     def has_instance(self, container_name):
         raise NotImplementedError("Should have implemented this")
 
-    def get_all_runing_instances(self):
+    def get_all_running_instances(self):
         raise NotImplementedError("Should have implemented this")
 
     def get_stats(self, container_name):
