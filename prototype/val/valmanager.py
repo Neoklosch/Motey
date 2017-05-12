@@ -1,13 +1,17 @@
 import os
 from rx.subjects import Subject
 from yapsy.PluginManager import PluginManager
+from prototype.decorators.singleton import Singleton
+from prototype.labeling.labelingengine import LabelingEngine
+from prototype.utils.logger import Logger
 
 
+@Singleton
 class VALManager(object):
-    def __init__(self, logger, labeling_engine):
+    def __init__(self):
         self.plugin_stream = Subject()
-        self.logger = logger
-        self.labeling_engine = labeling_engine
+        self.logger = Logger.Instance()
+        self.labeling_engine = LabelingEngine.Instance()
         self.plugin_manager = PluginManager()
         self.register_plugins()
 
@@ -24,7 +28,7 @@ class VALManager(object):
 
     def exec_command(self):
         for plugin in self.plugin_manager.getAllPlugins():
-            print(plugin.plugin_object.get_stats('4157ad15a9e9').ip)
+            print(plugin.plugin_object.get_stats('5b474faf11d6').ip)
         self.plugin_stream.on_next(42)
 
     def observe_commands(self):
