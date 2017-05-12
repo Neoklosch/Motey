@@ -1,16 +1,14 @@
-from flask import request, abort
-from flask.views import MethodView
-from rx.subjects import Subject
+from sanic import Blueprint
 
 
-class BlueprintEndpoint(MethodView):
-    stream = Subject()
+blueprintendpoint = Blueprint('blueprintendpoint')
 
-    def post(self):
-        if request.content_type == 'application/x-yaml':
-            result = request.get_data(cache=False, as_text=True)
-            print(result)
-            self.stream.on_next(result)
-            return '', 201
-        else:
-            return abort(400)
+
+@blueprintendpoint.route('/')
+async def bp_root(request):
+    if request.content_type == 'application/x-yaml':
+        result = request.get_data(cache=False, as_text=True)
+        print(result)
+        return '', 201
+    else:
+        return None, 400

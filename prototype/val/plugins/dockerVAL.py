@@ -1,5 +1,4 @@
 import docker
-
 import prototype.val.plugins.abstractVAL as abstractVAL
 from prototype.val.statusmodel import Status
 
@@ -39,9 +38,9 @@ class DockerVAL(abstractVAL.AbstractVAL):
         raise NotImplementedError("Should have implemented this")
 
     def get_stats(self, container_name):
+        status = Status()
         container = self.client.containers.get(container_name)
         service_stats = container.stats(decode=True, stream=False)
-        status = Status()
         status.image_name = container.attrs['Name']
         status.image = container.attrs['Image']
         status.status = container.attrs['State']['Status']

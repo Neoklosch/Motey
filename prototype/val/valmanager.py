@@ -26,9 +26,11 @@ class VALManager(object):
     def get_active_vals(self):
         pass
 
-    def exec_command(self):
+    async def exec_command(self):
         for plugin in self.plugin_manager.getAllPlugins():
-            print(plugin.plugin_object.get_stats('5b474faf11d6').ip)
+            status = plugin.plugin_object.get_stats('e3a638024972')
+            if status:
+                print(status.ip)
         self.plugin_stream.on_next(42)
 
     def observe_commands(self):

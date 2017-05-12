@@ -1,26 +1,24 @@
+import asyncio
 from time import sleep
-
+from prototype.decorators.singleton import Singleton
 from prototype.hardwareevents.hardwareeventengine import HardwareEventEngine
 from prototype.labeling.labelingengine import LabelingEngine
 from prototype.localorchestrator import LocalOrchestrator
 from prototype.val.valmanager import VALManager
 from prototype.utils.logger import Logger
-from prototype.api.apiserver import APIServer
 
 
+@Singleton
 class Core(object):
     def __init__(self):
         self.stopped = False
         self.logger = Logger.Instance()
-        self.webserver = APIServer.Instance()
         self.labeling_engine = LabelingEngine.Instance()
         self.valmanager = VALManager.Instance()
         self.local_orchestrator = LocalOrchestrator.Instance()
 
-    def start(self):
+    def start(self, app, loop):
         self.logger.info('App started')
-        self.webserver.start()
-
         hardwareEventEngine = HardwareEventEngine.Instance()
         self.subscription = self.valmanager.observe_commands().subscribe(lambda x: print("Got: %s" % x))
         another = self.valmanager.observe_commands().subscribe(lambda x: print("Jo: %s" % x))
@@ -30,11 +28,11 @@ class Core(object):
                 if i >= 3:
                     another.dispose()
                 print('round: %s' % str(i))
-                sleep(2)
-                self.valmanager.exec_command()
+                # sleep(2)
+                loop.run_until_complete(self.valmanager.exec_command())
 
-    def stop(self):
+    def stop(self, app, loop):
         self.stopped = True
         self.subscription.dispose()
-        self.valmanager.close()
+        # self.valmanager.close()
         self.logger.info('App closed')
