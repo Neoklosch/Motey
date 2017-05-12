@@ -1,11 +1,15 @@
 import yaml
 from prototype.api.routes.blueprintendpoint import BlueprintEndpoint
+from prototype.utils.logger import Logger
+from prototype.decorators.singleton import Singleton
+from prototype.val.valmanager import VALManager
 
 
+@Singleton
 class LocalOrchestrator(object):
-    def __init__(self, logger, valmanager):
-        self.logger = logger
-        self.valmanager = valmanager
+    def __init__(self):
+        self.logger = Logger.Instance()
+        self.valmanager = VALManager.Instance()
         self.blueprint_stream = BlueprintEndpoint.stream.subscribe(self.handle_blueprint)
 
     def get_heartbeat(self):

@@ -4,22 +4,24 @@ from prototype.hardwareevents.hardwareeventengine import HardwareEventEngine
 from prototype.labeling.labelingengine import LabelingEngine
 from prototype.localorchestrator import LocalOrchestrator
 from prototype.val.valmanager import VALManager
+from prototype.utils.logger import Logger
+from prototype.api.apiserver import APIServer
 
 
 class Core(object):
-    def __init__(self, webserver, logger):
+    def __init__(self):
         self.stopped = False
-        self.logger = logger
-        self.webserver = webserver
+        self.logger = Logger.Instance()
+        self.webserver = APIServer.Instance()
         self.labeling_engine = LabelingEngine.Instance()
-        self.valmanager = VALManager(self.logger, self.labeling_engine)
-        self.local_orchestrator = LocalOrchestrator(self.logger, self.valmanager)
+        self.valmanager = VALManager.Instance()
+        self.local_orchestrator = LocalOrchestrator.Instance()
 
     def start(self):
         self.logger.info('App started')
         self.webserver.start()
 
-        hardwareEventEngine = HardwareEventEngine(self.labeling_engine)
+        hardwareEventEngine = HardwareEventEngine.Instance()
         self.subscription = self.valmanager.observe_commands().subscribe(lambda x: print("Got: %s" % x))
         another = self.valmanager.observe_commands().subscribe(lambda x: print("Jo: %s" % x))
 
