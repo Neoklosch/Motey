@@ -28,7 +28,8 @@ class VALManager(object):
 
     def exec_command(self):
         for plugin in self.plugin_manager.getAllPlugins():
-            print(plugin.plugin_object.get_stats('5b474faf11d6').ip)
+            plugin.plugin_object.has_instance('keks')
+            print(plugin.plugin_object.get_stats(plugin.plugin_object.get_all_running_instances()[0].id).ip)
         self.plugin_stream.on_next(42)
 
     def observe_commands(self):
