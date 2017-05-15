@@ -1,5 +1,5 @@
 ---
 images:
-  - first
-  - second
-  - third
+  - nginx
+  - alpine
+  - busybox

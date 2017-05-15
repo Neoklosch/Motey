@@ -28,8 +28,7 @@ class LocalOrchestrator(object):
         pass
 
     def handle_images(self, images):
-        for image in images:
-            print(image)
+        self.valmanager.instantiate(images)
 
     def handle_blueprint(self, schema):
         try:

@@ -4,10 +4,12 @@ from docker.errors import APIError, NotFound, ContainerError, ImageNotFound
 import prototype.val.plugins.abstractVAL as abstractVAL
 from prototype.val.models.status import Status
 from prototype.val.models.systemstatus import SystemStatus
+from prototype.utils.logger import Logger
 
 
 class DockerVAL(abstractVAL.AbstractVAL):
     def __init__(self):
+        self.logger = Logger.Instance()
         self.client = docker.DockerClient(base_url='unix://var/run/docker.sock')
 
     def get_plugin__type(self):
@@ -45,21 +47,21 @@ class DockerVAL(abstractVAL.AbstractVAL):
         try:
             self.client.containers.create(image_name)
         except ContainerError as ce:
-            pass
+            self.logger.error("create docker instance > container could not be created")
         except ImageNotFound as inf:
-            pass
+            self.logger.error("create docker instance > image not found")
         except APIError as apie:
-            pass
+            self.logger.error("create docker instance > api error")
 
-    def start_instance(self, container_name):
+    def start_instance(self, image_name):
         try:
-            self.client.containers.run(container_name)
+            self.client.containers.run(image_name)
         except ContainerError as ce:
-            pass
+            self.logger.error("start docker instance > container could not be created")
         except ImageNotFound as inf:
-            pass
+            self.logger.error("start docker instance > image not found")
         except APIError as apie:
-            pass
+            self.logger.error("start docker instance > api error")
 
     def stop_instance(self, container_name):
         try:

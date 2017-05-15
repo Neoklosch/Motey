@@ -26,8 +26,18 @@ class VALManager(object):
     def get_active_vals(self):
         pass
 
+    def instantiate(self, image_name):
+        for plugin in self.plugin_manager.getAllPlugins():
+            if isinstance(image_name, str):
+                plugin.plugin_object.start_instance(image_name)
+            elif isinstance(image_name, list):
+                for single_image in image_name:
+                    plugin.plugin_object.start_instance(single_image)
+
     def exec_command(self):
         for plugin in self.plugin_manager.getAllPlugins():
+            # TODO: exec real commands
+            # getattr(plugin.plugin_object, 'bar')()
             print(plugin.plugin_object.get_stats(plugin.plugin_object.get_all_running_instances()[0].id).ip)
             system_stats = plugin.plugin_object.get_system_stats()
             print(system_stats.used_memory)

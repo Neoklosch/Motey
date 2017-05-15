@@ -9,7 +9,6 @@ class BlueprintEndpoint(MethodView):
     def post(self):
         if request.content_type == 'application/x-yaml':
             result = request.get_data(cache=False, as_text=True)
-            print(result)
             self.stream.on_next(result)
             return '', 201
         else:
