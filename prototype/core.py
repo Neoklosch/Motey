@@ -5,7 +5,8 @@ from prototype.labeling.labelingengine import LabelingEngine
 from prototype.localorchestrator import LocalOrchestrator
 from prototype.val.valmanager import VALManager
 from prototype.utils.logger import Logger
-from prototype.api.apiserver import APIServer
+from prototype.communication.apiserver import APIServer
+from prototype.communication.mqttserver import MQTTServer
 
 
 class Core(object):
@@ -13,6 +14,7 @@ class Core(object):
         self.stopped = False
         self.logger = Logger.Instance()
         self.webserver = APIServer.Instance()
+        self.mqttserver = MQTTServer.Instance()
         self.labeling_engine = LabelingEngine.Instance()
         self.valmanager = VALManager.Instance()
         self.local_orchestrator = LocalOrchestrator.Instance()
@@ -20,6 +22,7 @@ class Core(object):
     def start(self):
         self.logger.info('App started')
         self.webserver.start()
+        self.mqttserver.start()
 
         hardwareEventEngine = HardwareEventEngine.Instance()
         self.subscription = self.valmanager.observe_commands().subscribe(lambda x: print("Got: %s" % x))
@@ -35,6 +38,7 @@ class Core(object):
 
     def stop(self):
         self.stopped = True
+        self.mqttserver.stop()
         self.subscription.dispose()
         self.valmanager.close()
         self.logger.info('App closed')

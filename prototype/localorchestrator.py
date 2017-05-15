@@ -1,5 +1,5 @@
 import yaml
-from prototype.api.routes.blueprintendpoint import BlueprintEndpoint
+from prototype.communication.routes.blueprintendpoint import BlueprintEndpoint
 from prototype.utils.logger import Logger
 from prototype.decorators.singleton import Singleton
 from prototype.val.valmanager import VALManager

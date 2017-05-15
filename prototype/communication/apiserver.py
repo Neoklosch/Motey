@@ -1,7 +1,7 @@
 import threading
 from flask import Flask, request
-from prototype.api.routes.blueprintendpoint import BlueprintEndpoint
-from prototype.api.routes.capabilities import Capabilities
+from prototype.communication.routes.blueprintendpoint import BlueprintEndpoint
+from prototype.communication.routes.capabilities import Capabilities
 from prototype.config import config
 from prototype.utils.heartbeat import register_callback, register_heartbeat
 from prototype.decorators.singleton import Singleton

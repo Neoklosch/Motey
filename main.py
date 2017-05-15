@@ -1,7 +1,7 @@
 import sys
 import signal
 from prototype.core import Core
-from prototype.api.apiserver import APIServer
+from prototype.communication.apiserver import APIServer
 
 
 core = apiserver = None
