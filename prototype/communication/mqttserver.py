@@ -7,13 +7,27 @@ from prototype.utils.logger import Logger
 
 @Singleton
 class MQTTServer(threading.Thread):
+    ROUTES = {
+        'blueprint': 'fog_node/blueprint',
+        'capabilities': 'fog_node/capabilities',
+        'nodestatus': 'fog_node/nodestatus',
+    }
+
     def __init__(self):
         super().__init__()
         self.logger = Logger.Instance()
         self.client = mqtt.Client()
         self.client.username_pw_set(config['MQTT']['username'], config['MQTT']['password'])
         self.client.on_connect = self.handle_on_connect
-        self.client.on_message = self.handle_on_message
+        self.client.on_subscribe = self.handle_on_subscribe
+        self.register_routes()
+        self.client.on_unsubscribe = self.handle_on_unsubscribe
+        self.client.on_disconnect = self.handle_on_disconnect
+
+    def register_routes(self):
+        self.client.message_callback_add(self.ROUTES['blueprint'], self.handle_blueprints)
+        self.client.message_callback_add(self.ROUTES['capabilities'], self.handle_capabilities)
+        self.client.message_callback_add(self.ROUTES['nodestatus'], self.handle_node_status)
 
     def run(self):
         self.client.connect(host=config['MQTT']['ip'], port=int(config['MQTT']['port']), keepalive=int(config['MQTT']['keepalive']))
@@ -33,11 +47,29 @@ class MQTTServer(threading.Thread):
             5: Connection refused - not authorised
             6-255: Currently unused.
         """
-        if resultcode is not 0:
-            print("error while connecting")
-        else:
-            print("connected")
-            client.subscribe('test/#')
 
-    def handle_on_message(self, client, userdata, message):
+        if resultcode is not 0:
+            self.logger.info("Can not connect")
+        else:
+            self.logger.info("Connected: " + str(resultcode))
+            client.subscribe(self.ROUTES['blueprint'])
+            client.subscribe(self.ROUTES['capabilities'])
+            client.subscribe(self.ROUTES['nodestatus'])
+
+    def handle_on_subscribe(self, client, userdata, mid, granted_qos):
+        self.logger.info("Subscribed: " + str(mid) + " " + str(granted_qos))
+
+    def handle_blueprints(self, client, userdata, message):
         print('%s %s' % (message.topic, str(message.payload)))
+
+    def handle_capabilities(self, client, userdata, message):
+        print('%s %s' % (message.topic, str(message.payload)))
+
+    def handle_node_status(self, client, userdata, message):
+        print('%s %s' % (message.topic, str(message.payload)))
+
+    def handle_on_unsubscribe(self, client, userdata, mid):
+        self.logger.info("Unsubscribed: " + str(mid))
+
+    def handle_on_disconnect(self, client, userdata, resultcode):
+        self.logger.info("Disconnected: " + str(resultcode))
