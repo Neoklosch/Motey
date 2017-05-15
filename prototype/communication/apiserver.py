@@ -2,6 +2,7 @@ import threading
 from flask import Flask, request
 from prototype.communication.routes.blueprintendpoint import BlueprintEndpoint
 from prototype.communication.routes.capabilities import Capabilities
+from prototype.communication.routes.nodestatus import NodeStatus
 from prototype.config import config
 from prototype.utils.heartbeat import register_callback, register_heartbeat
 from prototype.decorators.singleton import Singleton
@@ -21,8 +22,9 @@ class APIServer(threading.Thread):
         self.webserver.run(host=config['WEBSERVER']['ip'], port=config['WEBSERVER']['port'], use_reloader=False)
 
     def configure_url(self):
-        self.webserver.add_url_rule('/hello', view_func=BlueprintEndpoint.as_view('blueprintendpoint'))
+        self.webserver.add_url_rule('/blueprint', view_func=BlueprintEndpoint.as_view('blueprintendpoint'))
         self.webserver.add_url_rule('/capabilities', view_func=Capabilities.as_view('capabilities'))
+        self.webserver.add_url_rule('/nodestatus', view_func=NodeStatus.as_view('nodestatus'))
         register_callback(self.check_heartbeat)
         register_heartbeat(self.webserver)
 

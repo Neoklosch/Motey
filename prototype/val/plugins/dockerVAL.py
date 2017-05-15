@@ -1,8 +1,9 @@
 import docker
+from docker.errors import APIError, NotFound, ContainerError, ImageNotFound
 
 import prototype.val.plugins.abstractVAL as abstractVAL
-from prototype.val.statusmodel import Status
-from docker.errors import APIError, NotFound, ContainerError, ImageNotFound
+from prototype.val.models.status import Status
+from prototype.val.models.systemstatus import SystemStatus
 
 
 class DockerVAL(abstractVAL.AbstractVAL):
@@ -97,3 +98,15 @@ class DockerVAL(abstractVAL.AbstractVAL):
         except (NotFound, APIError):
             return None
         return status
+
+    def get_system_stats(self):
+        system_status = SystemStatus()
+        for instance in self.get_all_running_instances():
+            container = self.client.containers.get(instance.id)
+            service_stats = container.stats(decode=True, stream=False)
+            system_status.used_memory += int(service_stats['memory_stats']['usage'])
+            system_status.used_cpu += int(service_stats['cpu_stats']['cpu_usage']['total_usage'])
+            system_status.network_tx_bytes += int(service_stats['networks']['eth0']['tx_bytes'])
+            system_status.network_rx_bytes += int(service_stats['networks']['eth0']['rx_bytes'])
+
+        return system_status

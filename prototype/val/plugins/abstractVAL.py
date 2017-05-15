@@ -32,6 +32,9 @@ class AbstractVAL(IPlugin):
     def get_stats(self, container_name):
         raise NotImplementedError("Should have implemented this")
 
+    def getSystemStats(self):
+        raise NotImplementedError("Should have implemented this")
+
     def activate(self):
         print("Plugin activated")
 

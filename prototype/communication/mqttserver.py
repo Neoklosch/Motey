@@ -30,8 +30,11 @@ class MQTTServer(threading.Thread):
         self.client.message_callback_add(self.ROUTES['nodestatus'], self.handle_node_status)
 
     def run(self):
-        self.client.connect(host=config['MQTT']['ip'], port=int(config['MQTT']['port']), keepalive=int(config['MQTT']['keepalive']))
-        self.client.loop_forever()
+        try:
+            self.client.connect(host=config['MQTT']['ip'], port=int(config['MQTT']['port']), keepalive=int(config['MQTT']['keepalive']))
+            self.client.loop_forever()
+        except OSError:
+            self.logger.error('MQTT server not available')
 
     def stop(self):
         self.client.loop_stop()

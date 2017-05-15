@@ -15,3 +15,7 @@
 * http://www.steves-internet-guide.com/mqtt-username-password-example/
 * https://www.dinotools.de/2015/04/11/mosquitto-als-mqtt-broker/
 * http://www.hivemq.com/blog/mqtt-client-library-paho-python
+
+### Python webserver
+
+* https://www.digitalocean.com/community/tutorials/a-comparison-of-web-servers-for-python-based-web-applications

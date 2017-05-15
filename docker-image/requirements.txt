@@ -16,6 +16,7 @@ Logbook==1.0.0
 MarkupSafe==1.0
 msgpack-python==0.4.8
 paho-mqtt==1.2.3
+psutil==5.2.2
 PyYAML==3.12
 pyzmq==16.0.2
 requests==2.13.0
