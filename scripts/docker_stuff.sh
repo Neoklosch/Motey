@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # build image
 docker build -t neoklosch/fog_node_prototype .
