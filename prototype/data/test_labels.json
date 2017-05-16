@@ -1,0 +1,14 @@
+[
+  {
+    "label": "blub",
+    "label_type": "api"
+  },
+  {
+    "label": "another",
+    "label_type": "api"
+  },
+  {
+    "label": "last",
+    "label_type": "hardware"
+  }
+]

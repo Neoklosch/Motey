@@ -11,6 +11,7 @@ greenlet==0.4.12
 httptools==0.0.9
 itsdangerous==0.24
 Jinja2==2.9.6
+jsonschema==2.6.0
 lockfile==0.12.2
 Logbook==1.0.0
 MarkupSafe==1.0
