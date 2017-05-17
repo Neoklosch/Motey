@@ -1,7 +1,7 @@
 # Fog Node Prototype
 
-[![Build Status Master (Travis)](https://travis-ci.org/Neoklosch/fog_node_prototype.svg?branch=master)](https://travis-ci.org/Neoklosch/fog_node_prototype)
-[![Build Status Development (Travis)](https://travis-ci.org/Neoklosch/fog_node_prototype.svg?branch=development)](https://travis-ci.org/Neoklosch/fog_node_prototype)
+Master: [![Build Status Master (Travis)](https://travis-ci.org/Neoklosch/fog_node_prototype.svg?branch=master)](https://travis-ci.org/Neoklosch/fog_node_prototype)
+Development: [![Build Status Development (Travis)](https://travis-ci.org/Neoklosch/fog_node_prototype.svg?branch=development)](https://travis-ci.org/Neoklosch/fog_node_prototype)
 
 
 * http://zeromq.org/intro:read-the-manual
