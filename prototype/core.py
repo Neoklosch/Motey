@@ -1,12 +1,12 @@
 from time import sleep
 
-from prototype.hardwareevents.hardwareeventengine import HardwareEventEngine
-from prototype.labeling.labelingengine import LabelingEngine
-from prototype.localorchestrator import LocalOrchestrator
-from prototype.val.valmanager import VALManager
-from prototype.utils.logger import Logger
 from prototype.communication.apiserver import APIServer
 from prototype.communication.mqttserver import MQTTServer
+from prototype.hardwareevents.hardwareeventengine import HardwareEventEngine
+from prototype.labeling.labelingengine import LabelingEngine
+from prototype.orchestrator.inter_node_orchestrator import LocalOrchestrator
+from prototype.utils.logger import Logger
+from prototype.val.valmanager import VALManager
 
 
 class Core(object):

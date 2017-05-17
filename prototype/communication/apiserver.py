@@ -3,7 +3,7 @@ from flask import Flask, request
 from prototype.communication.routes.blueprintendpoint import BlueprintEndpoint
 from prototype.communication.routes.capabilities import Capabilities
 from prototype.communication.routes.nodestatus import NodeStatus
-from prototype.config import config
+from prototype.configuration import configreader
 from prototype.utils.heartbeat import register_callback, register_heartbeat
 from prototype.decorators.singleton import Singleton
 from prototype.utils.logger import Logger
@@ -19,7 +19,7 @@ class APIServer(threading.Thread):
 
     def run(self):
         self.logger.info('Webserver started')
-        self.webserver.run(host=config['WEBSERVER']['ip'], port=config['WEBSERVER']['port'], use_reloader=False)
+        self.webserver.run(host=configreader['WEBSERVER']['ip'], port=configreader['WEBSERVER']['port'], use_reloader=False)
 
     def configure_url(self):
         self.webserver.add_url_rule('/blueprint', view_func=BlueprintEndpoint.as_view('blueprintendpoint'))

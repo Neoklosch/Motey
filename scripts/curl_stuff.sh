@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # add label
-curl -X PUT -d '[{"label": "keks", "label_type": "blub"}]' -H "Content-Type: application/json" http://localhost:5023/capabilities -v
+curl -X PUT -d '[{"label": "markus", "label_type": "person"}]' -H "Content-Type: application/json" http://localhost:5023/capabilities -v
 
 # remove label
 curl -X DELETE -d '[{"label": "keks", "label_type": "blub"}]' -H "Content-Type: application/json" http://localhost:5023/capabilities -v

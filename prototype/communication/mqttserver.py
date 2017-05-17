@@ -1,7 +1,7 @@
 import threading
 import paho.mqtt.client as mqtt
 from prototype.decorators.singleton import Singleton
-from prototype.config import config
+from prototype.configuration.configreader import config
 from prototype.utils.logger import Logger
 
 
