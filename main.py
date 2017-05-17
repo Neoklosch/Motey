@@ -1,7 +1,7 @@
 import sys
 import signal
-from prototype.core import Core
-from prototype.communication.apiserver import APIServer
+from fog_node_engine.core import Core
+from fog_node_engine.communication.apiserver import APIServer
 
 
 core = apiserver = None

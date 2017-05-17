@@ -1,0 +1,9 @@
+[Core]
+Name = Docker Plugin
+Module = dockerVAL
+
+[Documentation]
+Author = Markus Paeschke
+Version = 0.1
+Website = https://github.com/Neoklosch/fog_node_prototype
+Description = A simple docker plugin
