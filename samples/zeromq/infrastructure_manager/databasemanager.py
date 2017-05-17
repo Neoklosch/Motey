@@ -6,7 +6,7 @@ from decorators.singleton import Singleton
 @Singleton
 class DatabaseManager(object):
     def __init__(self):
-        self.db = TinyDB(os.path.abspath('sample_infrastructure_manager/database/nodes.json'))
+        self.db = TinyDB(os.path.abspath('infrastructure_manager/database/nodes.json'))
 
     def get_all_nodes(self):
         return self.db.all()
