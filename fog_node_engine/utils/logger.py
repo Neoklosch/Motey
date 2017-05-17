@@ -2,15 +2,15 @@ import os
 import errno
 import sys
 from logbook import Logger as LogbookLogger, FileHandler, StreamHandler
-from fog_node_engine.configuration import configreader
+from fog_node_engine.configuration.configreader import config
 from fog_node_engine.decorators.singleton import Singleton
 
 
 @Singleton
 class Logger(LogbookLogger):
     def __init__(self):
-        super().__init__(configreader['LOGGER']['name'])
-        self.logger_path = configreader['LOGGER']['log_path']
+        super().__init__(config['LOGGER']['name'])
+        self.logger_path = config['LOGGER']['log_path']
         try:
             os.makedirs(self.logger_path)
         except OSError as oserror:
@@ -20,5 +20,5 @@ class Logger(LogbookLogger):
                 raise
 
         StreamHandler(sys.stdout).push_application()
-        log_handler = FileHandler('%s%s' % (self.logger_path, configreader['LOGGER']['file_name']))
+        log_handler = FileHandler('%s%s' % (self.logger_path, config['LOGGER']['file_name']))
         log_handler.push_application()

@@ -1,8 +1,10 @@
 import os
+
 from rx.subjects import Subject
 from yapsy.PluginManager import PluginManager
+
+from fog_node_engine.database.labeling_database import LabelingDatabase
 from fog_node_engine.decorators.singleton import Singleton
-from fog_node_engine.labeling.labelingengine import LabelingEngine
 from fog_node_engine.utils.logger import Logger
 
 
@@ -11,7 +13,7 @@ class VALManager(object):
     def __init__(self):
         self.plugin_stream = Subject()
         self.logger = Logger.Instance()
-        self.labeling_engine = LabelingEngine.Instance()
+        self.labeling_engine = LabelingDatabase.Instance()
         self.plugin_manager = PluginManager()
         self.register_plugins()
 
@@ -21,7 +23,7 @@ class VALManager(object):
         self.plugin_manager.collectPlugins()
         for plugin in self.plugin_manager.getAllPlugins():
             plugin.plugin_object.activate()
-            self.labeling_engine.add_label(plugin.plugin_object.get_plugin__type(), 'plugin')
+            self.labeling_engine.add(plugin.plugin_object.get_plugin__type(), 'plugin')
 
     def get_active_vals(self):
         pass
@@ -36,14 +38,15 @@ class VALManager(object):
 
     def exec_command(self):
         for plugin in self.plugin_manager.getAllPlugins():
+            pass
             # TODO: exec real commands
             # getattr(plugin.plugin_object, 'bar')()
-            print(plugin.plugin_object.get_stats(plugin.plugin_object.get_all_running_instances()[0].id).ip)
-            system_stats = plugin.plugin_object.get_system_stats()
-            print(system_stats.used_memory)
-            print(system_stats.used_cpu)
-            print(system_stats.network_tx_bytes)
-            print(system_stats.network_rx_bytes)
+            # print(plugin.plugin_object.get_stats(plugin.plugin_object.get_all_running_instances()[0].id).ip)
+            # system_stats = plugin.plugin_object.get_system_stats()
+            # print(system_stats.used_memory)
+            # print(system_stats.used_cpu)
+            # print(system_stats.network_tx_bytes)
+            # print(system_stats.network_rx_bytes)
         self.plugin_stream.on_next(42)
 
     def observe_commands(self):
@@ -51,5 +54,5 @@ class VALManager(object):
 
     def close(self):
         for plugin in self.plugin_manager.getAllPlugins():
-            self.labeling_engine.remove_label(plugin.plugin_object.get_plugin__type())
+            self.labeling_engine.remove(plugin.plugin_object.get_plugin__type())
             plugin.plugin_object.deactivate()

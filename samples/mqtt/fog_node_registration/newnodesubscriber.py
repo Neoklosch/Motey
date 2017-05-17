@@ -7,6 +7,12 @@ from decorators.singleton import Singleton
 
 @Singleton
 class NewNodeSubscriber(threading.Thread):
+    ROUTES = {
+        'register_node': 'fog_node/register',
+        'remove_node': 'fog_node/remove',
+        'receive_nodes': 'fog_node/receive_nodes'
+    }
+
     def __init__(self):
         threading.Thread.__init__(self)
         self.daemon = True
@@ -19,7 +25,7 @@ class NewNodeSubscriber(threading.Thread):
         self.client.on_disconnect = self.handle_on_disconnect
 
     def register_routes(self):
-        self.client.message_callback_add('receive_nodes', self.handle_receive_nodes)
+        self.client.message_callback_add(sub=self.ROUTES['receive_nodes'], callback=self.handle_receive_nodes)
 
     def run(self):
         try:
@@ -31,7 +37,7 @@ class NewNodeSubscriber(threading.Thread):
     def send_ip(self):
         for index in range(10):
             print('Sending request with message: 192.168.0.%s' % index)
-            self.client.publish('register_node', '192.168.0.%s' % index)
+            self.client.publish(topic=self.ROUTES['register_node'], payload='192.168.0.%s' % index)
             sleep(3)
 
     def stop(self):
@@ -53,7 +59,7 @@ class NewNodeSubscriber(threading.Thread):
             print("Can not connect")
         else:
             print("Connected: " + str(resultcode))
-            client.subscribe('receive_nodes')
+            client.subscribe(self.ROUTES['receive_nodes'])
 
     def handle_on_subscribe(self, client, userdata, mid, granted_qos):
         print("Subscribed: " + str(mid) + " " + str(granted_qos))

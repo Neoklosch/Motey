@@ -1,10 +1,9 @@
 import sys
 import signal
 from fog_node_engine.core import Core
-from fog_node_engine.communication.apiserver import APIServer
 
 
-core = apiserver = None
+core = None
 
 
 def signal_handler(signal, frame):

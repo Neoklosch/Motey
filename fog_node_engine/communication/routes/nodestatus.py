@@ -1,8 +1,7 @@
+import psutil
 from flask import jsonify
 from flask.views import MethodView
 from rx.subjects import Subject
-from fog_node_engine.labeling.labelingengine import LabelingEngine
-import psutil
 
 
 class NodeStatus(MethodView):

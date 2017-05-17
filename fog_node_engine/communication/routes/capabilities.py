@@ -1,10 +1,9 @@
-import json
-from json import JSONDecodeError
-from flask import jsonify, request, abort
+from flask import jsonify, request
 from flask.views import MethodView
-from rx.subjects import Subject
-from fog_node_engine.labeling.labelingengine import LabelingEngine
 from jsonschema import validate, ValidationError
+from rx.subjects import Subject
+
+from fog_node_engine.database.labeling_database import LabelingDatabase
 
 
 class Capabilities(MethodView):
@@ -26,8 +25,8 @@ class Capabilities(MethodView):
     }
 
     def get(self):
-        labeling_engine = LabelingEngine.Instance()
-        results = labeling_engine.get_all_labels()
+        labeling_engine = LabelingDatabase.Instance()
+        results = labeling_engine.all()
         return jsonify(results), 200
 
     def put(self):
@@ -35,12 +34,12 @@ class Capabilities(MethodView):
             data = request.json
             try:
                 validate(data, self.json_schema)
-                labeling_engine = LabelingEngine.Instance()
+                labeling_engine = LabelingDatabase.Instance()
                 nothing_added = True
                 for entry in data:
                     if not labeling_engine.has_node(label=entry['label']):
                         nothing_added = False
-                        labeling_engine.add_label(label=entry['label'], label_type=entry['label_type'])
+                        labeling_engine.add(label=entry['label'], label_type=entry['label_type'])
                 if nothing_added:
                     return '', 304
             except ValidationError:
@@ -54,12 +53,12 @@ class Capabilities(MethodView):
             data = request.json
             try:
                 validate(data, self.json_schema)
-                labeling_engine = LabelingEngine.Instance()
+                labeling_engine = LabelingDatabase.Instance()
                 nothing_removed = True
                 for entry in data:
                     if labeling_engine.has_node(label=entry['label']):
                         nothing_removed = False
-                        labeling_engine.remove_label(label=entry['label'], label_type=entry['label_type'])
+                        labeling_engine.remove(label=entry['label'], label_type=entry['label_type'])
                 if nothing_removed:
                     return '', 304
             except ValidationError:
