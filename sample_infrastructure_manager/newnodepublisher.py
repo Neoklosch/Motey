@@ -1,3 +1,4 @@
+from time import sleep
 import threading
 import zmq
 from databasemanager import DatabaseManager
@@ -17,11 +18,15 @@ class NewNodePublisher(threading.Thread):
         self.database_manager = DatabaseManager.Instance()
 
     def run(self):
-        self.publisher.bind('tcp://127.0.0.1:5235')
+        self.publisher.bind('tcp://*:5235')
         print('NewNodePublisher started')
+        while True:
+            sleep(1)
 
     def stop(self):
         pass
 
     def publish(self, message):
-        self.publisher.send_json(message)
+        print('publish: %s' % message)
+        what = self.publisher.send_string('nodes#%s' % message)
+        print(what)
