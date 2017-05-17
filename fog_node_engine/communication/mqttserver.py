@@ -55,8 +55,8 @@ class MQTTServer(threading.Thread):
         self.client.loop_stop()
 
     def publish_new_node(self, ip):
-        self.client.publish(topic=self.ROUTES['register_node'], payload=ip)
-        print('send new node done')
+        if ip:
+            self.client.publish(topic=self.ROUTES['register_node'], payload=ip)
 
     def remove_node(self, ip):
         self.client.publish(topic=self.ROUTES['remove_node'], payload=ip)

@@ -35,6 +35,7 @@ class Core(object):
                 self.valmanager.exec_command()
 
     def handle_after_connect(self):
+        print('my own ip is: %s' % network_utils.get_own_ip())
         self.mqttserver.publish_new_node(network_utils.get_own_ip())
 
     def stop(self):

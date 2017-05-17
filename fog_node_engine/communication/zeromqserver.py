@@ -4,6 +4,7 @@ from fog_node_engine.decorators.singleton import Singleton
 from fog_node_engine.configuration.configreader import config
 from fog_node_engine.utils.logger import Logger
 
+
 @Singleton
 class MQTTServer(threading.Thread):
     def __init__(self):
