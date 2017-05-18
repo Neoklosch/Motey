@@ -23,3 +23,7 @@ Development: [![Build Status Development (Travis)](https://travis-ci.org/Neoklos
 ### Python webserver
 
 * https://www.digitalocean.com/community/tutorials/a-comparison-of-web-servers-for-python-based-web-applications
+
+### Fog Node Engine Architecture
+
+![alt text](resources/images/fog_node_engine_architecture.png "Fog Node Engine Architecture")

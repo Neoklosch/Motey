@@ -42,6 +42,5 @@ class Client(object):
             topic, output = result.split('#', 1)
             print("%s: received: %s " % (self.name, output))
 
-
     def stop(self):
         self.stopped = True
