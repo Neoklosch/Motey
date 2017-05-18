@@ -2,6 +2,9 @@ import fog_node_engine.val.plugins.abstractVAL as abstractVAL
 
 
 class XenVAL(abstractVAL.AbstractVAL):
+    def __init__(self):
+        super().__init__()
+
     def has_image(self, image_name):
         raise NotImplementedError("Should have implemented this")
 
@@ -11,10 +14,10 @@ class XenVAL(abstractVAL.AbstractVAL):
     def delete_image(self, image_name):
         raise NotImplementedError("Should have implemented this")
 
-    def create_instance(self, image_name):
+    def create_instance(self, image_name, parameters={}):
         raise NotImplementedError("Should have implemented this")
 
-    def start_instance(self, container_name):
+    def start_instance(self, container_name, parameters={}):
         raise NotImplementedError("Should have implemented this")
 
     def stop_instance(self, container_name):

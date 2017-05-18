@@ -30,11 +30,18 @@ class VALManager(object):
 
     def instantiate(self, image_name):
         for plugin in self.plugin_manager.getAllPlugins():
+            print(image_name)
             if isinstance(image_name, str):
                 plugin.plugin_object.start_instance(image_name)
             elif isinstance(image_name, list):
                 for single_image in image_name:
-                    plugin.plugin_object.start_instance(single_image)
+                    if isinstance(single_image, str):
+                        plugin.plugin_object.start_instance(single_image)
+                    elif isinstance(single_image, dict):
+                        print("image name: %s" % single_image['image_name'])
+                        print("parameters: %s" % single_image['parameters'])
+                        parameters = single_image['parameters'] if 'parameters' in single_image else {}
+                        plugin.plugin_object.start_instance(single_image['image_name'], parameters)
 
     def exec_command(self):
         for plugin in self.plugin_manager.getAllPlugins():

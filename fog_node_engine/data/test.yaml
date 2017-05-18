@@ -1,5 +1,19 @@
 ---
 images:
-  - alpine
-  - busybox
-  - nginx
+- image_name: alpine
+  parameters:
+    ports:
+      80/tcp: 8080
+      7070/udp: 9001
+    name: fog_node_alpine
+- image_name: busybox
+  parameters:
+    ports:
+      80/tcp: 8080
+    name: busybox_test_container
+- image_name: nginx
+  parameters:
+    ports:
+      80/tcp: 8080
+    detach: true
+    name: nginx_from_fog_node_engine

@@ -27,3 +27,9 @@ Development: [![Build Status Development (Travis)](https://travis-ci.org/Neoklos
 ### Fog Node Engine Architecture
 
 ![alt text](resources/images/fog_node_engine_architecture.png "Fog Node Engine Architecture")
+
+
+### Useful Tools
+
+* Json2YAML > https://www.json2yaml.com/
+* YAML Parser > http://yaml-online-parser.appspot.com/

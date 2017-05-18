@@ -9,6 +9,7 @@ from fog_node_engine.utils.logger import Logger
 
 class DockerVAL(abstractVAL.AbstractVAL):
     def __init__(self):
+        super().__init__()
         self.logger = Logger.Instance()
         self.client = docker.DockerClient(base_url='unix://var/run/docker.sock')
 
@@ -43,9 +44,9 @@ class DockerVAL(abstractVAL.AbstractVAL):
         except APIError as apie:
             pass
 
-    def create_instance(self, image_name):
+    def create_instance(self, image_name, parameters={}):
         try:
-            self.client.containers.create(image_name)
+            self.client.containers.create(image_name, **parameters)
         except ContainerError as ce:
             self.logger.error("create docker instance > container could not be created")
         except ImageNotFound as inf:
@@ -53,9 +54,9 @@ class DockerVAL(abstractVAL.AbstractVAL):
         except APIError as apie:
             self.logger.error("create docker instance > api error")
 
-    def start_instance(self, image_name):
+    def start_instance(self, image_name, parameters={}):
         try:
-            self.client.containers.run(image_name)
+            self.client.containers.run(image_name, **parameters)
         except ContainerError as ce:
             self.logger.error("start docker instance > container could not be created")
         except ImageNotFound as inf:
