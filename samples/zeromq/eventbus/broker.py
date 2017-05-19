@@ -1,7 +1,7 @@
 import threading
-import zmq
-import zmq.asyncio
 from time import sleep
+
+import zmq
 
 
 class EventBusBroker(threading.Thread):

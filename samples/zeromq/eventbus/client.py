@@ -1,6 +1,7 @@
 import threading
-import zmq
 from time import sleep
+
+import zmq
 
 
 class Client(object):

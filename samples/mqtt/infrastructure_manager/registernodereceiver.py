@@ -1,5 +1,6 @@
 import json
 import threading
+
 import paho.mqtt.client as mqtt
 from databasemanager import DatabaseManager
 from decorators.singleton import Singleton

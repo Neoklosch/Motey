@@ -1,6 +1,7 @@
-import docker
 import signal
 import sys
+
+import docker
 
 
 def signal_handler(signal, frame):
@@ -16,7 +17,7 @@ def main():
         },
         'name': 'motey_alpine'
     }
-    client.containers.run(image='alpine', **kwargs)
+    client.containers.run_receiver_thread(image='alpine', **kwargs)
 
 
 if __name__ == '__main__':

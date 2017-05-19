@@ -1,9 +1,9 @@
 import signal
 import sys
 from time import sleep
+
 from broker import EventBusBroker
 from client import Client
-
 
 broker = EventBusBroker()
 client_one = Client('ClientOne', 3)

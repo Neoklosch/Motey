@@ -1,5 +1,6 @@
-from time import sleep
 import threading
+from time import sleep
+
 import zmq
 from databasemanager import DatabaseManager
 from decorators.singleton import Singleton

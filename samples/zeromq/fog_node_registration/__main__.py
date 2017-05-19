@@ -1,9 +1,9 @@
 import signal
 import sys
 from time import sleep
+
 from newnoderegister import NewNodeRegister
 from newnodesubscriber import NewNodeSubscriber
-
 
 new_node_subscriber = NewNodeSubscriber.Instance()
 new_node_register = NewNodeRegister.Instance()

@@ -1,7 +1,8 @@
 import json
 import threading
-import paho.mqtt.client as mqtt
 from time import sleep
+
+import paho.mqtt.client as mqtt
 from decorators.singleton import Singleton
 
 

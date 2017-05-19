@@ -1,6 +1,7 @@
 import os
-from tinydb import TinyDB, Query
+
 from decorators.singleton import Singleton
+from tinydb import TinyDB, Query
 
 
 @Singleton

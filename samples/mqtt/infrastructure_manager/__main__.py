@@ -1,8 +1,8 @@
 import signal
 import sys
 from time import sleep
-from registernodereceiver import RegisterNodeReceiver
 
+from registernodereceiver import RegisterNodeReceiver
 
 register_node_receiver = RegisterNodeReceiver.Instance()
 
