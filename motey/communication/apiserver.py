@@ -1,5 +1,7 @@
 import threading
+
 from flask import Flask, request
+
 from motey.communication.api_routes.blueprintendpoint import BlueprintEndpoint
 from motey.communication.api_routes.capabilities import Capabilities
 from motey.communication.api_routes.nodestatus import NodeStatus

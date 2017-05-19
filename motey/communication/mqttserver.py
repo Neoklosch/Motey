@@ -1,7 +1,9 @@
 import threading
+
 import paho.mqtt.client as mqtt
-from motey.utils.logger import Logger
+
 from motey.database.nodes_database import NodesDatabase
+from motey.utils.logger import Logger
 
 
 class MQTTServer(object):

@@ -2,9 +2,9 @@ import docker
 from docker.errors import APIError, NotFound, ContainerError, ImageNotFound
 
 import motey.val.plugins.abstractVAL as abstractVAL
+from motey.utils.logger import Logger
 from motey.val.models.status import Status
 from motey.val.models.systemstatus import SystemStatus
-from motey.utils.logger import Logger
 
 
 class DockerVAL(abstractVAL.AbstractVAL):

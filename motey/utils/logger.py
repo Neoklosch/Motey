@@ -1,7 +1,9 @@
-import os
 import errno
+import os
 import sys
+
 from logbook import Logger as LogbookLogger, FileHandler, StreamHandler
+
 from motey.configuration.configreader import config
 from motey.decorators.singleton import Singleton
 

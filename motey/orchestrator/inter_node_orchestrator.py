@@ -1,12 +1,13 @@
 import yaml
+
 from motey.communication.api_routes.blueprintendpoint import BlueprintEndpoint
-from motey.utils.logger import Logger
 from motey.decorators.singleton import Singleton
+from motey.utils.logger import Logger
 from motey.val.valmanager import VALManager
 
 
 @Singleton
-class LocalOrchestrator(object):
+class InterNodeOrchestrator(object):
     def __init__(self):
         self.logger = Logger.Instance()
         self.valmanager = VALManager.Instance()

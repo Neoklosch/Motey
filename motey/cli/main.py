@@ -6,6 +6,7 @@ Motey command line tool.
 Usage:
   motey start
   motey stop
+  motey restart
   motey -h | --help
   motey --version
 
@@ -15,6 +16,7 @@ Usage:
 """
 
 from docopt import docopt
+
 from motey import __version__ as VERSION
 from motey.core import Core
 
@@ -28,6 +30,8 @@ def main():
         core.start()
     elif options['stop']:
         core.stop()
+    elif options['restart']:
+        core.restart()
 
 
 if __name__ == '__main__':
