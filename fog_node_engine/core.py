@@ -1,3 +1,4 @@
+from daemonize import Daemonize
 from time import sleep
 
 from fog_node_engine.communication.apiserver import APIServer
@@ -12,7 +13,8 @@ from fog_node_engine.val.valmanager import VALManager
 
 
 class Core(object):
-    def __init__(self):
+    def __init__(self, as_daemon=True):
+        self.as_daemon = as_daemon
         self.stopped = False
         self.logger = Logger.Instance()
         self.webserver = APIServer(host=config['WEBSERVER']['ip'], port=config['WEBSERVER']['port'])
@@ -21,8 +23,16 @@ class Core(object):
         self.valmanager = VALManager.Instance()
         self.local_orchestrator = LocalOrchestrator.Instance()
         self.mqttserver.after_connect = self.handle_after_connect
+        self.daemon = None
 
     def start(self):
+        if self.as_daemon:
+            self.daemon = Daemonize(app=config['GENERAL']['app_name'], pid=config['GENERAL']['pid'], action=self.run)
+            self.daemon.start()
+        else:
+            self.run()
+
+    def run(self):
         self.logger.info('App started')
         self.webserver.start()
         self.mqttserver.start()
@@ -40,9 +50,10 @@ class Core(object):
         self.mqttserver.publish_new_node(network_utils.get_own_ip())
 
     def stop(self):
-        print('stop the core')
         self.stopped = True
         self.mqttserver.remove_node(network_utils.get_own_ip())
         self.mqttserver.stop()
         self.valmanager.close()
+        if self.daemon:
+            self.daemon.exit()
         self.logger.info('App closed')
