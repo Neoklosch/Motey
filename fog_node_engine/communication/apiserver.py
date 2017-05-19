@@ -3,23 +3,26 @@ from flask import Flask, request
 from fog_node_engine.communication.api_routes.blueprintendpoint import BlueprintEndpoint
 from fog_node_engine.communication.api_routes.capabilities import Capabilities
 from fog_node_engine.communication.api_routes.nodestatus import NodeStatus
-from fog_node_engine.configuration.configreader import config
 from fog_node_engine.utils.heartbeat import register_callback, register_heartbeat
-from fog_node_engine.decorators.singleton import Singleton
 from fog_node_engine.utils.logger import Logger
 
 
-@Singleton
-class APIServer(threading.Thread):
-    def __init__(self):
-        threading.Thread.__init__(self)
+class APIServer():
+    def __init__(self, host, port):
+        self.host = host
+        self.port = port
         self.logger = Logger.Instance()
         self.webserver = Flask(__name__)
         self.configure_url()
+        self.run_server_thread = threading.Thread(target=self.run_server, args=())
+        self.run_server_thread.daemon = True
 
-    def run(self):
+    def start(self):
+        self.run_server_thread.start()
+
+    def run_server(self):
         self.logger.info('Webserver started')
-        self.webserver.run(host=config['WEBSERVER']['ip'], port=config['WEBSERVER']['port'], use_reloader=False)
+        self.webserver.run(host=self.host, port=self.port, use_reloader=False)
 
     def configure_url(self):
         self.webserver.add_url_rule('/blueprint', view_func=BlueprintEndpoint.as_view('blueprintendpoint'))

@@ -2,20 +2,21 @@ from time import sleep
 
 from fog_node_engine.communication.apiserver import APIServer
 from fog_node_engine.communication.mqttserver import MQTTServer
+from fog_node_engine.configuration.configreader import config
 from fog_node_engine.database.labeling_database import LabelingDatabase
 from fog_node_engine.hardwareevents.hardwareeventengine import HardwareEventEngine
 from fog_node_engine.orchestrator.inter_node_orchestrator import LocalOrchestrator
+from fog_node_engine.utils import network_utils
 from fog_node_engine.utils.logger import Logger
 from fog_node_engine.val.valmanager import VALManager
-from fog_node_engine.utils import network_utils
 
 
 class Core(object):
     def __init__(self):
         self.stopped = False
         self.logger = Logger.Instance()
-        self.webserver = APIServer.Instance()
-        self.mqttserver = MQTTServer.Instance()
+        self.webserver = APIServer(host=config['WEBSERVER']['ip'], port=config['WEBSERVER']['port'])
+        self.mqttserver = MQTTServer(host=config['MQTT']['ip'], port=int(config['MQTT']['port']), username=config['MQTT']['username'], password=config['MQTT']['password'], keepalive=int(config['MQTT']['keepalive']))
         self.labeling_engine = LabelingDatabase.Instance()
         self.valmanager = VALManager.Instance()
         self.local_orchestrator = LocalOrchestrator.Instance()

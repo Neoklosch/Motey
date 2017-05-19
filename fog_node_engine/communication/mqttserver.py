@@ -1,13 +1,10 @@
 import threading
 import paho.mqtt.client as mqtt
-from fog_node_engine.decorators.singleton import Singleton
-from fog_node_engine.configuration.configreader import config
 from fog_node_engine.utils.logger import Logger
 from fog_node_engine.database.nodes_database import NodesDatabase
 
 
-@Singleton
-class MQTTServer(threading.Thread):
+class MQTTServer(object):
     ROUTES = {
         'blueprint': 'fog_node/blueprint',
         'capabilities': 'fog_node/capabilities',
@@ -17,18 +14,24 @@ class MQTTServer(threading.Thread):
         'receive_nodes': 'fog_node/receive_nodes'
     }
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, host, port, username, password, keepalive=60):
+        self.host = host
+        self.port = port
+        self.keepalive = keepalive
+        self.username = username
+        self.password = password
         self.logger = Logger.Instance()
         self.database = NodesDatabase.Instance()
         self.client = mqtt.Client()
-        self.client.username_pw_set(username=config['MQTT']['username'], password=config['MQTT']['password'])
+        self.client.username_pw_set(username=self.username, password=self.password)
         self.client.on_connect = self.handle_on_connect
         self.client.on_subscribe = self.handle_on_subscribe
         self.register_routes()
         self.client.on_unsubscribe = self.handle_on_unsubscribe
         self.client.on_disconnect = self.handle_on_disconnect
         self._after_connect = None
+        self.run_server_thread = threading.Thread(target=self.run_server, args=())
+        self.run_server_thread.daemon = True
 
     @property
     def after_connect(self):
@@ -44,9 +47,12 @@ class MQTTServer(threading.Thread):
         self.client.message_callback_add(sub=self.ROUTES['node_status'], callback=self.handle_node_status)
         self.client.message_callback_add(sub=self.ROUTES['receive_nodes'], callback=self.handle_receive_nodes)
 
-    def run(self):
+    def start(self):
+        self.run_server_thread.start()
+
+    def run_server(self):
         try:
-            self.client.connect(host=config['MQTT']['ip'], port=int(config['MQTT']['port']), keepalive=int(config['MQTT']['keepalive']))
+            self.client.connect(host=self.host, port=self.port, keepalive=self.keepalive)
             self.client.loop_forever()
         except OSError:
             self.logger.error('MQTT server not available')
