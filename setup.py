@@ -54,7 +54,9 @@ setup(
         'Programming Language :: Python :: 3.7',
     ],
     keywords = ['cli', 'IoT', 'Fog Node'],
-    packages = find_packages(exclude=['docs', 'tests*']),
+    packages = find_packages(exclude=['docker-image', 'docs', 'resources', 'samples', 'scripts', 'tests*', 'webclient']),
+    include_package_data=True,
+    zip_safe=False,
     install_requires = [
         'aiofiles==0.3.1',
         'click==6.7',
