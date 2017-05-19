@@ -3,7 +3,7 @@ from flask.views import MethodView
 from jsonschema import validate, ValidationError
 from rx.subjects import Subject
 
-from fog_node_engine.database.labeling_database import LabelingDatabase
+from motey.database.labeling_database import LabelingDatabase
 
 
 class Capabilities(MethodView):

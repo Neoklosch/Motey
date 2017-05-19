@@ -7,7 +7,7 @@ from subprocess import call
 
 from setuptools import Command, find_packages, setup
 
-import fog_node_engine
+import motey
 
 
 this_dir = abspath(dirname(__file__))
@@ -33,14 +33,14 @@ class RunTests(Command):
 
 
 setup(
-    name = fog_node_engine.__appname__,
-    version = fog_node_engine.__version__,
+    name = motey.__appname__,
+    version = motey.__version__,
     description = 'A fog node prototype.',
     long_description = long_description,
-    url = fog_node_engine.__url__,
-    author = fog_node_engine.__author__,
-    author_email = fog_node_engine.__email__,
-    license = fog_node_engine.__licence__,
+    url = motey.__url__,
+    author = motey.__author__,
+    author_email = motey.__email__,
+    license = motey.__licence__,
     classifiers = [
         'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',
@@ -102,7 +102,7 @@ setup(
     },
     entry_points = {
         'console_scripts': [
-            'fognode = fog_node_engine.cli.main:main',
+            'motey = motey.cli.main:main',
         ],
     },
     cmdclass = {'test': RunTests},

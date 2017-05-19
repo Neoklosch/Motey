@@ -3,9 +3,9 @@ import os
 from rx.subjects import Subject
 from yapsy.PluginManager import PluginManager
 
-from fog_node_engine.database.labeling_database import LabelingDatabase
-from fog_node_engine.decorators.singleton import Singleton
-from fog_node_engine.utils.logger import Logger
+from motey.database.labeling_database import LabelingDatabase
+from motey.decorators.singleton import Singleton
+from motey.utils.logger import Logger
 
 
 @Singleton
@@ -19,7 +19,7 @@ class VALManager(object):
 
     def register_plugins(self):
         self.labeling_engine.remove_all_from_type('plugin')
-        self.plugin_manager.setPluginPlaces([os.path.abspath("fog_node_engine/val/plugins")])
+        self.plugin_manager.setPluginPlaces([os.path.abspath("motey/val/plugins")])
         self.plugin_manager.collectPlugins()
         for plugin in self.plugin_manager.getAllPlugins():
             plugin.plugin_object.activate()

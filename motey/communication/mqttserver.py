@@ -1,17 +1,17 @@
 import threading
 import paho.mqtt.client as mqtt
-from fog_node_engine.utils.logger import Logger
-from fog_node_engine.database.nodes_database import NodesDatabase
+from motey.utils.logger import Logger
+from motey.database.nodes_database import NodesDatabase
 
 
 class MQTTServer(object):
     ROUTES = {
-        'blueprint': 'fog_node/blueprint',
-        'capabilities': 'fog_node/capabilities',
-        'node_status': 'fog_node/node_status',
-        'register_node': 'fog_node/register',
-        'remove_node': 'fog_node/remove',
-        'receive_nodes': 'fog_node/receive_nodes'
+        'blueprint': 'motey/blueprint',
+        'capabilities': 'motey/capabilities',
+        'node_status': 'motey/node_status',
+        'register_node': 'motey/register',
+        'remove_node': 'motey/remove',
+        'receive_nodes': 'motey/receive_nodes'
     }
 
     def __init__(self, host, port, username, password, keepalive=60):

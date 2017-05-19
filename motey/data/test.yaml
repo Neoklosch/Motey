@@ -5,7 +5,7 @@ images:
     ports:
       80/tcp: 8080
       7070/udp: 9001
-    name: fog_node_alpine
+    name: motey_alpine
 - image_name: busybox
   parameters:
     ports:
@@ -16,4 +16,4 @@ images:
     ports:
       80/tcp: 8080
     detach: true
-    name: nginx_from_fog_node_engine
+    name: nginx_from_motey

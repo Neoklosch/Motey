@@ -4,10 +4,10 @@
 Fog Node Prototype command line tool.
 
 Usage:
-  fognode start [-d | --daemon]
-  fognode stop
-  fognode -h | --help
-  fognode --version
+  motey start [-d | --daemon]
+  motey stop
+  motey -h | --help
+  motey --version
 
  Options:
    -d, --daemon     Start as services as daemon.
@@ -16,9 +16,9 @@ Usage:
 """
 
 from docopt import docopt
-import fog_node_engine
-from fog_node_engine.core import Core
-# from fog_node_engine import __version__ as VERSION
+import motey
+from motey.core import Core
+# from motey import __version__ as VERSION
 
 def main():
     options = docopt(__doc__, version='0.1')

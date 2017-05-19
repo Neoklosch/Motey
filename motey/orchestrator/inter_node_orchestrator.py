@@ -1,8 +1,8 @@
 import yaml
-from fog_node_engine.communication.api_routes.blueprintendpoint import BlueprintEndpoint
-from fog_node_engine.utils.logger import Logger
-from fog_node_engine.decorators.singleton import Singleton
-from fog_node_engine.val.valmanager import VALManager
+from motey.communication.api_routes.blueprintendpoint import BlueprintEndpoint
+from motey.utils.logger import Logger
+from motey.decorators.singleton import Singleton
+from motey.val.valmanager import VALManager
 
 
 @Singleton

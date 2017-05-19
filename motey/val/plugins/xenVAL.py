@@ -1,4 +1,4 @@
-import fog_node_engine.val.plugins.abstractVAL as abstractVAL
+import motey.val.plugins.abstractVAL as abstractVAL
 
 
 class XenVAL(abstractVAL.AbstractVAL):

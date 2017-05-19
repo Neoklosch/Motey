@@ -2,4 +2,4 @@ import configparser
 
 
 config = configparser.ConfigParser()
-config.read('fog_node_engine/configuration/config.ini')
+config.read('motey/configuration/config.ini')

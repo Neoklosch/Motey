@@ -2,8 +2,8 @@ import os
 import errno
 import sys
 from logbook import Logger as LogbookLogger, FileHandler, StreamHandler
-from fog_node_engine.configuration.configreader import config
-from fog_node_engine.decorators.singleton import Singleton
+from motey.configuration.configreader import config
+from motey.decorators.singleton import Singleton
 
 
 @Singleton

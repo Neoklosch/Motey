@@ -14,7 +14,7 @@ def main():
         'ports': {
             '5238/tcp': 5239
         },
-        'name': 'fog_node_alpine'
+        'name': 'motey_alpine'
     }
     client.containers.run(image='alpine', **kwargs)
 

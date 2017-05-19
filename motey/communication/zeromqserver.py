@@ -1,8 +1,8 @@
 import threading
 import zmq
-from fog_node_engine.decorators.singleton import Singleton
-from fog_node_engine.configuration.configreader import config
-from fog_node_engine.utils.logger import Logger
+from motey.decorators.singleton import Singleton
+from motey.configuration.configreader import config
+from motey.utils.logger import Logger
 
 
 @Singleton

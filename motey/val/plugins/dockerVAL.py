@@ -1,10 +1,10 @@
 import docker
 from docker.errors import APIError, NotFound, ContainerError, ImageNotFound
 
-import fog_node_engine.val.plugins.abstractVAL as abstractVAL
-from fog_node_engine.val.models.status import Status
-from fog_node_engine.val.models.systemstatus import SystemStatus
-from fog_node_engine.utils.logger import Logger
+import motey.val.plugins.abstractVAL as abstractVAL
+from motey.val.models.status import Status
+from motey.val.models.systemstatus import SystemStatus
+from motey.utils.logger import Logger
 
 
 class DockerVAL(abstractVAL.AbstractVAL):

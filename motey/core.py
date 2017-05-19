@@ -1,15 +1,15 @@
 from daemonize import Daemonize
 from time import sleep
 
-from fog_node_engine.communication.apiserver import APIServer
-from fog_node_engine.communication.mqttserver import MQTTServer
-from fog_node_engine.configuration.configreader import config
-from fog_node_engine.database.labeling_database import LabelingDatabase
-from fog_node_engine.hardwareevents.hardwareeventengine import HardwareEventEngine
-from fog_node_engine.orchestrator.inter_node_orchestrator import LocalOrchestrator
-from fog_node_engine.utils import network_utils
-from fog_node_engine.utils.logger import Logger
-from fog_node_engine.val.valmanager import VALManager
+from motey.communication.apiserver import APIServer
+from motey.communication.mqttserver import MQTTServer
+from motey.configuration.configreader import config
+from motey.database.labeling_database import LabelingDatabase
+from motey.hardwareevents.hardwareeventengine import HardwareEventEngine
+from motey.orchestrator.inter_node_orchestrator import LocalOrchestrator
+from motey.utils import network_utils
+from motey.utils.logger import Logger
+from motey.val.valmanager import VALManager
 
 
 class Core(object):

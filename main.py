@@ -1,6 +1,6 @@
 import sys
 import signal
-from fog_node_engine.core import Core
+from motey.core import Core
 
 
 core = None

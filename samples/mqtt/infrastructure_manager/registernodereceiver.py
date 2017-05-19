@@ -8,9 +8,9 @@ from decorators.singleton import Singleton
 @Singleton
 class RegisterNodeReceiver(threading.Thread):
     ROUTES = {
-        'register_node': 'fog_node/register',
-        'remove_node': 'fog_node/remove',
-        'receive_nodes': 'fog_node/receive_nodes'
+        'register_node': 'motey/register',
+        'remove_node': 'motey/remove',
+        'receive_nodes': 'motey/receive_nodes'
     }
 
     def __init__(self):

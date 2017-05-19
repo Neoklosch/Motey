@@ -1,7 +1,7 @@
 import os
 from tinydb import TinyDB, Query
-from fog_node_engine.decorators.singleton import Singleton
-from fog_node_engine.configuration.configreader import config
+from motey.decorators.singleton import Singleton
+from motey.configuration.configreader import config
 
 
 @Singleton

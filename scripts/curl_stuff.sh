@@ -13,4 +13,4 @@ curl -X GET http://localhost:5023/capabilities -v
 curl -X GET http://localhost:5023/nodestatus -v
 
 # upload blueprint
-curl -X POST -v -H "Content-Type: application/x-yaml" --data-binary @/opt/docker-stuff/fog_node_engine/data/test.yaml http://localhost:5023/blueprint
+curl -X POST -v -H "Content-Type: application/x-yaml" --data-binary @/opt/docker-stuff/motey/data/test.yaml http://localhost:5023/blueprint

@@ -18,7 +18,7 @@ python:
 install: "pip install -r docker-image/requirements.txt"
 
 script:
-  - pycodestyle --ignore=E241,E501 fog_node_engine/
+  - pycodestyle --ignore=E241,E501 motey/
   - pycodestyle --ignore=E241,E501 samples/
   - python3 -m unittest tests/test_localorchestrator.py
 

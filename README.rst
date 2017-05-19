@@ -1,7 +1,7 @@
-# Fog Node Prototype
+# Motey
 
-Master: [![Build Status Master (Travis)](https://travis-ci.org/Neoklosch/fog_node_prototype.svg?branch=master)](https://travis-ci.org/Neoklosch/fog_node_prototype)
-Development: [![Build Status Development (Travis)](https://travis-ci.org/Neoklosch/fog_node_prototype.svg?branch=development)](https://travis-ci.org/Neoklosch/fog_node_prototype)
+Master: [![Build Status Master (Travis)](https://travis-ci.org/Neoklosch/motey.svg?branch=master)](https://travis-ci.org/Neoklosch/motey)
+Development: [![Build Status Development (Travis)](https://travis-ci.org/Neoklosch/motey.svg?branch=development)](https://travis-ci.org/Neoklosch/motey)
 
 
 * http://zeromq.org/intro:read-the-manual
@@ -28,9 +28,9 @@ Development: [![Build Status Development (Travis)](https://travis-ci.org/Neoklos
 
 * https://www.digitalocean.com/community/tutorials/how-to-package-and-distribute-python-applications
 
-### Fog Node Engine Architecture
+### Motey Architecture
 
-![alt text](resources/images/fog_node_engine_architecture.png "Fog Node Engine Architecture")
+![alt text](resources/images/motey_architecture.png "Motey Architecture")
 
 
 ### Useful Tools

@@ -1,5 +1,5 @@
-from fog_node_engine.database.labeling_database import LabelingDatabase
-from fog_node_engine.decorators.singleton import Singleton
+from motey.database.labeling_database import LabelingDatabase
+from motey.decorators.singleton import Singleton
 
 
 @Singleton
