@@ -1,8 +1,8 @@
 import threading
 from flask import Flask, request
-from fog_node_engine.communication.routes.blueprintendpoint import BlueprintEndpoint
-from fog_node_engine.communication.routes.capabilities import Capabilities
-from fog_node_engine.communication.routes.nodestatus import NodeStatus
+from fog_node_engine.communication.api_routes.blueprintendpoint import BlueprintEndpoint
+from fog_node_engine.communication.api_routes.capabilities import Capabilities
+from fog_node_engine.communication.api_routes.nodestatus import NodeStatus
 from fog_node_engine.configuration.configreader import config
 from fog_node_engine.utils.heartbeat import register_callback, register_heartbeat
 from fog_node_engine.decorators.singleton import Singleton
