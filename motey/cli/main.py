@@ -1,37 +1,33 @@
 #!/usr/bin/env python
 
 """
-Fog Node Prototype command line tool.
+Motey command line tool.
 
 Usage:
-  motey start [-d | --daemon]
+  motey start
   motey stop
   motey -h | --help
   motey --version
 
  Options:
-   -d, --daemon     Start as services as daemon.
    -h, --help       Show this message.
    --version        Print the version.
 """
 
 from docopt import docopt
-import motey
+from motey import __version__ as VERSION
 from motey.core import Core
-# from motey import __version__ as VERSION
+
 
 def main():
-    options = docopt(__doc__, version='0.1')
-    print(options)
+    options = docopt(__doc__, version=VERSION)
+
+    core = Core()
 
     if options['start']:
-        if options['--daemon']:
-            print("start as daemon")
-        else:
-            print("start normal")
-        print("starting my shit")
+        core.start()
     elif options['stop']:
-        print('stopping my shit')
+        core.stop()
 
 
 if __name__ == '__main__':
