@@ -3,6 +3,7 @@ import sys
 from time import sleep
 import threading
 from time import sleep
+import json
 
 import zmq
 
@@ -21,8 +22,10 @@ def publish_data():
     global count
     while True:
         sleep(2)
-        print('will send > hardwareevent#zigbee%s' % count)
-        publisher.send_string('hardwareevent#zigbee%s' % count)
+
+        json_data = [{'label': 'zigbee%s' % count, 'label_type': 'labelingevent'}, {'label': 'wifi%s' % count, 'label_type': 'labelingevent'}]
+        print('will send > labelingevent#%s' % json.dumps(json_data))
+        publisher.send_string('labelingevent#%s' % json.dumps(json_data))
         count = count + 1
 
 
