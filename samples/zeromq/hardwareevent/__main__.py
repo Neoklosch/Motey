@@ -18,6 +18,7 @@ def signal_handler(signal, frame):
 
 
 def publish_data():
+    global count
     while True:
         sleep(2)
         print('will send > hardwareevent#zigbee%s' % count)
@@ -26,11 +27,12 @@ def publish_data():
 
 
 def main():
-    publisher.connect('tcp://localhost:5290')
+    publisher.connect('tcp://localhost:5090')
     send_thread = threading.Thread(target=publish_data, args=())
+    send_thread.start()
 
     while True:
-        pass
+        sleep(.1)
 
 
 if __name__ == '__main__':

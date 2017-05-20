@@ -27,5 +27,6 @@ class HardwareEventEngine(object):
     def run_receiver_thread(self):
         while not self.stopped:
             result = self.subscriber.recv_string()
+            print("i got: %s" % result)
             topic, output = result.split('#', 1)
             self.labeling_engine.add(label=output, label_type='hardwareevent')

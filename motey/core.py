@@ -1,3 +1,5 @@
+from time import sleep
+
 from daemonize import Daemonize
 
 from motey.communication.apiserver import APIServer
@@ -31,6 +33,7 @@ class Core(object):
         self.labeling_engine = LabelingDatabase.Instance()
         self.valmanager = VALManager.Instance()
         self.inter_node_orchestrator = InterNodeOrchestrator.Instance()
+        self.hardware_event_engine = HardwareEventEngine.Instance()
         self.mqttserver.after_connect = self.__handle_after_connect
         self.daemon = None
 
@@ -56,11 +59,10 @@ class Core(object):
         self.logger.info('App started')
         self.webserver.start()
         self.mqttserver.start()
-
-        hardwareEventEngine = HardwareEventEngine.Instance()
+        self.hardware_event_engine.start()
 
         while not self.stopped:
-            pass
+            sleep(.1)
 
     def restart(self):
         """
