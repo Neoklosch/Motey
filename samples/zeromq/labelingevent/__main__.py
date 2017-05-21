@@ -23,7 +23,11 @@ def publish_data():
     while True:
         sleep(2)
 
-        json_data = [{'label': 'zigbee%s' % count, 'label_type': 'labelingevent'}, {'label': 'wifi%s' % count, 'label_type': 'labelingevent'}]
+        json_data = [
+            {'label': 'zigbee%s' % count, 'label_type': 'labelingevent', 'action': 'add'},
+            {'label': 'wifi%s' % count, 'label_type': 'labelingevent', 'action': 'remove'},
+            {'label': 'unknown%s' % count, 'label_type': 'labelingevent', 'action': 'unknown'}
+        ]
         print('will send > labelingevent#%s' % json.dumps(json_data))
         publisher.send_string('labelingevent#%s' % json.dumps(json_data))
         count = count + 1

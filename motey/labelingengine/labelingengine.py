@@ -6,6 +6,7 @@ import zmq
 from motey.configuration.configreader import config
 from motey.database.labeling_database import LabelingDatabase
 from motey.decorators.singleton import Singleton
+from motey.utils.logger import Logger
 
 
 @Singleton
@@ -22,6 +23,7 @@ class LabelingEngine(object):
     subscriber = None
 
     def __init__(self):
+        self.logger = Logger.Instance()
         self.labeling_database = LabelingDatabase.Instance()
         self.context = zmq.Context()
         self.subscriber = self.context.socket(zmq.SUB)
@@ -38,6 +40,10 @@ class LabelingEngine(object):
         self.subscriber.bind('tcp://*:%s' % config['LABELINGENGINE']['port'])
         self.subscriber.setsockopt_string(zmq.SUBSCRIBE, 'labelingevent')
         self.receiver_thread.start()
+        self.logger.info('labeling engine started')
+
+    def stop(self):
+        self.logger.info('labeling engine stopped')
 
     def __run_receiver_thread(self):
         """
@@ -53,12 +59,23 @@ class LabelingEngine(object):
                 json_result = json.loads(output)
                 if isinstance(json_result, list):
                     for entry in json_result:
-                        self.__add_label(entry)
+                        self.__perform_label_action(entry)
                 elif isinstance(json_result, dict):
-                    self.__add_label(json_result)
+                    self.__perform_label_action(json_result)
             except (TypeError, json.JSONDecodeError):
                 pass
 
-    def __add_label(self, entry):
-        if 'label' in entry and 'label_type' in entry:
-            self.labeling_database.add(label=entry['label'], label_type=entry['label_type'])
+    def __perform_label_action(self, entry):
+        """
+        Perform a specific action for the given entry.
+        Possible action types are `add` and `remove`.
+        :param entry: the label entry which should be used to perform the action
+
+        """
+        if 'action' in entry and 'label' in entry and 'label_type' in entry:
+            if entry['action'] == 'add':
+                self.labeling_database.add(label=entry['label'], label_type=entry['label_type'])
+            elif entry['action'] == 'remove':
+                self.labeling_database.remove(label=entry['label'], label_type=entry['label_type'])
+            else:
+                self.logger.warning('Unknown labeling action: %s' % entry['action'])
