@@ -5,7 +5,7 @@ from daemonize import Daemonize
 from motey.communication.apiserver import APIServer
 from motey.communication.mqttserver import MQTTServer
 from motey.configuration.configreader import config
-from motey.database.labeling_repository import LabelingRepository
+from motey.repositories.labeling_repository import LabelingRepository
 from motey.labelingengine.labelingengine import LabelingEngine
 from motey.orchestrator.inter_node_orchestrator import InterNodeOrchestrator
 from motey.utils import network_utils

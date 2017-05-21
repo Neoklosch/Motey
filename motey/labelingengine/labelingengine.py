@@ -4,7 +4,7 @@ import threading
 import zmq
 
 from motey.configuration.configreader import config
-from motey.database.labeling_repository import LabelingRepository
+from motey.repositories.labeling_repository import LabelingRepository
 from motey.decorators.singleton import Singleton
 from motey.utils.logger import Logger
 

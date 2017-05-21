@@ -3,7 +3,7 @@ import os
 from rx.subjects import Subject
 from yapsy.PluginManager import PluginManager
 
-from motey.database.labeling_repository import LabelingRepository
+from motey.repositories.labeling_repository import LabelingRepository
 from motey.decorators.singleton import Singleton
 from motey.utils.logger import Logger
 

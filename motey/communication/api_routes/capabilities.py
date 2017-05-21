@@ -3,7 +3,7 @@ from flask.views import MethodView
 from jsonschema import validate, ValidationError
 from rx.subjects import Subject
 
-from motey.database.labeling_repository import LabelingRepository
+from motey.repositories.labeling_repository import LabelingRepository
 
 
 class Capabilities(MethodView):

@@ -7,7 +7,7 @@ from tinydb import TinyDB, Query
 @Singleton
 class DatabaseManager(object):
     def __init__(self):
-        self.db = TinyDB(os.path.abspath('infrastructure_manager/database/nodes.json'))
+        self.db = TinyDB(os.path.abspath('infrastructure_manager/repositories/nodes.json'))
 
     def get_all_nodes(self):
         return self.db.all()

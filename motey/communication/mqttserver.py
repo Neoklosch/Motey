@@ -2,7 +2,7 @@ import threading
 
 import paho.mqtt.client as mqtt
 
-from motey.database.nodes_repository import NodesRepository
+from motey.repositories.nodes_repository import NodesRepository
 from motey.utils.logger import Logger
 
 
