@@ -4,7 +4,7 @@ import threading
 import zmq
 
 from motey.configuration.configreader import config
-from motey.database.labeling_database import LabelingDatabase
+from motey.database.labeling_repository import LabelingRepository
 from motey.decorators.singleton import Singleton
 from motey.utils.logger import Logger
 
@@ -43,7 +43,7 @@ class LabelingEngine(object):
 
     def __init__(self):
         self.logger = Logger.Instance()
-        self.labeling_database = LabelingDatabase.Instance()
+        self.labeling_repository = LabelingRepository.Instance()
         self.context = zmq.Context()
         self.subscriber = self.context.socket(zmq.SUB)
         self.receiver_thread = threading.Thread(target=self.__run_receiver_thread, args=())
@@ -98,8 +98,8 @@ class LabelingEngine(object):
         try:
             validate(entry, self.json_schema)
             if entry['action'] == 'add':
-                self.labeling_database.add(label=entry['label'], label_type=entry['label_type'])
+                self.labeling_repository.add(label=entry['label'], label_type=entry['label_type'])
             elif entry['action'] == 'remove':
-                self.labeling_database.remove(label=entry['label'], label_type=entry['label_type'])
+                self.labeling_repository.remove(label=entry['label'], label_type=entry['label_type'])
         except ValidationError:
             pass

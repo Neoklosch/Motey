@@ -7,7 +7,7 @@ from motey.decorators.singleton import Singleton
 
 
 @Singleton
-class NodesDatabase(object):
+class NodesRepository(object):
     def __init__(self):
         self.db = TinyDB(os.path.abspath('%s/nodes.json' % config['DATABASE']['path']))
 

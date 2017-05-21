@@ -3,7 +3,7 @@ from flask.views import MethodView
 from jsonschema import validate, ValidationError
 from rx.subjects import Subject
 
-from motey.database.labeling_database import LabelingDatabase
+from motey.database.labeling_repository import LabelingRepository
 
 
 class Capabilities(MethodView):
@@ -25,8 +25,8 @@ class Capabilities(MethodView):
     }
 
     def get(self):
-        labeling_engine = LabelingDatabase.Instance()
-        results = labeling_engine.all()
+        labeling_repository = LabelingRepository.Instance()
+        results = labeling_repository.all()
         return jsonify(results), 200
 
     def put(self):
@@ -34,12 +34,12 @@ class Capabilities(MethodView):
             data = request.json
             try:
                 validate(data, self.json_schema)
-                labeling_engine = LabelingDatabase.Instance()
+                labeling_repository = LabelingRepository.Instance()
                 nothing_added = True
                 for entry in data:
-                    if not labeling_engine.has_node(label=entry['label']):
+                    if not labeling_repository.has_node(label=entry['label']):
                         nothing_added = False
-                        labeling_engine.add(label=entry['label'], label_type=entry['label_type'])
+                        labeling_repository.add(label=entry['label'], label_type=entry['label_type'])
                 if nothing_added:
                     return '', 304
             except ValidationError:
@@ -53,12 +53,12 @@ class Capabilities(MethodView):
             data = request.json
             try:
                 validate(data, self.json_schema)
-                labeling_engine = LabelingDatabase.Instance()
+                labeling_repository = LabelingRepository.Instance()
                 nothing_removed = True
                 for entry in data:
-                    if labeling_engine.has_node(label=entry['label']):
+                    if labeling_repository.has_node(label=entry['label']):
                         nothing_removed = False
-                        labeling_engine.remove(label=entry['label'], label_type=entry['label_type'])
+                        labeling_repository.remove(label=entry['label'], label_type=entry['label_type'])
                 if nothing_removed:
                     return '', 304
             except ValidationError:

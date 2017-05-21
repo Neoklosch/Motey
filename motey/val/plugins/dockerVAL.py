@@ -2,7 +2,7 @@ import docker
 from docker.errors import APIError, NotFound, ContainerError, ImageNotFound
 
 import motey.val.plugins.abstractVAL as abstractVAL
-from motey.utils.logger import Logger
+
 from motey.val.models.status import Status
 from motey.val.models.systemstatus import SystemStatus
 
@@ -10,10 +10,9 @@ from motey.val.models.systemstatus import SystemStatus
 class DockerVAL(abstractVAL.AbstractVAL):
     def __init__(self):
         super().__init__()
-        self.logger = Logger.Instance()
         self.client = docker.DockerClient(base_url='unix://var/run/docker.sock')
 
-    def get_plugin__type(self):
+    def get_plugin_type(self):
         return 'docker'
 
     def has_image(self, image_name):

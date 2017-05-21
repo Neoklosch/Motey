@@ -5,7 +5,7 @@ from daemonize import Daemonize
 from motey.communication.apiserver import APIServer
 from motey.communication.mqttserver import MQTTServer
 from motey.configuration.configreader import config
-from motey.database.labeling_database import LabelingDatabase
+from motey.database.labeling_repository import LabelingRepository
 from motey.labelingengine.labelingengine import LabelingEngine
 from motey.orchestrator.inter_node_orchestrator import InterNodeOrchestrator
 from motey.utils import network_utils
@@ -27,15 +27,17 @@ class Core(object):
     def __init__(self, as_daemon=True):
         self.as_daemon = as_daemon
         self.stopped = False
+        self.daemon = None
+
         self.logger = Logger.Instance()
+        self.logger.info("App started")
         self.webserver = APIServer(host=config['WEBSERVER']['ip'], port=config['WEBSERVER']['port'])
         self.mqttserver = MQTTServer(host=config['MQTT']['ip'], port=int(config['MQTT']['port']), username=config['MQTT']['username'], password=config['MQTT']['password'], keepalive=int(config['MQTT']['keepalive']))
-        self.labeling_engine = LabelingDatabase.Instance()
+        self.labeling_engine = LabelingRepository.Instance()
         self.valmanager = VALManager.Instance()
         self.inter_node_orchestrator = InterNodeOrchestrator.Instance()
         self.hardware_event_engine = LabelingEngine.Instance()
         self.mqttserver.after_connect = self.__handle_after_connect
-        self.daemon = None
 
     def start(self):
         """
@@ -56,7 +58,7 @@ class Core(object):
         It starts the API server as well as the MQTT server and will be executed until self.stop() is executed.
         
         """
-        self.logger.info('App started')
+        self.logger.info('Core started')
         self.webserver.start()
         self.mqttserver.start()
         self.hardware_event_engine.start()
@@ -93,4 +95,4 @@ class Core(object):
         self.valmanager.close()
         if self.daemon:
             self.daemon.exit()
-        self.logger.info('App closed')
+        self.logger.info('Core stopped')

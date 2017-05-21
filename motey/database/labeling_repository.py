@@ -7,7 +7,7 @@ from motey.decorators.singleton import Singleton
 
 
 @Singleton
-class LabelingDatabase(object):
+class LabelingRepository(object):
     def __init__(self):
         self.db = TinyDB(os.path.abspath('%s/labels.json' % config['DATABASE']['path']))
 

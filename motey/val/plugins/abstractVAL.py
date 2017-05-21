@@ -1,8 +1,14 @@
 from yapsy.IPlugin import IPlugin
 
+from motey.utils.logger import Logger
+
 
 class AbstractVAL(IPlugin):
-    def get_plugin__type(self):
+    def __init__(self):
+        super().__init__()
+        self.logger = Logger.Instance()
+
+    def get_plugin_type(self):
         raise NotImplementedError("Should have implemented this")
 
     def has_image(self, image_name):
@@ -32,11 +38,11 @@ class AbstractVAL(IPlugin):
     def get_stats(self, container_name):
         raise NotImplementedError("Should have implemented this")
 
-    def getSystemStats(self):
+    def get_system_stats(self):
         raise NotImplementedError("Should have implemented this")
 
     def activate(self):
-        print("Plugin activated")
+       self.logger.info("%s plugin activated" % self.get_plugin_type())
 
     def deactivate(self):
-        print("Plugin deactivated")
+        self.logger.info("%s plugin deactivated" % self.get_plugin_type())

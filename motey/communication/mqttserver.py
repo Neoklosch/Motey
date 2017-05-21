@@ -2,7 +2,7 @@ import threading
 
 import paho.mqtt.client as mqtt
 
-from motey.database.nodes_database import NodesDatabase
+from motey.database.nodes_repository import NodesRepository
 from motey.utils.logger import Logger
 
 
@@ -23,7 +23,7 @@ class MQTTServer(object):
         self.username = username
         self.password = password
         self.logger = Logger.Instance()
-        self.database = NodesDatabase.Instance()
+        self.nodes_repository = NodesRepository.Instance()
         self.client = mqtt.Client()
         self.client.username_pw_set(username=self.username, password=self.password)
         self.client.on_connect = self.handle_on_connect
