@@ -42,7 +42,7 @@ class AbstractVAL(IPlugin):
         raise NotImplementedError("Should have implemented this")
 
     def activate(self):
-       self.logger.info("%s plugin activated" % self.get_plugin_type())
+        self.logger.info("%s plugin activated" % self.get_plugin_type())
 
     def deactivate(self):
         self.logger.info("%s plugin deactivated" % self.get_plugin_type())

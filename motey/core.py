@@ -21,7 +21,7 @@ class Core(object):
     The core will also start all the necessary components like the LabelingDatabase, the VALManager,
     the InterNodeOrchestrator and the HardwareEventEngine.
     After it is started via self.start() it will be executed until self.stop() is executed.
-    
+
     """
 
     def __init__(self, as_daemon=True):
@@ -56,7 +56,7 @@ class Core(object):
         """
         The method is the main app loop.
         It starts the API server as well as the MQTT server and will be executed until self.stop() is executed.
-        
+
         """
         self.logger.info('Core started')
         self.webserver.start()
@@ -87,7 +87,7 @@ class Core(object):
         At first it sends a MQTTServer.remove_node() command.
         Afterwards it will stop the MQTTServer instance as well as the VALManager.
         Finally it stops the daemon if self.as_daemon is set to True.
-        
+
         """
         self.stopped = True
         self.mqttserver.remove_node(network_utils.get_own_ip())
