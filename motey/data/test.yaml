@@ -11,9 +11,13 @@ images:
     ports:
       80/tcp: 8080
     name: busybox_test_container
+  capabilities:
+    - docker
 - image_name: nginx
   parameters:
     ports:
       80/tcp: 8080
     detach: true
     name: nginx_from_motey
+  capabilities:
+    - docker

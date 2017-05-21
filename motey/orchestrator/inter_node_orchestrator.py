@@ -4,6 +4,8 @@ from motey.communication.api_routes.blueprintendpoint import BlueprintEndpoint
 from motey.decorators.singleton import Singleton
 from motey.utils.logger import Logger
 from motey.val.valmanager import VALManager
+from jsonschema import validate, ValidationError
+from motey.validation.schemas import blueprint_schema
 
 
 @Singleton
@@ -20,9 +22,9 @@ class InterNodeOrchestrator(object):
         with open(template_path, 'r') as stream:
             try:
                 loaded_data = yaml.load(stream)
-                if loaded_data and 'images' in loaded_data:
-                    self.handle_images(loaded_data['images'])
-            except yaml.YAMLError as exc:
+                validate(loaded_data, blueprint_schema)
+                self.handle_images(loaded_data['images'])
+            except (yaml.YAMLError, ValidationError):
                 self.logger.error('YAML file could not be parsed: %s' % template_path)
 
     def exec_command_locally(self):
@@ -34,7 +36,7 @@ class InterNodeOrchestrator(object):
     def handle_blueprint(self, schema):
         try:
             loaded_data = yaml.load(schema)
-            if loaded_data and 'images' in loaded_data:
-                self.handle_images(loaded_data['images'])
-        except yaml.YAMLError as exc:
+            validate(loaded_data, blueprint_schema)
+            self.handle_images(loaded_data['images'])
+        except (yaml.YAMLError, ValidationError):
             self.logger.error('YAML file could not be parsed: %s' % schema)
