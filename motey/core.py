@@ -6,7 +6,7 @@ from motey.communication.apiserver import APIServer
 from motey.communication.mqttserver import MQTTServer
 from motey.configuration.configreader import config
 from motey.database.labeling_database import LabelingDatabase
-from motey.labelingengine.labelinengine import LabelinEngine
+from motey.labelingengine.labelingengine import LabelingEngine
 from motey.orchestrator.inter_node_orchestrator import InterNodeOrchestrator
 from motey.utils import network_utils
 from motey.utils.logger import Logger
@@ -33,7 +33,7 @@ class Core(object):
         self.labeling_engine = LabelingDatabase.Instance()
         self.valmanager = VALManager.Instance()
         self.inter_node_orchestrator = InterNodeOrchestrator.Instance()
-        self.hardware_event_engine = LabelinEngine.Instance()
+        self.hardware_event_engine = LabelingEngine.Instance()
         self.mqttserver.after_connect = self.__handle_after_connect
         self.daemon = None
 

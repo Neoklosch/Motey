@@ -9,7 +9,7 @@ from motey.decorators.singleton import Singleton
 
 
 @Singleton
-class LabelinEngine(object):
+class LabelingEngine(object):
     """
     This module provides a connection endpoint for the hardware layer.
     New labels can be added via a ZeroMQ tcp publisher.
