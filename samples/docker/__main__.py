@@ -17,7 +17,7 @@ def main():
         },
         'name': 'motey_alpine'
     }
-    client.containers.run_receiver_thread(image='alpine', **kwargs)
+    client.containers.run(image='alpine', **kwargs)
 
 
 if __name__ == '__main__':

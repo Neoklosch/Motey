@@ -55,7 +55,7 @@ class DockerVAL(abstractVAL.AbstractVAL):
 
     def start_instance(self, image_name, parameters={}):
         try:
-            self.client.containers.run_receiver_thread(image_name, **parameters)
+            self.client.containers.run(image_name, **parameters)
         except ContainerError as ce:
             self.logger.error("start docker instance > container could not be created")
         except ImageNotFound as inf:
@@ -65,7 +65,7 @@ class DockerVAL(abstractVAL.AbstractVAL):
 
     def stop_instance(self, container_name):
         try:
-            self.client.containers.run_receiver_thread(container_name)
+            self.client.containers.run(container_name)
         except ContainerError as ce:
             pass
         except ImageNotFound as inf:
