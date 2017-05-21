@@ -8,6 +8,8 @@ from motey.database.labeling_database import LabelingDatabase
 from motey.decorators.singleton import Singleton
 from motey.utils.logger import Logger
 
+from jsonschema import validate, ValidationError
+
 
 @Singleton
 class LabelingEngine(object):
@@ -21,6 +23,23 @@ class LabelingEngine(object):
 
     # the socket of the subscriber
     subscriber = None
+
+    # JSON schema for a valid label entry
+    json_schema = {
+        "type": "object",
+        "properties": {
+            "label": {
+                "type": "string"
+            },
+            "label_type": {
+                "type": "string"
+            },
+            "action": {
+                "enum": ["add", "remove"]
+            }
+        },
+        "required": ["label", "label_type", "action"]
+    }
 
     def __init__(self):
         self.logger = Logger.Instance()
@@ -43,6 +62,10 @@ class LabelingEngine(object):
         self.logger.info('labeling engine started')
 
     def stop(self):
+        """
+        Should be executed to clean up the labeling engine
+
+        """
         self.logger.info('labeling engine stopped')
 
     def __run_receiver_thread(self):
@@ -69,13 +92,14 @@ class LabelingEngine(object):
         """
         Perform a specific action for the given entry.
         Possible action types are `add` and `remove`.
-        :param entry: the label entry which should be used to perform the action
+        :param entry: the label entry which should be used to perform the action. The entry must match the `json_schema`
 
         """
-        if 'action' in entry and 'label' in entry and 'label_type' in entry:
+        try:
+            validate(entry, self.json_schema)
             if entry['action'] == 'add':
                 self.labeling_database.add(label=entry['label'], label_type=entry['label_type'])
             elif entry['action'] == 'remove':
                 self.labeling_database.remove(label=entry['label'], label_type=entry['label_type'])
-            else:
-                self.logger.warning('Unknown labeling action: %s' % entry['action'])
+        except ValidationError:
+            pass
