@@ -7,6 +7,7 @@ class ValidationError(Exception):
         # Call the base class constructor with the parameters it needs
         super().__init__(message)
 
+
 schema = {
     "type": "object",
     "properties": {
@@ -33,55 +34,6 @@ schema = {
         }
     }
 }
-
-# keks = {
-#     'images': [
-#         {
-#             'parameters': {
-#                 'ports': {
-#                     '7070/udp': 9001,
-#                     '80/tcp': 8080
-#                 },
-#                 'name': 'motey_alpine'
-#             },
-#             'image_name': 'alpine'
-#         },
-#         {
-#             'parameters': {
-#                 'ports': {
-#                     '80/tcp': 8080
-#                 },
-#                 'name': 'busybox_test_container'
-#             },
-#             'image_name': 'busybox',
-#             'capabilities': ['docker']
-#         },
-#         {
-#             'parameters': {
-#                 'ports': {
-#                     '80/tcp': 8080
-#                 },
-#                 'name': 'busybox_test_container'
-#             },
-#             'capabilities': ['docker']
-#         },
-#         {
-#             'parameters': {
-#                 'ports': {
-#                     '80/tcp': 8080
-#                 },
-#                 'detach': True,
-#                 'name': 'nginx_from_motey'
-#             },
-#             'image_name': 'nginx',
-#             'capabilities': ['docker']
-#         }
-#     ]
-# }
-
-# validate(keks, schema)
-
-
 
 good_instance = """
 ---
@@ -120,4 +72,3 @@ images:
 result = yaml.load(good_instance)
 print(result)
 validate(result, schema)
-
