@@ -21,10 +21,15 @@ class Core(object):
     The core will also start all the necessary components like the LabelingDatabase, the VALManager,
     the InterNodeOrchestrator and the HardwareEventEngine.
     After it is started via self.start() it will be executed until self.stop() is executed.
-
     """
 
     def __init__(self, as_daemon=True):
+        """
+        Constructor of the core.
+
+        :param as_daemon: Executes the core as a daemon. Default is True.
+        """
+
         self.as_daemon = as_daemon
         self.stopped = False
         self.daemon = None
@@ -44,8 +49,8 @@ class Core(object):
         Start the core component. If self.as_daemon is set to True, the component will be started as a daemon services.
         It will use the path to the pid which is configured in the config.ini.
         If self.as_daemon is set to False, the component will be executed in foreground.
-
         """
+
         if self.as_daemon:
             self.daemon = Daemonize(app=config['GENERAL']['app_name'], pid=config['GENERAL']['pid'], action=self.run)
             self.daemon.start()
@@ -56,8 +61,8 @@ class Core(object):
         """
         The method is the main app loop.
         It starts the API server as well as the MQTT server and will be executed until self.stop() is executed.
-
         """
+
         self.logger.info('Core started')
         self.webserver.start()
         self.mqttserver.start()
@@ -69,16 +74,16 @@ class Core(object):
     def restart(self):
         """
         Restart the core.
-
         """
+
         self.stop()
         self.start()
 
     def __handle_after_connect(self):
         """
         Will be called after the MQTTServer has established a connection to the broker.
-
         """
+
         self.mqttserver.publish_new_node(network_utils.get_own_ip())
 
     def stop(self):
@@ -87,12 +92,13 @@ class Core(object):
         At first it sends a MQTTServer.remove_node() command.
         Afterwards it will stop the MQTTServer instance as well as the VALManager.
         Finally it stops the daemon if self.as_daemon is set to True.
-
         """
+
         self.stopped = True
         self.mqttserver.remove_node(network_utils.get_own_ip())
         self.mqttserver.stop()
         self.valmanager.close()
+        self.webserver.stop()
         if self.daemon:
             self.daemon.exit()
         self.logger.info('Core stopped')

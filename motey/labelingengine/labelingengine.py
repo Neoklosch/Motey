@@ -18,7 +18,6 @@ class LabelingEngine(object):
     New labels can be added via a ZeroMQ tcp publisher.
     The port can be configured in the config.ini file.
     This class is implemented as a Singleton and should be called via HardwareEventEngine.Instance().
-
     """
 
     # the socket of the subscriber
@@ -42,6 +41,10 @@ class LabelingEngine(object):
     }
 
     def __init__(self):
+        """
+        Constructor the the labeling engine.
+        """
+
         self.logger = Logger.Instance()
         self.labeling_repository = LabelingRepository.Instance()
         self.context = zmq.Context()
@@ -54,8 +57,8 @@ class LabelingEngine(object):
         """
         Starts the listening on a given port.
         This method will be executed on a separate thread.
-
         """
+
         self.subscriber.bind('tcp://*:%s' % config['LABELINGENGINE']['port'])
         self.subscriber.setsockopt_string(zmq.SUBSCRIBE, 'labelingevent')
         self.receiver_thread.start()
@@ -64,8 +67,8 @@ class LabelingEngine(object):
     def stop(self):
         """
         Should be executed to clean up the labeling engine
-
         """
+
         self.logger.info('labeling engine stopped')
 
     def __run_receiver_thread(self):
@@ -73,8 +76,8 @@ class LabelingEngine(object):
         Private function which is be executed after the start method is called.
         The method will wait for an event where it is subscribed on.
         After receiving an event a new label will be added to the LabelingDatabase.
-
         """
+
         while not self.stopped:
             result = self.subscriber.recv_string()
             topic, output = result.split('#', 1)
@@ -92,9 +95,10 @@ class LabelingEngine(object):
         """
         Perform a specific action for the given entry.
         Possible action types are `add` and `remove`.
-        :param entry: the label entry which should be used to perform the action. The entry must match the `json_schema`
 
+        :param entry: the label entry which should be used to perform the action. The entry must match the `json_schema`
         """
+
         try:
             validate(entry, self.json_schema)
             if entry['action'] == 'add':
