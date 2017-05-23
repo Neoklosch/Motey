@@ -1,3 +1,4 @@
+# Schema to validate a yaml blueprint
 blueprint_schema = {
     "type": "object",
     "properties": {

@@ -23,7 +23,7 @@ class XenVAL(abstractVAL.AbstractVAL):
     def stop_instance(self, container_name):
         raise NotImplementedError("Should have implemented this")
 
-    def has_instance(self, container_name):
+    def has_instance(self, instance_name):
         raise NotImplementedError("Should have implemented this")
 
     def get_stats(self, container_name):

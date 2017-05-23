@@ -3,39 +3,80 @@ from docker.errors import APIError, NotFound, ContainerError, ImageNotFound
 
 import motey.val.plugins.abstractVAL as abstractVAL
 
-from motey.val.models.status import Status
+from motey.val.models.valinstancestatus import VALInstanceStatus
 from motey.val.models.systemstatus import SystemStatus
 
 
 class DockerVAL(abstractVAL.AbstractVAL):
+    """
+    Concrete implementation of the docker virtualization abstraction layer (VAL).
+    """
+
     def __init__(self):
+        """
+        Constructor of the DockerVAL.
+
+        """
         super().__init__()
-        self.client = docker.DockerClient(base_url='unix://var/run/docker.sock')
+
+    def get_docker_client(self):
+        """
+        Instantiates the docker client.
+
+        :return: the docker client
+        """
+        return docker.DockerClient(base_url='unix://var/run/docker.sock')
 
     def get_plugin_type(self):
+        """
+        Returns the specific plugin type.
+
+        :return: the specific plugin type.
+        """
         return 'docker'
 
     def has_image(self, image_name):
+        """
+        Checks if an specific images exists.
+
+        :param image_name: the name of the image to search for. Can be the ``image.id`` or the ``image.short_id``.
+        :return: True if the image exist, otherwise False.
+        """
+        client = self.get_docker_client()
         images = []
         try:
-            images = self.client.images.list()
+            images = client.images.list()
         except APIError as apie:
             return False
 
-        for image in self.client.images.list():
+        for image in client.images.list():
             if image.id == image_name or image.short_id == image_name or image.id == 'sha256:%s' % image_name or image.short_id == 'sha256:%s' % image_name:
                 return True
         return False
 
     def load_image(self, image_name):
+        """
+        Load the image to the device, but does not start the image himself.
+        It is a wrapper around the ``docker.images.pull`` command.
+
+        :param image_name: the image to be loaded.
+        """
+        client = self.get_docker_client()
         try:
-            self.client.images.pull(image_name)
+            client.images.pull(image_name)
         except APIError as apie:
             pass
 
     def delete_image(self, image_name):
+        """
+        Delete an image, but not the instance of it.
+        It is a wrapper around the ``docker.images.remove`` command.
+
+        :param image_name: the image to be deleted.
+        """
+        client = self.get_docker_client()
         try:
-            self.client.images.remove(image_name)
+            client.images.remove(image_name)
         except ContainerError as ce:
             pass
         except ImageNotFound as inf:
@@ -44,8 +85,16 @@ class DockerVAL(abstractVAL.AbstractVAL):
             pass
 
     def create_instance(self, image_name, parameters={}):
+        """
+        Create and start an instance of an image.
+        It is a wrapper around the ``docker.containers.create`` command.
+
+        :param image_name: the name of the image which should be created
+        :param parameters: execution parameters. Same as in the ``docker.create_container``.
+        """
+        client = self.get_docker_client()
         try:
-            self.client.containers.create(image_name, **parameters)
+            client.containers.create(image_name, **parameters)
         except ContainerError as ce:
             self.logger.error("create docker instance > container could not be created")
         except ImageNotFound as inf:
@@ -53,9 +102,17 @@ class DockerVAL(abstractVAL.AbstractVAL):
         except APIError as apie:
             self.logger.error("create docker instance > api error")
 
-    def start_instance(self, image_name, parameters={}):
+    def start_instance(self, instance_name, parameters={}):
+        """
+        Start an existing image instance.
+        It is a wrapper around the ``docker.containers.run`` command.
+
+        :param instance_name: the name of the existing instance
+        :param parameters: execution parameters. Same as in the ``docker.create_container``.
+        """
+        client = self.get_docker_client()
         try:
-            self.client.containers.run(image_name, **parameters)
+            client.containers.run(instance_name, **parameters)
         except ContainerError as ce:
             self.logger.error("start docker instance > container could not be created")
         except ImageNotFound as inf:
@@ -64,8 +121,15 @@ class DockerVAL(abstractVAL.AbstractVAL):
             self.logger.error("start docker instance > api error")
 
     def stop_instance(self, container_name):
+        """
+        Stop an existing image instance.
+        It is a wrapper around the ``docker.containers.stop`` command.
+
+        :param container_name: the name of the container to be stopped
+        """
+        client = self.get_docker_client()
         try:
-            self.client.containers.run(container_name)
+            client.containers.stop(container_name)
         except ContainerError as ce:
             pass
         except ImageNotFound as inf:
@@ -74,19 +138,40 @@ class DockerVAL(abstractVAL.AbstractVAL):
             pass
 
     def has_instance(self, container_name):
+        """
+        Checks if an image instance exists.
+        It is a wrapper around the ``docker.containers.get`` command.
+
+        :param container_name: the name of an existing instance
+        """
+        client = self.get_docker_client()
         try:
-            self.client.containers.get(container_name)
+            client.containers.get(container_name)
         except (NotFound, APIError):
             return False
         return True
 
     def get_all_running_instances(self):
-        return self.client.containers.list(filters={'status': 'running'})
+        """
+        Returns a list with all running instance in this VAL.
+        It is a wrapper around the ``docker.containers.list(filters={'status': 'running'})`` command.
+
+        :return: list of instances
+        """
+        client = self.get_docker_client()
+        return client.containers.list(filters={'status': 'running'})
 
     def get_stats(self, container_name):
-        status = Status()
+        """
+        Returns object which is type of ``Status``. Represents the status of a container.
+
+        :param container_name: the name of the container
+        :return: object from type ``Status``
+        """
+        client = self.get_docker_client()
+        status = VALInstanceStatus()
         try:
-            container = self.client.containers.get(container_name)
+            container = client.containers.get(container_name)
             service_stats = container.stats(decode=True, stream=False)
             status.image_name = container.attrs['Name']
             status.image = container.attrs['Image']
@@ -101,10 +186,16 @@ class DockerVAL(abstractVAL.AbstractVAL):
             return None
         return status
 
-    def get_system_stats(self):
+    def get_all_instances_stats(self):
+        """
+        Returns object which is type of ``Status``. Represents the status of all docker container.
+
+        :return: object from type ``Status``
+        """
+        client = self.get_docker_client()
         system_status = SystemStatus()
         for instance in self.get_all_running_instances():
-            container = self.client.containers.get(instance.id)
+            container = client.containers.get(instance.id)
             service_stats = container.stats(decode=True, stream=False)
             system_status.used_memory += int(service_stats['memory_stats']['usage'])
             system_status.used_cpu += int(service_stats['cpu_stats']['cpu_usage']['total_usage'])
