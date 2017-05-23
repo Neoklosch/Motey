@@ -2,6 +2,9 @@
 blueprint_schema = {
     "type": "object",
     "properties": {
+        "service_name": {
+            "type": "string"
+        },
         "images": {
             "type": "array",
             "items": {
@@ -17,11 +20,16 @@ blueprint_schema = {
                         "type": "array",
                         "items": {
                             "type": "string"
-                        }
+                        },
+                        "minItems": 1,
+                        "uniqueItems": True,
                     }
                 },
                 "required": ["image_name"]
-            }
+            },
+            "minItems": 1,
+            "uniqueItems": True
         }
-    }
+    },
+    "required": ["service_name", "images"]
 }

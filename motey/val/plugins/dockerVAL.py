@@ -1,10 +1,9 @@
 import docker
 from docker.errors import APIError, NotFound, ContainerError, ImageNotFound
+from motey.val.models.valinstancestatus import VALInstanceStatus
 
 import motey.val.plugins.abstractVAL as abstractVAL
-
-from motey.val.models.valinstancestatus import VALInstanceStatus
-from motey.val.models.systemstatus import SystemStatus
+from motey.models.systemstatus import SystemStatus
 
 
 class DockerVAL(abstractVAL.AbstractVAL):

@@ -20,7 +20,7 @@ install: "pip install -r docker-image/requirements.txt"
 script:
   - pycodestyle --ignore=E241,E501 motey/
   - pycodestyle --ignore=E241,E501 samples/
-  - python3 -m unittest tests/test_localorchestrator.py
+  - python3 -m unittest tests/test_*.py
 
 
 after_success:

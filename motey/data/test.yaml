@@ -1,4 +1,5 @@
 ---
+service_name: first_service
 images:
 - image_name: alpine
   parameters:
