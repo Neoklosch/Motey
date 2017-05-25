@@ -91,6 +91,7 @@ class MQTTServer(object):
         """
         Publish the info that a new node is available to the all subscribers.
         If the ``ip`` is none, nothing will be send.
+
         :param ip: The IP address of the new node. Default is None.
         """
         if ip:
@@ -100,6 +101,7 @@ class MQTTServer(object):
         """
         Remove a specific node and publish it to all subscribers.
         If the ``ip`` is none, nothing will be send.
+
         :param ip: The IP address of the new node. Default is None.
         """
         if ip:

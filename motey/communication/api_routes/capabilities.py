@@ -1,13 +1,18 @@
 from flask import jsonify, request
 from flask.views import MethodView
 from jsonschema import validate, ValidationError
-from rx.subjects import Subject
 
 from motey.repositories.labeling_repository import LabelingRepository
 
 
 class Capabilities(MethodView):
-    stream = Subject()
+    """
+    This REST API endpoint for capability handling.
+    A capability is basically a label for the whole node.
+    New capabilities can be added or deleted via this endpoint or a list with the existing ones can be fetched.
+    """
+
+    # The schema to validate the sent json data.
     json_schema = {
         "type": "array",
         "items": {
@@ -25,11 +30,24 @@ class Capabilities(MethodView):
     }
 
     def get(self):
+        """
+        Returns a list off all existing capabilities of this node.
+
+        :return: a JSON object with all the existing capabilities of this node
+        """
         labeling_repository = LabelingRepository.Instance()
         results = labeling_repository.all()
         return jsonify(results), 200
 
     def put(self):
+        """
+        Add a list of new capabilities or at least a single one to the node.
+        The content type of the request must be ``application/json``, otherwise the request will fail.
+
+        :return: 201 - Created if at least one capability was added, 304 - Not Modified if non of the sent capabilities
+         was added or 400 - Bad Request if the wrong content type was sent or the json does not match the
+         ``json_schema``.
+        """
         if request.content_type == 'application/json':
             data = request.json
             try:
@@ -49,6 +67,14 @@ class Capabilities(MethodView):
         return '', 201
 
     def delete(self):
+        """
+        Remove a list of capabilities or at least a single one from the node.
+        The content type of the request must be ``application/json``, otherwise the request will fail.
+
+        :return: 201 - Created if at least one capability was removed, 304 - Not Modified if non of the sent
+        capabilities was removed because they don not exists or 400 - Bad Request if the wrong content type was sent
+        or the json does not match the ``json_schema``.
+        """
         if request.content_type == 'application/json':
             data = request.json
             try:

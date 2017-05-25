@@ -10,7 +10,16 @@ from motey.decorators.singleton import Singleton
 
 @Singleton
 class Logger(LogbookLogger):
+    """
+    Wrapper to configure the LogbookLogger.
+    Is implemented as a Singleton.
+    """
+
     def __init__(self):
+        """
+        Constructor of the Logger.
+        Configures them and create the path to the output file if necessary.
+        """
         super().__init__(config['LOGGER']['name'])
         self.logger_path = config['LOGGER']['log_path']
         try:

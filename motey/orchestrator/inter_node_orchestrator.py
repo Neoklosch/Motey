@@ -12,49 +12,87 @@ from motey.validation.schemas import blueprint_schema
 
 @Singleton
 class InterNodeOrchestrator(object):
+    """
+    This class orchestrates yaml blueprints.
+    It will start and stop virtual instances of images defined in the blueprint.
+    It also can communicate with other nodes to start instances there if the requirements does not fit with the 
+    possibilities of the current node.
+    This class is implemented as a Singleton and should be called via InterNodeOrchestrator.Instance().
+    """
     def __init__(self):
+        """
+        Instanciates the ``Logger``, the ``VALManagger`` and subscribe to the blueprint endpoint.
+        """
         self.logger = Logger.Instance()
         self.valmanager = VALManager.Instance()
-        self.blueprint_stream = BlueprintEndpoint.stream.subscribe(self.handle_blueprint)
+        self.blueprint_stream = BlueprintEndpoint.yaml_post_stream.subscribe(self.handle_blueprint)
 
-    def parse_template_file(self, template_path):
-        with open(template_path, 'r') as stream:
-            try:
-                loaded_data = yaml.load(stream)
-                validate(loaded_data, blueprint_schema)
-                self.handle_images(loaded_data['images'])
-            except (yaml.YAMLError, ValidationError):
-                self.logger.error('YAML file could not be parsed: %s' % template_path)
+    def parse_local_blueprint_file(self, file_path):
+        """
+        Parse a local yaml file and start the virtual images defined in the blueprint.
 
-    def exec_command_locally(self):
-        pass
+        :param file_path: Path to the local blueprint file.
+        """
+        with open(file_path, 'r') as stream:
+            self.handle_blueprint(stream)
 
     def handle_images(self, images):
+        """
+        Instantiate a list of images.
+
+        :param images: a list of images.
+        """
         self.valmanager.instantiate(images)
 
-    def handle_blueprint(self, schema):
+    def handle_blueprint(self, blueprint_data):
+        """
+        Try to load the YAML data from the given blueprint data and validates them by using the
+        ``validation.schemas.blueprint_schema``.
+        If the data is valid, they will be transformed into a services model and handed over to the ``VALManager``.
+
+        :param blueprint_data: data in YAML format which matches the ``validation.schemas.blueprint_schema``
+        """
         try:
-            loaded_data = yaml.load(schema)
+            loaded_data = yaml.load(blueprint_data)
             validate(loaded_data, blueprint_schema)
             service = self.__translate_to_service(loaded_data)
             self.handle_images(service.images)
         except (yaml.YAMLError, ValidationError):
-            self.logger.error('YAML file could not be parsed: %s' % schema)
+            self.logger.error('YAML file could not be parsed: %s' % blueprint_data)
 
-    def __translate_to_service(self, data):
+    def __translate_to_service(self, blueprint_data):
+        """
+        Private method to translate the blueprint data into a service model.
+
+        :param blueprint_data: data in YAML format which matches the ``validation.schemas.blueprint_schema``
+        :return: the translated service model
+        """
         service = Service()
-        service.name = data['service_name']
-        service.images = self.__translate_to_image_list(data['images'])
+        service.name = blueprint_data['service_name']
+        service.images = self.__translate_to_image_list(blueprint_data['images'])
+        return service
 
-    def __translate_to_image_list(self, data):
+    def __translate_to_image_list(self, yaml_data):
+        """
+        Priavte method to translate a list of images into a list of image models.
+
+        :param yaml_data: list of images which should be translated
+        :return: a list of translated image models
+        """
         result_list = []
-        for image in data:
+        for image in yaml_data:
             result_list.append(self.__translate_to_image(image))
         return result_list
 
-    def __translate_to_image(self, data):
+    def __translate_to_image(self, yaml_data):
+        """
+        Private method to translate a single yaml image data into a image model.
+
+        :param yaml_data: a single yaml image data
+        :return: the translated image model
+        """
         image = Image()
-        image.name = data['image_name']
-        image.parameters = data['parameters']
-        image.capabilities = data['capabilities']
+        image.name = yaml_data['image_name']
+        image.parameters = yaml_data['parameters']
+        image.capabilities = yaml_data['capabilities']
         return image
