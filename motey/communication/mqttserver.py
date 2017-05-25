@@ -14,9 +14,9 @@ class MQTTServer(object):
 
     # Routes for registering and unregistering nodes
     ROUTES = {
-        'register_node': 'motey/register',
-        'remove_node':   'motey/remove',
-        'receive_nodes': 'motey/receive_nodes'
+        'register_node': 'motey/v1/register',
+        'remove_node':   'motey/v1/remove',
+        'receive_nodes': 'motey/v1/receive_nodes'
     }
 
     def __init__(self, host='127.0.0.1', port=1883, username=None, password=None, keepalive=60):

@@ -5,12 +5,12 @@ heartbeat = Blueprint('heartbeat', __name__)
 callbacks = []
 
 
-@heartbeat.route('/heartbeat')
+@heartbeat.route('/v1/heartbeat')
 def check_heartbeat():
     if not all(callback() for callback in callbacks):
         return abort(500)
 
-    return ('', 204)
+    return '', 204
 
 
 def register_callback(callback):

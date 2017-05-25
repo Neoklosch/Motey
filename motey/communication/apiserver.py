@@ -49,9 +49,9 @@ class APIServer():
         """
         Adds all the configured api endpoints.
         """
-        self.webserver.add_url_rule('/blueprint', view_func=BlueprintEndpoint.as_view('blueprintendpoint'))
-        self.webserver.add_url_rule('/capabilities', view_func=Capabilities.as_view('capabilities'))
-        self.webserver.add_url_rule('/nodestatus', view_func=NodeStatus.as_view('nodestatus'))
+        self.webserver.add_url_rule('/v1/blueprint', view_func=BlueprintEndpoint.as_view('blueprintendpoint'))
+        self.webserver.add_url_rule('/v1/capabilities', view_func=Capabilities.as_view('capabilities'))
+        self.webserver.add_url_rule('/v1/nodestatus', view_func=NodeStatus.as_view('nodestatus'))
         register_callback(self.check_heartbeat)
         register_heartbeat(self.webserver)
 
