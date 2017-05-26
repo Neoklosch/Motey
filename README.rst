@@ -91,9 +91,11 @@ You also can start Motey in foreground.
     # start the application
     $ python3 /opt/motey/main.py
 
+How does it works
+=================
 
 Motey Architecture
-==================
+------------------
 
 .. class:: no-web
 
@@ -101,6 +103,28 @@ Motey Architecture
         :alt: Motey Architecture
         :width: 100%
         :align: center
+
+Communication
+-------------
+
+Motey provide several endpoints to communicate with the system.
+
+Capabilities Engine
+    You can communicate with the capabilities engine via ZeroMQ_.
+    In the default configuration port 5090 is exposed as a ZeroMQ_ subscriber.
+    You can connect to them witho one ore more ZeroMQ_ publisher to add or remove capabilities.
+
+REST API
+    A REST API is provided on port 5023.
+    Endpoints are ``/v1/blueprint`` to upload a YAML blueprint, ``/v1/capabilities`` to add capabilities, which is
+    basically another possiblity to communicate with the capabilities engine and ``/v1/nodestatus`` to get the current
+    node status.
+
+MQTT
+    Motey will try to connect to a MQTT broker on startup.
+    Default config is set to url ``172.17.0.3`` and port ``1883``.
+    This can be configured by modifing the ``config.ini`` file.
+
 
 
 .. |master_build| image:: https://travis-ci.org/Neoklosch/Motey.svg?branch=master&style=flat-square&label=master%20build
@@ -110,3 +134,5 @@ Motey Architecture
 .. |development_build| image:: https://travis-ci.org/Neoklosch/Motey.svg?branch=development&style=flat-square&label=master%20build
     :target: https://travis-ci.org/Neoklosch/Motey
     :alt: Build status of the development branch
+
+.. _ZeroMQ: http://zeromq.org/
