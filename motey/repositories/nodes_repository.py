@@ -4,10 +4,11 @@ from tinydb import TinyDB, Query
 
 from motey.configuration.configreader import config
 from motey.decorators.singleton import Singleton
+from motey.repositories.base_repository import BaseRepository
 
 
 @Singleton
-class NodesRepository(object):
+class NodesRepository(BaseRepository):
     """
     Repository for all node specific actions.
     This class is implemented as a Singleton and should be called via NodesRepository.Instance().
@@ -18,15 +19,8 @@ class NodesRepository(object):
         Start the ``TinyDB```instance and create or load the database.
         The database location can be configured via the ``config.ini`` file.
         """
+        super(NodesRepository, self).__init__()
         self.db = TinyDB(os.path.abspath('%s/nodes.json' % config['DATABASE']['path']))
-
-    def all(self):
-        """
-        Return a list of all existing node entries in the database.
-
-        :return: a list of all existing node entries.
-        """
-        return self.db.all()
 
     def add(self, ip):
         """
@@ -44,12 +38,6 @@ class NodesRepository(object):
         :param ip: the ip of the node to be removed.
         """
         self.db.remove(Query().ip == ip)
-
-    def clear(self):
-        """
-        Remove all nodes from the database.
-        """
-        self.db.remove()
 
     def has(self, ip):
         """

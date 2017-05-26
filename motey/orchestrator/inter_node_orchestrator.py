@@ -1,3 +1,5 @@
+import threading
+
 import yaml
 from jsonschema import validate, ValidationError
 
@@ -5,6 +7,7 @@ from motey.communication.api_routes.blueprintendpoint import BlueprintEndpoint
 from motey.decorators.singleton import Singleton
 from motey.models.image import Image
 from motey.models.service import Service
+from motey.repositories.service_repository import ServiceRepository
 from motey.utils.logger import Logger
 from motey.val.valmanager import VALManager
 from motey.validation.schemas import blueprint_schema
@@ -21,10 +24,11 @@ class InterNodeOrchestrator(object):
     """
     def __init__(self):
         """
-        Instanciates the ``Logger``, the ``VALManagger`` and subscribe to the blueprint endpoint.
+        Instantiates the ``Logger``, the ``VALManagger``, ``ServiceRepository`` and subscribe to the blueprint endpoint.
         """
         self.logger = Logger.Instance()
         self.valmanager = VALManager.Instance()
+        self.service_repository = ServiceRepository.Instance()
         self.blueprint_stream = BlueprintEndpoint.yaml_post_stream.subscribe(self.handle_blueprint)
 
     def parse_local_blueprint_file(self, file_path):
@@ -36,13 +40,19 @@ class InterNodeOrchestrator(object):
         with open(file_path, 'r') as stream:
             self.handle_blueprint(stream)
 
-    def handle_images(self, images):
+    def handle_images(self, service):
         """
         Instantiate a list of images.
 
         :param images: a list of images.
         """
-        self.valmanager.instantiate(images)
+        self.service_repository.add(service)
+        service.state = Service.ServiceState.INSTANTIATING
+        self.service_repository.update(service)
+        for image in service.images:
+            self.valmanager.instantiate(image)
+        service.state = Service.ServiceState.RUNNING
+        self.service_repository.update(service)
 
     def handle_blueprint(self, blueprint_data):
         """
@@ -56,7 +66,9 @@ class InterNodeOrchestrator(object):
             loaded_data = yaml.load(blueprint_data)
             validate(loaded_data, blueprint_schema)
             service = self.__translate_to_service(loaded_data)
-            self.handle_images(service.images)
+            worker_thread = threading.Thread(target=self.handle_images, args=(service,))
+            worker_thread.daemon = True
+            worker_thread.start()
         except (yaml.YAMLError, ValidationError):
             self.logger.error('YAML file could not be parsed: %s' % blueprint_data)
 

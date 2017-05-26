@@ -4,10 +4,11 @@ from tinydb import TinyDB, Query
 
 from motey.configuration.configreader import config
 from motey.decorators.singleton import Singleton
+from motey.repositories.base_repository import BaseRepository
 
 
 @Singleton
-class LabelingRepository(object):
+class LabelingRepository(BaseRepository):
     """
     Repository for all label specific actions.
     This class is implemented as a Singleton and should be called via LabelingRepository.Instance().
@@ -18,15 +19,8 @@ class LabelingRepository(object):
         Start the ``TinyDB```instance and create or load the database.
         The database location can be configured via the ``config.ini`` file.
         """
+        super(LabelingRepository, self).__init__()
         self.db = TinyDB(os.path.abspath('%s/labels.json' % config['DATABASE']['path']))
-
-    def all(self):
-        """
-        Return a list of all existing label entries in the database.
-
-        :return: a list of all existing label entries.
-        """
-        return self.db.all()
 
     def add(self, label, label_type):
         """
@@ -58,17 +52,11 @@ class LabelingRepository(object):
         """
         self.db.remove(Query().type == label_type)
 
-    def clear(self):
-        """
-        Remove all label from the database.
-        """
-        self.db.remove()
-
     def has(self, label):
         """
         Checks if the given ``label`` exist in the database.
 
-        :param ip: the label to search for.
+        :param label: the label to search for.
         :return: True if the lable exists, otherwise False
         """
         return len(self.db.search(Query().label == label)) > 0
