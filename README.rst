@@ -50,6 +50,23 @@ Motey need a MQTT broker to communicate with other nodes. Therefore a MQTT serve
 
 The ip of the server has to be configured in the ``config.ini`` file of Motey.
 
+Install manually Linux
+----------------------
+
+.. code-block:: bash
+
+    # clone Motey repo
+    $ git clone https://github.com/Neoklosch/Motey.git
+
+    # enter Motey folder
+    $ cd Motey
+
+    # build application
+    $ python3 setup.py build
+
+    # install application
+    $ python3 setup.py install
+
 Using Motey
 ===========
 
@@ -59,13 +76,13 @@ It can be started, stopped and restarted via the cli tool.
 .. code-block:: bash
 
     # start the service
-    $ python3 /opt/motey/motey/cli/main.py start
+    $ motey start
 
     # stop the service
-    $ python3 /opt/motey/motey/cli/main.py stop
+    $ motey stop
 
     # restart the service
-    $ python3 /opt/motey/motey/cli/main.py restart
+    $ motey restart
 
 You also can start Motey in foreground.
 
