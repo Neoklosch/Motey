@@ -3,34 +3,77 @@ Motey
 
 |master_build| |development_build|
 
+.. contents::
 
-* http://zeromq.org/intro:read-the-manual
-* https://www.digitalocean.com/community/tutorials/how-to-work-with-the-zeromq-messaging-library
-* https://github.com/channelcat/sanic
+.. section-numbering::
 
-Docker stuff
+
+What is Motey
+=============
+
+Motey is a fog node agent which is able to start virtual containers and can act autonomous.
+
+Installation
 ============
 
-* https://docs.docker.com/engine/api/get-started/#list-and-manage-containers
-* https://docker-py.readthedocs.io/en/stable/containers.html#docker.models.containers.Container
-* https://docs.docker.com/engine/api/v1.29/#tag/Container
+Dependecies
+-----------
 
-MQTT
-====
+Motey is using python 3.5 or newer. All the necessary requirements are in ``motey-docker-image/requirements.txt``.
+A separate MQTT server is optional but recommended.
 
-* http://www.steves-internet-guide.com/mqtt-username-password-example/
-* https://www.dinotools.de/2015/04/11/mosquitto-als-mqtt-broker/
-* http://www.hivemq.com/blog/mqtt-client-library-paho-python
+Docker
+------
 
-Python webserver
-================
+The easiest way to use Motey is to run the docker container.
 
-* https://www.digitalocean.com/community/tutorials/a-comparison-of-web-servers-for-python-based-web-applications
+.. code-block:: bash
 
-Python distribute app
-=====================
+    # pull the docker container.
+    $ docker pull neoklosch/motey
 
-* https://www.digitalocean.com/community/tutorials/how-to-package-and-distribute-python-applications
+    # run the container
+    $ docker run -ti -v /var/run/docker.sock:/var/run/docker.sock -p 5023:5023 -p 5024:5024 -p 5090:5090 neoklosch/motey
+
+    # to enter the container
+    $ docker exec -ti <container_name> bash
+
+Motey need a MQTT broker to communicate with other nodes. Therefore a MQTT server has to started.
+
+.. code-block:: bash
+
+    # pull the docker container.
+    $ docker pull toke/mosquitto
+
+    # run the container and load the config file from the scripts folder
+    $ docker run -p 1883:1883 -p 9001:9001 -v ./scripts/config:/mqtt/config:ro toke/mosquitto
+
+The ip of the server has to be configured in the ``config.ini`` file of Motey.
+
+Using Motey
+===========
+
+By default Motey is executed as a daemon.
+It can be started, stopped and restarted via the cli tool.
+
+.. code-block:: bash
+
+    # start the service
+    $ python3 /opt/motey/motey/cli/main.py start
+
+    # stop the service
+    $ python3 /opt/motey/motey/cli/main.py stop
+
+    # restart the service
+    $ python3 /opt/motey/motey/cli/main.py restart
+
+You also can start Motey in foreground.
+
+.. code-block:: bash
+
+    # start the application
+    $ python3 /opt/motey/main.py
+
 
 Motey Architecture
 ==================
@@ -41,13 +84,6 @@ Motey Architecture
         :alt: Motey Architecture
         :width: 100%
         :align: center
-
-
-Useful Tools
-============
-
-* Json2YAML > https://www.json2yaml.com/
-* YAML Parser > http://yaml-online-parser.appspot.com/
 
 
 .. |master_build| image:: https://travis-ci.org/Neoklosch/Motey.svg?branch=master&style=flat-square&label=master%20build

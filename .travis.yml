@@ -15,7 +15,7 @@ python:
   - "3.7-dev" # 3.7 development branch
   - "nightly" # currently points to 3.7-dev
 
-install: "pip install -r docker-image/requirements.txt"
+install: "pip install -r motey-docker-image/requirements.txt"
 
 script:
   - pycodestyle --ignore=E241,E501 motey/

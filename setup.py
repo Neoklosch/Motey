@@ -54,7 +54,7 @@ setup(
         'Programming Language :: Python :: 3.7',
     ],
     keywords = ['cli', 'IoT', 'Fog Node'],
-    packages = find_packages(exclude=['docker-image', 'docs', 'resources', 'samples', 'scripts', 'tests*', 'webclient']),
+    packages = find_packages(exclude=['motey-docker-image', 'docs', 'resources', 'samples', 'scripts', 'tests*', 'webclient']),
     include_package_data=True,
     zip_safe=False,
     install_requires = [

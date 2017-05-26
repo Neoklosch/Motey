@@ -10,3 +10,14 @@ apt-get install -y docker-ce
 
 pip3 install --upgrade pip
 pip3 install -r /tmp/requirements.txt
+
+cd /opt
+git clone https://github.com/Neoklosch/Motey.git
+
+cd /opt/Motey/
+
+python3 setup.py build
+python3 setup.py install
+
+motey start
+

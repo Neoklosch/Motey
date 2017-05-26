@@ -15,7 +15,7 @@ class InterNodeOrchestrator(object):
     """
     This class orchestrates yaml blueprints.
     It will start and stop virtual instances of images defined in the blueprint.
-    It also can communicate with other nodes to start instances there if the requirements does not fit with the 
+    It also can communicate with other nodes to start instances there if the requirements does not fit with the
     possibilities of the current node.
     This class is implemented as a Singleton and should be called via InterNodeOrchestrator.Instance().
     """
