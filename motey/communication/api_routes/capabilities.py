@@ -2,8 +2,6 @@ from flask import jsonify, request
 from flask.views import MethodView
 from jsonschema import validate, ValidationError
 
-from motey.repositories.labeling_repository import LabelingRepository
-
 
 class Capabilities(MethodView):
     """
@@ -35,8 +33,8 @@ class Capabilities(MethodView):
 
         :return: a JSON object with all the existing capabilities of this node
         """
-        labeling_repository = LabelingRepository.Instance()
-        results = labeling_repository.all()
+        from motey.di.app_module import DIRepositories
+        results = DIRepositories.labeling_repository().all()
         return jsonify(results), 200
 
     def put(self):
@@ -48,11 +46,12 @@ class Capabilities(MethodView):
          was added or 400 - Bad Request if the wrong content type was sent or the json does not match the
          ``json_schema``.
         """
+        from motey.di.app_module import DIRepositories
         if request.content_type == 'application/json':
             data = request.json
             try:
                 validate(data, self.json_schema)
-                labeling_repository = LabelingRepository.Instance()
+                labeling_repository = DIRepositories.labeling_repository()
                 nothing_added = True
                 for entry in data:
                     if not labeling_repository.has_node(label=entry['label']):
@@ -72,14 +71,15 @@ class Capabilities(MethodView):
         The content type of the request must be ``application/json``, otherwise the request will fail.
 
         :return: 201 - Created if at least one capability was removed, 304 - Not Modified if non of the sent
-        capabilities was removed because they don not exists or 400 - Bad Request if the wrong content type was sent
-        or the json does not match the ``json_schema``.
+                 capabilities was removed because they don not exists or 400 - Bad Request if the wrong content type was sent or
+                 the json does not match the ``json_schema``.
         """
+        from motey.di.app_module import DIRepositories
         if request.content_type == 'application/json':
             data = request.json
             try:
                 validate(data, self.json_schema)
-                labeling_repository = LabelingRepository.Instance()
+                labeling_repository = DIRepositories.labeling_repository()
                 nothing_removed = True
                 for entry in data:
                     if labeling_repository.has_node(label=entry['label']):

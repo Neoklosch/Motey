@@ -1,30 +1,23 @@
 import os
 
 from rx.subjects import Subject
-from yapsy.PluginManager import PluginManager
-
-from motey.repositories.labeling_repository import LabelingRepository
-from motey.decorators.singleton import Singleton
-from motey.utils.logger import Logger
 
 
-@Singleton
 class VALManager(object):
     """
     Manger for all the virtual abstraction layer plugins.
     Loads the plugins and wrapps the commands.
-    This class is implemented as a Singleton and should be called via VALManager.Instance().
     """
 
-    def __init__(self):
+    def __init__(self, logger, labeling_engine, plugin_manager):
         """
         Constructor of the VALManger.
         """
 
         self.plugin_stream = Subject()
-        self.logger = Logger.Instance()
-        self.labeling_engine = LabelingRepository.Instance()
-        self.plugin_manager = PluginManager()
+        self.logger = logger
+        self.labeling_engine = labeling_engine
+        self.plugin_manager = plugin_manager
         self.register_plugins()
 
     def register_plugins(self):

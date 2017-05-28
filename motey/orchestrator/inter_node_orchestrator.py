@@ -4,33 +4,26 @@ import yaml
 from jsonschema import validate, ValidationError
 
 from motey.communication.api_routes.blueprintendpoint import BlueprintEndpoint
-from motey.decorators.singleton import Singleton
 from motey.models.image import Image
 from motey.models.service import Service
-from motey.repositories.labeling_repository import LabelingRepository
-from motey.repositories.service_repository import ServiceRepository
-from motey.utils.logger import Logger
-from motey.val.valmanager import VALManager
 from motey.validation.schemas import blueprint_schema
 
 
-@Singleton
 class InterNodeOrchestrator(object):
     """
     This class orchestrates yaml blueprints.
     It will start and stop virtual instances of images defined in the blueprint.
     It also can communicate with other nodes to start instances there if the requirements does not fit with the
     possibilities of the current node.
-    This class is implemented as a Singleton and should be called via InterNodeOrchestrator.Instance().
     """
-    def __init__(self):
+    def __init__(self, logger, valmanager, service_repository, labeling_repository):
         """
         Instantiates the ``Logger``, the ``VALManagger``, ``ServiceRepository`` and subscribe to the blueprint endpoint.
         """
-        self.logger = Logger.Instance()
-        self.valmanager = VALManager.Instance()
-        self.service_repository = ServiceRepository.Instance()
-        self.labeling_repository = LabelingRepository.Instance()
+        self.logger = logger
+        self.valmanager = valmanager
+        self.service_repository = service_repository
+        self.labeling_repository = labeling_repository
         self.blueprint_stream = BlueprintEndpoint.yaml_post_stream.subscribe(self.handle_blueprint)
 
     def parse_local_blueprint_file(self, file_path):
@@ -66,8 +59,8 @@ class InterNodeOrchestrator(object):
     def terminate_instances(self, service):
         """
         Terminates a service.
-        
-        :param service: the service to be used. 
+
+        :param service: the service to be used.
         """
         if service.action == Service.ServiceAction.REMOVE:
             if self.service_repository.has(service_id=service.id):

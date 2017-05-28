@@ -3,15 +3,12 @@ import os
 from tinydb import TinyDB, Query
 
 from motey.configuration.configreader import config
-from motey.decorators.singleton import Singleton
 from motey.repositories.base_repository import BaseRepository
 
 
-@Singleton
 class NodesRepository(BaseRepository):
     """
     Repository for all node specific actions.
-    This class is implemented as a Singleton and should be called via NodesRepository.Instance().
     """
 
     def __init__(self):

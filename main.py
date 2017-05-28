@@ -1,7 +1,7 @@
-import sys
 import signal
-from motey.core import Core
+import sys
 
+from motey.di.app_module import Application
 
 core = None
 
@@ -13,5 +13,5 @@ def signal_handler(signal, frame):
 
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)
-    core = Core(as_daemon=False)
+    core = Application.core(as_daemon=False)
     core.start()

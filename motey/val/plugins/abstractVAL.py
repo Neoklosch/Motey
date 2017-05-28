@@ -1,6 +1,6 @@
 from yapsy.IPlugin import IPlugin
 
-from motey.utils.logger import Logger
+from motey.di.app_module import DICore
 
 
 class AbstractVAL(IPlugin):
@@ -17,7 +17,7 @@ class AbstractVAL(IPlugin):
         Constructor of the AbstractVAL.
         """
         super().__init__()
-        self.logger = Logger.Instance()
+        self.logger = DICore.logger()
 
     def get_plugin_type(self):
         """

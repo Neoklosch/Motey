@@ -18,13 +18,13 @@ Usage:
 from docopt import docopt
 
 from motey import __version__ as VERSION
-from motey.core import Core
+from motey.di.app_module import Application
 
 
 def main():
     options = docopt(__doc__, version=VERSION)
 
-    core = Core()
+    core = Application.core(as_daemon=True)
 
     if options['start']:
         core.start()

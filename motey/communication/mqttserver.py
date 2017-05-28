@@ -2,9 +2,6 @@ import threading
 
 import paho.mqtt.client as mqtt
 
-from motey.repositories.nodes_repository import NodesRepository
-from motey.utils.logger import Logger
-
 
 class MQTTServer(object):
     """
@@ -20,7 +17,7 @@ class MQTTServer(object):
         'nodes_request': 'motey/v1/nodes_request',
     }
 
-    def __init__(self, host='127.0.0.1', port=1883, username=None, password=None, keepalive=60):
+    def __init__(self, logger, nodes_repository, host='127.0.0.1', port=1883, username=None, password=None, keepalive=60):
         """
         Constructor ot the MQTT server.
 
@@ -37,8 +34,8 @@ class MQTTServer(object):
         self.keepalive = keepalive
         self.username = username
         self.password = password
-        self.logger = Logger.Instance()
-        self.nodes_repository = NodesRepository.Instance()
+        self.logger = logger
+        self.nodes_repository = nodes_repository
         self.client = mqtt.Client()
         if username and password:
             self.client.username_pw_set(username=self.username, password=self.password)
@@ -123,7 +120,7 @@ class MQTTServer(object):
         """
         Define the connect callback implementation.
         If the client is connected to the MQTT broker, the nodes will be registered and the ``_after_connect`` method
-         will be executed.
+        will be executed.
 
         flags is a dict that contains response flags from the broker:
             flags['session present'] - this flag is useful for clients that are

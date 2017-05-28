@@ -1,15 +1,6 @@
-import os
-
-from tinydb import TinyDB, Query
-
-from motey.configuration.configreader import config
-from motey.decorators.singleton import Singleton
-
-
 class BaseRepository(object):
     """
     Base repository to wrapp database handling.
-    This class is implemented as a Singleton and should be called via ``ServiceRepository.Instance()``.
     """
 
     def __init__(self):

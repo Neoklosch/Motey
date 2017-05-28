@@ -2,29 +2,29 @@ class VALInstanceStatus(object):
     """
     Model which represents the status of an VAL instance.
     Possible status values are:
-        * name
-        * image_name
-        * created_at
-        * status
-        * ip
-        * used_memory
-        * used_cpu
-        * network_tx_bytes
-        * network_rx_bytes
+     * name
+     * image_name
+     * created_at
+     * status
+     * ip
+     * used_memory
+     * used_cpu
+     * network_tx_bytes
+     * network_rx_bytes
     """
     def __init__(self):
         """
         Constructor of the class.
         Possible status values are:
-            * name
-            * image_name
-            * created_at
-            * status
-            * ip
-            * used_memory
-            * used_cpu
-            * network_tx_bytes
-            * network_rx_bytes
+         * name
+         * image_name
+         * created_at
+         * status
+         * ip
+         * used_memory
+         * used_cpu
+         * network_tx_bytes
+         * network_rx_bytes
         """
         self.name = None
         self.image_name = None

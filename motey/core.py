@@ -5,12 +5,7 @@ from daemonize import Daemonize
 from motey.communication.apiserver import APIServer
 from motey.communication.mqttserver import MQTTServer
 from motey.configuration.configreader import config
-from motey.repositories.labeling_repository import LabelingRepository
-from motey.labelingengine.labelingengine import LabelingEngine
-from motey.orchestrator.inter_node_orchestrator import InterNodeOrchestrator
 from motey.utils import network_utils
-from motey.utils.logger import Logger
-from motey.val.valmanager import VALManager
 
 
 class Core(object):
@@ -23,7 +18,8 @@ class Core(object):
     After it is started via self.start() it will be executed until self.stop() is executed.
     """
 
-    def __init__(self, as_daemon=True):
+    def __init__(self, logger, labeling_repository, valmanager, nodes_repository, inter_node_orchestrator,
+                 hardware_event_engine, as_daemon=True):
         """
         Constructor of the core.
 
@@ -34,14 +30,17 @@ class Core(object):
         self.stopped = False
         self.daemon = None
 
-        self.logger = Logger.Instance()
+        self.logger = logger
         self.logger.info("App started")
-        self.webserver = APIServer(host=config['WEBSERVER']['ip'], port=config['WEBSERVER']['port'])
-        self.mqttserver = MQTTServer(host=config['MQTT']['ip'], port=int(config['MQTT']['port']), username=config['MQTT']['username'], password=config['MQTT']['password'], keepalive=int(config['MQTT']['keepalive']))
-        self.labeling_engine = LabelingRepository.Instance()
-        self.valmanager = VALManager.Instance()
-        self.inter_node_orchestrator = InterNodeOrchestrator.Instance()
-        self.hardware_event_engine = LabelingEngine.Instance()
+        self.webserver = APIServer(logger=logger, host=config['WEBSERVER']['ip'], port=config['WEBSERVER']['port'])
+        self.mqttserver = MQTTServer(logger=logger, nodes_repository=nodes_repository, host=config['MQTT']['ip'],
+                                     port=int(config['MQTT']['port']),
+                                     username=config['MQTT']['username'], password=config['MQTT']['password'],
+                                     keepalive=int(config['MQTT']['keepalive']))
+        self.labeling_repository = labeling_repository
+        self.valmanager = valmanager
+        self.inter_node_orchestrator = inter_node_orchestrator
+        self.hardware_event_engine = hardware_event_engine
         self.mqttserver.after_connect = self.after_connect_callback
         self.mqttserver.nodes_request_callback = self.__nodes_request_callback
 

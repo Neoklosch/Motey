@@ -3,15 +3,12 @@ import os
 from tinydb import TinyDB, Query
 
 from motey.configuration.configreader import config
-from motey.decorators.singleton import Singleton
 from motey.repositories.base_repository import BaseRepository
 
 
-@Singleton
 class LabelingRepository(BaseRepository):
     """
     Repository for all label specific actions.
-    This class is implemented as a Singleton and should be called via LabelingRepository.Instance().
     """
 
     def __init__(self):

@@ -6,16 +6,15 @@ from motey.communication.api_routes.blueprintendpoint import BlueprintEndpoint
 from motey.communication.api_routes.capabilities import Capabilities
 from motey.communication.api_routes.nodestatus import NodeStatus
 from motey.utils.heartbeat import register_callback, register_heartbeat
-from motey.utils.logger import Logger
 
 
-class APIServer():
+class APIServer(object):
     """
     Starts a Flask webserver which acts as an REST API to control the Motey service.
     The webserver runs in a separate thread and will not block the main thread.
     """
 
-    def __init__(self, host='127.0.0.1', port=5023):
+    def __init__(self, logger, host='127.0.0.1', port=5023):
         """
         Constructor of the webserver.
 
@@ -26,7 +25,7 @@ class APIServer():
         """
         self.host = host
         self.port = port
-        self.logger = Logger.Instance()
+        self.logger = logger
         self.webserver = Flask(__name__)
         self.configure_url()
         self.run_server_thread = threading.Thread(target=self.run_server, args=())

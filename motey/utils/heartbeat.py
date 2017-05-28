@@ -14,7 +14,7 @@ def check_heartbeat():
     Will be executed if the url is requested.
 
     :return: 204 - No Content, if the node is up and running and all the registered callbacks requirements are
-    fulfilled, otherwise 400 - Bad Request.
+             fulfilled, otherwise 400 - Bad Request.
     """
     if not all(callback() for callback in callbacks):
         return abort(400)

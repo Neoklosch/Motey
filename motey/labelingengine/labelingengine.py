@@ -2,22 +2,16 @@ import json
 import threading
 
 import zmq
-
-from motey.configuration.configreader import config
-from motey.repositories.labeling_repository import LabelingRepository
-from motey.decorators.singleton import Singleton
-from motey.utils.logger import Logger
-
 from jsonschema import validate, ValidationError
 
+from motey.configuration.configreader import config
 
-@Singleton
+
 class LabelingEngine(object):
     """
     This module provides a connection endpoint for the hardware layer.
     New labels can be added via a ZeroMQ tcp publisher.
     The port can be configured in the config.ini file.
-    This class is implemented as a Singleton and should be called via HardwareEventEngine.Instance().
     """
 
     # the socket of the subscriber
@@ -40,13 +34,13 @@ class LabelingEngine(object):
         "required": ["label", "label_type", "action"]
     }
 
-    def __init__(self):
+    def __init__(self, logger, labeling_repository):
         """
         Constructor the the labeling engine.
         """
 
-        self.logger = Logger.Instance()
-        self.labeling_repository = LabelingRepository.Instance()
+        self.logger = logger
+        self.labeling_repository = labeling_repository
         self.context = zmq.Context()
         self.subscriber = self.context.socket(zmq.SUB)
         self.receiver_thread = threading.Thread(target=self.__run_receiver_thread, args=())

@@ -5,14 +5,11 @@ import sys
 from logbook import Logger as LogbookLogger, FileHandler, StreamHandler
 
 from motey.configuration.configreader import config
-from motey.decorators.singleton import Singleton
 
 
-@Singleton
 class Logger(LogbookLogger):
     """
     Wrapper to configure the LogbookLogger.
-    Is implemented as a Singleton.
     """
 
     def __init__(self):
