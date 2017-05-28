@@ -42,7 +42,8 @@ class Core(object):
         self.valmanager = VALManager.Instance()
         self.inter_node_orchestrator = InterNodeOrchestrator.Instance()
         self.hardware_event_engine = LabelingEngine.Instance()
-        self.mqttserver.after_connect = self.__handle_after_connect
+        self.mqttserver.after_connect = self.after_connect_callback
+        self.mqttserver.nodes_request_callback = self.__nodes_request_callback
 
     def start(self):
         """
@@ -79,11 +80,22 @@ class Core(object):
         self.stop()
         self.start()
 
-    def __handle_after_connect(self):
+    def after_connect_callback(self):
         """
         Will be called after the MQTTServer has established a connection to the broker.
+        Send out a request to fetch the ip from all existing nodes.
         """
+        self.mqttserver.publish_node_request(network_utils.get_own_ip())
 
+    def __nodes_request_callback(self, client, userdata, message):
+        """
+        Will be called if a request to fetch the ip from all existing nodes comes in.
+        Send out the ip of the node.
+
+        :param client:     the client instance for this callback
+        :param userdata:   the private user data as set in Client() or userdata_set()
+        :param message:    the data which was send
+        """
         self.mqttserver.publish_new_node(network_utils.get_own_ip())
 
     def stop(self):

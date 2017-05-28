@@ -16,7 +16,8 @@ class MQTTServer(object):
     ROUTES = {
         'register_node': 'motey/v1/register',
         'remove_node':   'motey/v1/remove',
-        'receive_nodes': 'motey/v1/receive_nodes'
+        'receive_nodes': 'motey/v1/receive_nodes',
+        'nodes_request': 'motey/v1/nodes_request',
     }
 
     def __init__(self, host='127.0.0.1', port=1883, username=None, password=None, keepalive=60):
@@ -45,6 +46,7 @@ class MQTTServer(object):
         self.register_routes()
         self.client.on_disconnect = self.handle_on_disconnect
         self._after_connect = None
+        self.nodes_request_callback = None
         self.run_server_thread = threading.Thread(target=self.run_server, args=())
         self.run_server_thread.daemon = True
 
@@ -61,6 +63,7 @@ class MQTTServer(object):
         Adds all the configured MQTT endpoints.
         """
         self.client.message_callback_add(sub=self.ROUTES['receive_nodes'], callback=self.handle_receive_nodes)
+        self.client.message_callback_add(sub=self.ROUTES['nodes_request'], callback=self.handle_nodes_request)
 
     def start(self):
         """
@@ -96,6 +99,15 @@ class MQTTServer(object):
         """
         if ip:
             self.client.publish(topic=self.ROUTES['register_node'], payload=ip)
+
+    def publish_node_request(self, ip=None):
+        """
+        Publish the request to fetch the ip from all existing nodes.
+
+        :param ip: the own ip to let the other nodes know where the request cames from.
+        """
+        if ip:
+            self.client.publish(topic=self.ROUTES['nodes_request'], payload=ip)
 
     def remove_node(self, ip=None):
         """
@@ -139,6 +151,7 @@ class MQTTServer(object):
             self.logger.info("Connection to the broker failed")
         else:
             client.subscribe(topic=self.ROUTES['receive_nodes'])
+            client.subscribe(topic=self.ROUTES['nodes_request'])
         if self._after_connect:
             self._after_connect()
 
@@ -153,6 +166,18 @@ class MQTTServer(object):
         """
         new_node = message.payload.decode('utf-8')
         self.nodes_repository.add(ip=new_node)
+
+    def handle_nodes_request(self, client, userdata, message):
+        """
+        Define the node request callback implementation.
+        Will execute the callback of the request to fetch the ip from all existing nodes.
+
+        :param client:     the client instance for this callback
+        :param userdata:   the private user data as set in Client() or userdata_set()
+        :param message:    the data which was send
+        """
+        if self.nodes_request_callback:
+            self.nodes_request_callback(client, userdata, message)
 
     def handle_on_disconnect(self, client, userdata, resultcode):
         """
