@@ -9,8 +9,18 @@ class Service(object):
         STOPPING = 3
         TERMINATED = 4
 
-    def __init__(self, name, images, id=None, state=None):
-        self.id = id if id else uuid.uuid4().hex
-        self.state = state if state else self.ServiceState.INITIAL
+    class ServiceAction(object):
+        ADD = 'add'
+        REMOVE = 'remove'
+
+    class ServiceType(object):
+        MASTER = 'master'
+        SLAVE = 'slave'
+
+    def __init__(self, name, images, id=uuid.uuid4().hex, state=ServiceState.INITIAL, action=ServiceAction.ADD, type=ServiceType.MASTER):
+        self.id = id
+        self.state = state
+        self.action = action
         self.name = name
         self.images = images
+        self.type = type

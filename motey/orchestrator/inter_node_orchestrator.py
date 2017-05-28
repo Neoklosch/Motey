@@ -7,6 +7,7 @@ from motey.communication.api_routes.blueprintendpoint import BlueprintEndpoint
 from motey.decorators.singleton import Singleton
 from motey.models.image import Image
 from motey.models.service import Service
+from motey.repositories.labeling_repository import LabelingRepository
 from motey.repositories.service_repository import ServiceRepository
 from motey.utils.logger import Logger
 from motey.val.valmanager import VALManager
@@ -29,6 +30,7 @@ class InterNodeOrchestrator(object):
         self.logger = Logger.Instance()
         self.valmanager = VALManager.Instance()
         self.service_repository = ServiceRepository.Instance()
+        self.labeling_repository = LabelingRepository.Instance()
         self.blueprint_stream = BlueprintEndpoint.yaml_post_stream.subscribe(self.handle_blueprint)
 
     def parse_local_blueprint_file(self, file_path):
@@ -40,19 +42,44 @@ class InterNodeOrchestrator(object):
         with open(file_path, 'r') as stream:
             self.handle_blueprint(stream)
 
-    def handle_images(self, service):
+    def instantiate_service(self, service):
         """
-        Instantiate a list of images.
+        Instantiate a service.
 
-        :param images: a list of images.
+        :param service: the service to be used.
         """
-        self.service_repository.add(service)
-        service.state = Service.ServiceState.INSTANTIATING
-        self.service_repository.update(service)
-        for image in service.images:
-            self.valmanager.instantiate(image)
-        service.state = Service.ServiceState.RUNNING
-        self.service_repository.update(service)
+        if service.action == Service.ServiceAction.ADD:
+            self.service_repository.add(service)
+            service.state = Service.ServiceState.INSTANTIATING
+            self.service_repository.update(service)
+            for image in service.images:
+                if 'capabilities' not in image:
+                    continue
+                for capability in image.capabilities:
+                    if not self.labeling_repository.has(label=capability):
+                        # TODO: find node with capability
+                        image.node = 'other'
+            self.valmanager.instantiate(service.images)
+            service.state = Service.ServiceState.RUNNING
+            self.service_repository.update(service)
+
+    def terminate_instances(self, service):
+        """
+        Terminates a service.
+        
+        :param service: the service to be used. 
+        """
+        if service.action == Service.ServiceAction.REMOVE:
+            if self.service_repository.has(service_id=service.id):
+                service.state = Service.ServiceState.STOPPING
+                self.service_repository.update(service)
+                for image in service.images:
+                    # TODO: pass in instances here
+                    self.valmanager.terminate([])
+                service.state = Service.ServiceState.TERMINATED
+                self.service_repository.update(service)
+            else:
+                self.logger.error('Service `%s` with the id `%s` is not available' % (service.name, service.id))
 
     def handle_blueprint(self, blueprint_data):
         """
@@ -66,9 +93,19 @@ class InterNodeOrchestrator(object):
             loaded_data = yaml.load(blueprint_data)
             validate(loaded_data, blueprint_schema)
             service = self.__translate_to_service(loaded_data)
-            worker_thread = threading.Thread(target=self.handle_images, args=(service,))
-            worker_thread.daemon = True
-            worker_thread.start()
+            worker_thread = None
+            if service.action == Service.ServiceAction.ADD:
+                worker_thread = threading.Thread(target=self.instantiate_service, args=(service,))
+            elif service.action == Service.ServiceAction.REMOVE:
+                worker_thread = threading.Thread(target=self.terminate_instances, args=(service,))
+            else:
+                self.logger.error(
+                    'Action `%s` for service `%s` not a valid action type' % (service.action, service.name))
+
+            if worker_thread:
+                worker_thread.daemon = True
+                worker_thread.start()
+
         except (yaml.YAMLError, ValidationError):
             self.logger.error('YAML file could not be parsed: %s' % blueprint_data)
 

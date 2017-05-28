@@ -56,11 +56,13 @@ class VALManager(object):
           image_name = 'alpine'
           image_name = ['alpine', 'busybox',]
           image_name = [{'image_name': 'alpine', 'parameters': {'ports': {'80/tcp': 8080}, 'name': 'motey_alpine'}},]
-        :param plugin_type: Will only be executed with the given plugin. Could be a str or a list. Default None.
+        :param plugin_type: Will only be executed with the given plugin. Must be a str. Default None.
         """
 
         for plugin in self.plugin_manager.getAllPlugins():
-            print(image_name)
+            if plugin_type and not plugin.plugin_object.get_plugin_type() == plugin_type:
+                continue
+
             if isinstance(image_name, str):
                 plugin.plugin_object.start_instance(image_name)
             elif isinstance(image_name, list):
@@ -70,6 +72,17 @@ class VALManager(object):
                     elif isinstance(single_image, dict):
                         parameters = single_image['parameters'] if 'parameters' in single_image else {}
                         plugin.plugin_object.start_instance(single_image['image_name'], parameters)
+
+    def terminate(self, instance_name, plugin_type=None):
+        for plugin in self.plugin_manager.getAllPlugins():
+            if plugin_type and not plugin.plugin_object.get_plugin_type() == plugin_type:
+                continue
+
+            if isinstance(instance_name, str):
+                plugin.plugin_object.stop_instance(instance_name)
+            elif isinstance(instance_name, list):
+                for single_instance in instance_name:
+                    plugin.plugin_object.stop_instance(single_instance)
 
     def close(self):
         """
