@@ -7,7 +7,6 @@ SPHINXBUILD   = python3 -msphinx
 SPHINXPROJ    = Motey
 SOURCEDIR     = source
 BUILDDIR      = build
-GH_PAGES_SOURCES = source code libuv Makefile
 
 # Put it first so that "make" without argument is like "make help".
 help:

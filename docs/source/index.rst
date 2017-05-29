@@ -16,7 +16,6 @@ Welcome to Motey's documentation!
    cli
    communication
    communication_api_routes
-   decorators
    labelingengine
    models
    orchestrator

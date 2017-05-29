@@ -40,15 +40,14 @@ class VALManager(object):
         Instantiate an image.
 
         :param image_name: The image_name can be type of str or list. The list can contain again str or a dict.
-         If the image_name is a str, the instance with this specific name will be instantiated, if it a list with str in
-         it, all the images in the list will be instanciated and if it is a list with a dict in it, each dict needs to
-         have a key ``image_name```in it and an optional key ``parameters```which can be again a dict with different
-         execution parameters.
-
-         samples:
-          image_name = 'alpine'
-          image_name = ['alpine', 'busybox',]
-          image_name = [{'image_name': 'alpine', 'parameters': {'ports': {'80/tcp': 8080}, 'name': 'motey_alpine'}},]
+                           If the image_name is a str, the instance with this specific name will be instantiated,
+                           if it a list with str in it, all the images in the list will be instantiated and
+                           if it is a list with a dict in it, each dict needs to have a key ``image_name`` in it and an
+                           optional key ``parameters`` which can be again a dict with different execution parameters.
+                           samples:
+                            * image_name = 'alpine'
+                            * image_name = ['alpine', 'busybox',]
+                            * image_name = [{'image_name': 'alpine', 'parameters': {'ports': {'80/tcp': 8080}, 'name': 'motey_alpine'}},]
         :param plugin_type: Will only be executed with the given plugin. Must be a str. Default None.
         """
 
