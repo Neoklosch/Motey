@@ -1,0 +1,322 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>motey.val.valmanager &mdash; Motey 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="Motey 0.0.1 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Motey
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../core.html">Documentation Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cli.html">Documentation cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../communication.html">Documentation Communication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../communication_api_routes.html">Documentation Communication - API Routes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../labelingengine.html">Documentation Labeling Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models.html">Documentation Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../orchestrator.html">Documentation Orchestrator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../repositories.html">Documentation Repositories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Documentation Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../val.html">Documentation Virtualization Abstraction Layer (VAL)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../val_plugins.html">Documentation Virtualization Abstraction Layer (VAL) Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../validation.html">Documentation Validation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Motey</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>motey.val.valmanager</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for motey.val.valmanager</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">rx.subjects</span> <span class="k">import</span> <span class="n">Subject</span>
+
+
+<div class="viewcode-block" id="VALManager"><a class="viewcode-back" href="../../../val.html#motey.val.valmanager.VALManager">[docs]</a><span class="k">class</span> <span class="nc">VALManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Manger for all the virtual abstraction layer plugins.</span>
+<span class="sd">    Loads the plugins and wrapps the commands.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">labeling_engine</span><span class="p">,</span> <span class="n">plugin_manager</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor of the VALManger.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugin_stream</span> <span class="o">=</span> <span class="n">Subject</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logger</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labeling_engine</span> <span class="o">=</span> <span class="n">labeling_engine</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugin_manager</span> <span class="o">=</span> <span class="n">plugin_manager</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_plugins</span><span class="p">()</span>
+
+<div class="viewcode-block" id="VALManager.register_plugins"><a class="viewcode-back" href="../../../val.html#motey.val.valmanager.VALManager.register_plugins">[docs]</a>    <span class="k">def</span> <span class="nf">register_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Register all the available plugins.</span>
+<span class="sd">        A plugin has to be located under motey/val/plugins.</span>
+<span class="sd">        After all the available plugins are loaded, the ``activate`` method of the plugin will be executed and a label</span>
+<span class="sd">        with the related plugin type will be added to the labeling engine.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">labeling_engine</span><span class="o">.</span><span class="n">remove_all_from_type</span><span class="p">(</span><span class="s1">&#39;plugin&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugin_manager</span><span class="o">.</span><span class="n">setPluginPlaces</span><span class="p">([</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;motey/val/plugins&quot;</span><span class="p">)])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugin_manager</span><span class="o">.</span><span class="n">collectPlugins</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin_manager</span><span class="o">.</span><span class="n">getAllPlugins</span><span class="p">():</span>
+            <span class="n">plugin</span><span class="o">.</span><span class="n">plugin_object</span><span class="o">.</span><span class="n">activate</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">labeling_engine</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">plugin</span><span class="o">.</span><span class="n">plugin_object</span><span class="o">.</span><span class="n">get_plugin_type</span><span class="p">(),</span> <span class="s1">&#39;plugin&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VALManager.instantiate"><a class="viewcode-back" href="../../../val.html#motey.val.valmanager.VALManager.instantiate">[docs]</a>    <span class="k">def</span> <span class="nf">instantiate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_name</span><span class="p">,</span> <span class="n">plugin_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Instantiate an image.</span>
+
+<span class="sd">        :param image_name: The image_name can be type of str or list. The list can contain again str or a dict.</span>
+<span class="sd">                           If the image_name is a str, the instance with this specific name will be instantiated,</span>
+<span class="sd">                           if it a list with str in it, all the images in the list will be instantiated and</span>
+<span class="sd">                           if it is a list with a dict in it, each dict needs to have a key ``image_name`` in it and an</span>
+<span class="sd">                           optional key ``parameters`` which can be again a dict with different execution parameters.</span>
+<span class="sd">                           samples:</span>
+<span class="sd">                            * image_name = &#39;alpine&#39;</span>
+<span class="sd">                            * image_name = [&#39;alpine&#39;, &#39;busybox&#39;,]</span>
+<span class="sd">                            * image_name = [{&#39;image_name&#39;: &#39;alpine&#39;, &#39;parameters&#39;: {&#39;ports&#39;: {&#39;80/tcp&#39;: 8080}, &#39;name&#39;: &#39;motey_alpine&#39;}},]</span>
+<span class="sd">        :param plugin_type: Will only be executed with the given plugin. Must be a str. Default None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin_manager</span><span class="o">.</span><span class="n">getAllPlugins</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">plugin_type</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">plugin</span><span class="o">.</span><span class="n">plugin_object</span><span class="o">.</span><span class="n">get_plugin_type</span><span class="p">()</span> <span class="o">==</span> <span class="n">plugin_type</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">image_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">plugin</span><span class="o">.</span><span class="n">plugin_object</span><span class="o">.</span><span class="n">start_instance</span><span class="p">(</span><span class="n">image_name</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">image_name</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">single_image</span> <span class="ow">in</span> <span class="n">image_name</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">single_image</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                        <span class="n">plugin</span><span class="o">.</span><span class="n">plugin_object</span><span class="o">.</span><span class="n">start_instance</span><span class="p">(</span><span class="n">single_image</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">single_image</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                        <span class="n">parameters</span> <span class="o">=</span> <span class="n">single_image</span><span class="p">[</span><span class="s1">&#39;parameters&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;parameters&#39;</span> <span class="ow">in</span> <span class="n">single_image</span> <span class="k">else</span> <span class="p">{}</span>
+                        <span class="n">plugin</span><span class="o">.</span><span class="n">plugin_object</span><span class="o">.</span><span class="n">start_instance</span><span class="p">(</span><span class="n">single_image</span><span class="p">[</span><span class="s1">&#39;image_name&#39;</span><span class="p">],</span> <span class="n">parameters</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">terminate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance_name</span><span class="p">,</span> <span class="n">plugin_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin_manager</span><span class="o">.</span><span class="n">getAllPlugins</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">plugin_type</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">plugin</span><span class="o">.</span><span class="n">plugin_object</span><span class="o">.</span><span class="n">get_plugin_type</span><span class="p">()</span> <span class="o">==</span> <span class="n">plugin_type</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">instance_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">plugin</span><span class="o">.</span><span class="n">plugin_object</span><span class="o">.</span><span class="n">stop_instance</span><span class="p">(</span><span class="n">instance_name</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">instance_name</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">single_instance</span> <span class="ow">in</span> <span class="n">instance_name</span><span class="p">:</span>
+                    <span class="n">plugin</span><span class="o">.</span><span class="n">plugin_object</span><span class="o">.</span><span class="n">stop_instance</span><span class="p">(</span><span class="n">single_instance</span><span class="p">)</span>
+
+<div class="viewcode-block" id="VALManager.close"><a class="viewcode-back" href="../../../val.html#motey.val.valmanager.VALManager.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Will clean up the VALManager.</span>
+<span class="sd">        At first it will remove the label from the labeling engine and afterwards all the ``deactivate`` method for</span>
+<span class="sd">        each plugin will be executed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin_manager</span><span class="o">.</span><span class="n">getAllPlugins</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">labeling_engine</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">plugin</span><span class="o">.</span><span class="n">plugin_object</span><span class="o">.</span><span class="n">get_plugin_type</span><span class="p">())</span>
+            <span class="n">plugin</span><span class="o">.</span><span class="n">plugin_object</span><span class="o">.</span><span class="n">deactivate</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Markus Paeschke.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

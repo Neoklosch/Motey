@@ -1,0 +1,438 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>motey.val.plugins.dockerVAL &mdash; Motey 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../../search.html"/>
+    <link rel="top" title="Motey 0.0.1 documentation" href="../../../../index.html"/>
+        <link rel="up" title="Module code" href="../../../index.html"/> 
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> Motey
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../core.html">Documentation Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cli.html">Documentation cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../communication.html">Documentation Communication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../communication_api_routes.html">Documentation Communication - API Routes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../labelingengine.html">Documentation Labeling Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../models.html">Documentation Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../orchestrator.html">Documentation Orchestrator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../repositories.html">Documentation Repositories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../utils.html">Documentation Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../val.html">Documentation Virtualization Abstraction Layer (VAL)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../val_plugins.html">Documentation Virtualization Abstraction Layer (VAL) Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../validation.html">Documentation Validation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Motey</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>motey.val.plugins.dockerVAL</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for motey.val.plugins.dockerVAL</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">docker</span>
+<span class="kn">from</span> <span class="nn">docker.errors</span> <span class="k">import</span> <span class="n">APIError</span><span class="p">,</span> <span class="n">NotFound</span><span class="p">,</span> <span class="n">ContainerError</span><span class="p">,</span> <span class="n">ImageNotFound</span>
+
+<span class="kn">import</span> <span class="nn">motey.val.plugins.abstractVAL</span> <span class="k">as</span> <span class="nn">abstractVAL</span>
+<span class="kn">from</span> <span class="nn">motey.models.systemstatus</span> <span class="k">import</span> <span class="n">SystemStatus</span>
+<span class="kn">from</span> <span class="nn">motey.models.valinstancestatus</span> <span class="k">import</span> <span class="n">VALInstanceStatus</span>
+
+
+<div class="viewcode-block" id="DockerVAL"><a class="viewcode-back" href="../../../../val_plugins.html#motey.val.plugins.dockerVAL.DockerVAL">[docs]</a><span class="k">class</span> <span class="nc">DockerVAL</span><span class="p">(</span><span class="n">abstractVAL</span><span class="o">.</span><span class="n">AbstractVAL</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Concrete implementation of the docker virtualization abstraction layer (VAL).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor of the DockerVAL.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+<div class="viewcode-block" id="DockerVAL.get_docker_client"><a class="viewcode-back" href="../../../../val_plugins.html#motey.val.plugins.dockerVAL.DockerVAL.get_docker_client">[docs]</a>    <span class="k">def</span> <span class="nf">get_docker_client</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Instantiates the docker client.</span>
+
+<span class="sd">        :return: the docker client</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">docker</span><span class="o">.</span><span class="n">DockerClient</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s1">&#39;unix://var/run/docker.sock&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DockerVAL.get_plugin_type"><a class="viewcode-back" href="../../../../val_plugins.html#motey.val.plugins.dockerVAL.DockerVAL.get_plugin_type">[docs]</a>    <span class="k">def</span> <span class="nf">get_plugin_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the specific plugin type.</span>
+
+<span class="sd">        :return: the specific plugin type.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;docker&#39;</span></div>
+
+<div class="viewcode-block" id="DockerVAL.has_image"><a class="viewcode-back" href="../../../../val_plugins.html#motey.val.plugins.dockerVAL.DockerVAL.has_image">[docs]</a>    <span class="k">def</span> <span class="nf">has_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if an specific images exists.</span>
+
+<span class="sd">        :param image_name: the name of the image to search for. Can be the ``image.id`` or the ``image.short_id``.</span>
+<span class="sd">        :return: True if the image exist, otherwise False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_docker_client</span><span class="p">()</span>
+        <span class="n">images</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">images</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">APIError</span> <span class="k">as</span> <span class="n">apie</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">list</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">image_name</span> <span class="ow">or</span> <span class="n">image</span><span class="o">.</span><span class="n">short_id</span> <span class="o">==</span> <span class="n">image_name</span> <span class="ow">or</span> <span class="n">image</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="s1">&#39;sha256:</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">image_name</span> <span class="ow">or</span> <span class="n">image</span><span class="o">.</span><span class="n">short_id</span> <span class="o">==</span> <span class="s1">&#39;sha256:</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">image_name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="DockerVAL.load_image"><a class="viewcode-back" href="../../../../val_plugins.html#motey.val.plugins.dockerVAL.DockerVAL.load_image">[docs]</a>    <span class="k">def</span> <span class="nf">load_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load the image to the device, but does not start the image himself.</span>
+<span class="sd">        It is a wrapper around the ``docker.images.pull`` command.</span>
+
+<span class="sd">        :param image_name: the image to be loaded.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_docker_client</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">image_name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">APIError</span> <span class="k">as</span> <span class="n">apie</span><span class="p">:</span>
+            <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="DockerVAL.delete_image"><a class="viewcode-back" href="../../../../val_plugins.html#motey.val.plugins.dockerVAL.DockerVAL.delete_image">[docs]</a>    <span class="k">def</span> <span class="nf">delete_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete an image, but not the instance of it.</span>
+<span class="sd">        It is a wrapper around the ``docker.images.remove`` command.</span>
+
+<span class="sd">        :param image_name: the image to be deleted.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_docker_client</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">image_name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">ContainerError</span> <span class="k">as</span> <span class="n">ce</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">except</span> <span class="n">ImageNotFound</span> <span class="k">as</span> <span class="n">inf</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">except</span> <span class="n">APIError</span> <span class="k">as</span> <span class="n">apie</span><span class="p">:</span>
+            <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="DockerVAL.create_instance"><a class="viewcode-back" href="../../../../val_plugins.html#motey.val.plugins.dockerVAL.DockerVAL.create_instance">[docs]</a>    <span class="k">def</span> <span class="nf">create_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_name</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create and start an instance of an image.</span>
+<span class="sd">        It is a wrapper around the ``docker.containers.create`` command.</span>
+
+<span class="sd">        :param image_name: the name of the image which should be created</span>
+<span class="sd">        :param parameters: execution parameters. Same as in the ``docker.create_container``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_docker_client</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">containers</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">image_name</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">ContainerError</span> <span class="k">as</span> <span class="n">ce</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;create docker instance &gt; container could not be created&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">ImageNotFound</span> <span class="k">as</span> <span class="n">inf</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;create docker instance &gt; image not found&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">APIError</span> <span class="k">as</span> <span class="n">apie</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;create docker instance &gt; api error&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DockerVAL.start_instance"><a class="viewcode-back" href="../../../../val_plugins.html#motey.val.plugins.dockerVAL.DockerVAL.start_instance">[docs]</a>    <span class="k">def</span> <span class="nf">start_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance_name</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Start an existing image instance.</span>
+<span class="sd">        It is a wrapper around the ``docker.containers.run`` command.</span>
+
+<span class="sd">        :param instance_name: the name of the existing instance</span>
+<span class="sd">        :param parameters: execution parameters. Same as in the ``docker.create_container``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_docker_client</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">containers</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">instance_name</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">ContainerError</span> <span class="k">as</span> <span class="n">ce</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;start docker instance &gt; container could not be created&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">ImageNotFound</span> <span class="k">as</span> <span class="n">inf</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;start docker instance &gt; image not found&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">APIError</span> <span class="k">as</span> <span class="n">apie</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;start docker instance &gt; api error&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DockerVAL.stop_instance"><a class="viewcode-back" href="../../../../val_plugins.html#motey.val.plugins.dockerVAL.DockerVAL.stop_instance">[docs]</a>    <span class="k">def</span> <span class="nf">stop_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stop an existing image instance.</span>
+<span class="sd">        It is a wrapper around the ``docker.containers.stop`` command.</span>
+
+<span class="sd">        :param container_name: the name of the container to be stopped</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_docker_client</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">containers</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="n">container_name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">ContainerError</span> <span class="k">as</span> <span class="n">ce</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">except</span> <span class="n">ImageNotFound</span> <span class="k">as</span> <span class="n">inf</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">except</span> <span class="n">APIError</span> <span class="k">as</span> <span class="n">apie</span><span class="p">:</span>
+            <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="DockerVAL.has_instance"><a class="viewcode-back" href="../../../../val_plugins.html#motey.val.plugins.dockerVAL.DockerVAL.has_instance">[docs]</a>    <span class="k">def</span> <span class="nf">has_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if an image instance exists.</span>
+<span class="sd">        It is a wrapper around the ``docker.containers.get`` command.</span>
+
+<span class="sd">        :param container_name: the name of an existing instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_docker_client</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">containers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">container_name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">NotFound</span><span class="p">,</span> <span class="n">APIError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="DockerVAL.get_all_running_instances"><a class="viewcode-back" href="../../../../val_plugins.html#motey.val.plugins.dockerVAL.DockerVAL.get_all_running_instances">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_running_instances</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list with all running instance in this VAL.</span>
+<span class="sd">        It is a wrapper around the ``docker.containers.list(filters={&#39;status&#39;: &#39;running&#39;})`` command.</span>
+
+<span class="sd">        :return: list of instances</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_docker_client</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">client</span><span class="o">.</span><span class="n">containers</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;running&#39;</span><span class="p">})</span></div>
+
+<div class="viewcode-block" id="DockerVAL.get_stats"><a class="viewcode-back" href="../../../../val_plugins.html#motey.val.plugins.dockerVAL.DockerVAL.get_stats">[docs]</a>    <span class="k">def</span> <span class="nf">get_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns object which is type of ``Status``. Represents the status of a container.</span>
+
+<span class="sd">        :param container_name: the name of the container</span>
+<span class="sd">        :return: object from type ``Status``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_docker_client</span><span class="p">()</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="n">VALInstanceStatus</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">container</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">containers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">container_name</span><span class="p">)</span>
+            <span class="n">service_stats</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">stats</span><span class="p">(</span><span class="n">decode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">image_name</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;Name&#39;</span><span class="p">]</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;Image&#39;</span><span class="p">]</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;State&#39;</span><span class="p">][</span><span class="s1">&#39;Status&#39;</span><span class="p">]</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">created_at</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;Created&#39;</span><span class="p">]</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">ip</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;NetworkSettings&#39;</span><span class="p">][</span><span class="s1">&#39;IPAddress&#39;</span><span class="p">]</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">used_memory</span> <span class="o">=</span> <span class="n">service_stats</span><span class="p">[</span><span class="s1">&#39;memory_stats&#39;</span><span class="p">][</span><span class="s1">&#39;usage&#39;</span><span class="p">]</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">used_cpu</span> <span class="o">=</span> <span class="n">service_stats</span><span class="p">[</span><span class="s1">&#39;cpu_stats&#39;</span><span class="p">][</span><span class="s1">&#39;cpu_usage&#39;</span><span class="p">][</span><span class="s1">&#39;total_usage&#39;</span><span class="p">]</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">network_tx_bytes</span> <span class="o">=</span> <span class="n">service_stats</span><span class="p">[</span><span class="s1">&#39;networks&#39;</span><span class="p">][</span><span class="s1">&#39;eth0&#39;</span><span class="p">][</span><span class="s1">&#39;tx_bytes&#39;</span><span class="p">]</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">network_rx_bytes</span> <span class="o">=</span> <span class="n">service_stats</span><span class="p">[</span><span class="s1">&#39;networks&#39;</span><span class="p">][</span><span class="s1">&#39;eth0&#39;</span><span class="p">][</span><span class="s1">&#39;rx_bytes&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">NotFound</span><span class="p">,</span> <span class="n">APIError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">status</span></div>
+
+<div class="viewcode-block" id="DockerVAL.get_all_instances_stats"><a class="viewcode-back" href="../../../../val_plugins.html#motey.val.plugins.dockerVAL.DockerVAL.get_all_instances_stats">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_instances_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns object which is type of ``Status``. Represents the status of all docker container.</span>
+
+<span class="sd">        :return: object from type ``Status``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_docker_client</span><span class="p">()</span>
+        <span class="n">system_status</span> <span class="o">=</span> <span class="n">SystemStatus</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">instance</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_running_instances</span><span class="p">():</span>
+            <span class="n">container</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">containers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="n">service_stats</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">stats</span><span class="p">(</span><span class="n">decode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">system_status</span><span class="o">.</span><span class="n">used_memory</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">service_stats</span><span class="p">[</span><span class="s1">&#39;memory_stats&#39;</span><span class="p">][</span><span class="s1">&#39;usage&#39;</span><span class="p">])</span>
+            <span class="n">system_status</span><span class="o">.</span><span class="n">used_cpu</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">service_stats</span><span class="p">[</span><span class="s1">&#39;cpu_stats&#39;</span><span class="p">][</span><span class="s1">&#39;cpu_usage&#39;</span><span class="p">][</span><span class="s1">&#39;total_usage&#39;</span><span class="p">])</span>
+            <span class="n">system_status</span><span class="o">.</span><span class="n">network_tx_bytes</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">service_stats</span><span class="p">[</span><span class="s1">&#39;networks&#39;</span><span class="p">][</span><span class="s1">&#39;eth0&#39;</span><span class="p">][</span><span class="s1">&#39;tx_bytes&#39;</span><span class="p">])</span>
+            <span class="n">system_status</span><span class="o">.</span><span class="n">network_rx_bytes</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">service_stats</span><span class="p">[</span><span class="s1">&#39;networks&#39;</span><span class="p">][</span><span class="s1">&#39;eth0&#39;</span><span class="p">][</span><span class="s1">&#39;rx_bytes&#39;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">system_status</span></div></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Markus Paeschke.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

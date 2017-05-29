@@ -1,0 +1,460 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Documentation Repositories &mdash; Motey 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Motey 0.0.1 documentation" href="index.html"/>
+        <link rel="next" title="Documentation Utils" href="utils.html"/>
+        <link rel="prev" title="Documentation Orchestrator" href="orchestrator.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Motey
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="core.html">Documentation Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">Documentation cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="communication.html">Documentation Communication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="communication_api_routes.html">Documentation Communication - API Routes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="labelingengine.html">Documentation Labeling Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">Documentation Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="orchestrator.html">Documentation Orchestrator</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Documentation Repositories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Documentation Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="val.html">Documentation Virtualization Abstraction Layer (VAL)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="val_plugins.html">Documentation Virtualization Abstraction Layer (VAL) Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="validation.html">Documentation Validation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Motey</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Documentation Repositories</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/repositories.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-motey.repositories.base_repository">
+<span id="documentation-repositories"></span><h1>Documentation Repositories<a class="headerlink" href="#module-motey.repositories.base_repository" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="motey.repositories.base_repository.BaseRepository">
+<em class="property">class </em><code class="descclassname">motey.repositories.base_repository.</code><code class="descname">BaseRepository</code><a class="reference internal" href="_modules/motey/repositories/base_repository.html#BaseRepository"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.repositories.base_repository.BaseRepository" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base repository to wrapp database handling.</p>
+<dl class="method">
+<dt id="motey.repositories.base_repository.BaseRepository.all">
+<code class="descname">all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/repositories/base_repository.html#BaseRepository.all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.repositories.base_repository.BaseRepository.all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of all existing entries in the database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a list of all existing entries.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.repositories.base_repository.BaseRepository.clear">
+<code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/repositories/base_repository.html#BaseRepository.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.repositories.base_repository.BaseRepository.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove all entries from the database.</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-motey.repositories.labeling_repository"></span><dl class="class">
+<dt id="motey.repositories.labeling_repository.LabelingRepository">
+<em class="property">class </em><code class="descclassname">motey.repositories.labeling_repository.</code><code class="descname">LabelingRepository</code><a class="reference internal" href="_modules/motey/repositories/labeling_repository.html#LabelingRepository"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.repositories.labeling_repository.LabelingRepository" title="Permalink to this definition">¶</a></dt>
+<dd><p>Repository for all label specific actions.</p>
+<dl class="method">
+<dt id="motey.repositories.labeling_repository.LabelingRepository.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>label</em>, <em>label_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/repositories/labeling_repository.html#LabelingRepository.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.repositories.labeling_repository.LabelingRepository.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new label to the database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>label</strong> – the label to be added.</li>
+<li><strong>label_type</strong> – the label type of the label.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.repositories.labeling_repository.LabelingRepository.has">
+<code class="descname">has</code><span class="sig-paren">(</span><em>label</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/repositories/labeling_repository.html#LabelingRepository.has"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.repositories.labeling_repository.LabelingRepository.has" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the given <code class="docutils literal"><span class="pre">label</span></code> exist in the database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>label</strong> – the label to search for.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if the lable exists, otherwise False</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.repositories.labeling_repository.LabelingRepository.has_type">
+<code class="descname">has_type</code><span class="sig-paren">(</span><em>label_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/repositories/labeling_repository.html#LabelingRepository.has_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.repositories.labeling_repository.LabelingRepository.has_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if a label with the given <code class="docutils literal"><span class="pre">label_type</span></code> exist in the database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>label_type</strong> – the type of the label to search for.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if the label type exists, otherwise False</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.repositories.labeling_repository.LabelingRepository.remove">
+<code class="descname">remove</code><span class="sig-paren">(</span><em>label</em>, <em>label_type=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/repositories/labeling_repository.html#LabelingRepository.remove"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.repositories.labeling_repository.LabelingRepository.remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a label from the database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>label</strong> – the label to be removed.</li>
+<li><strong>label_type</strong> – optional. The label must also matche the label type to be removed.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.repositories.labeling_repository.LabelingRepository.remove_all_from_type">
+<code class="descname">remove_all_from_type</code><span class="sig-paren">(</span><em>label_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/repositories/labeling_repository.html#LabelingRepository.remove_all_from_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.repositories.labeling_repository.LabelingRepository.remove_all_from_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a labels with a specific label type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>label_type</strong> – the label type where all related labels should be removed.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-motey.repositories.nodes_repository"></span><dl class="class">
+<dt id="motey.repositories.nodes_repository.NodesRepository">
+<em class="property">class </em><code class="descclassname">motey.repositories.nodes_repository.</code><code class="descname">NodesRepository</code><a class="reference internal" href="_modules/motey/repositories/nodes_repository.html#NodesRepository"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.repositories.nodes_repository.NodesRepository" title="Permalink to this definition">¶</a></dt>
+<dd><p>Repository for all node specific actions.</p>
+<dl class="method">
+<dt id="motey.repositories.nodes_repository.NodesRepository.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>ip</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/repositories/nodes_repository.html#NodesRepository.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.repositories.nodes_repository.NodesRepository.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new node to the database if they not exist yet.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ip</strong> – the ip of the new node.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.repositories.nodes_repository.NodesRepository.has">
+<code class="descname">has</code><span class="sig-paren">(</span><em>ip</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/repositories/nodes_repository.html#NodesRepository.has"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.repositories.nodes_repository.NodesRepository.has" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the given <code class="docutils literal"><span class="pre">ip</span></code> exist in the database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ip</strong> – the ip of the node to search for.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if the node exists, otherwise False</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.repositories.nodes_repository.NodesRepository.remove">
+<code class="descname">remove</code><span class="sig-paren">(</span><em>ip</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/repositories/nodes_repository.html#NodesRepository.remove"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.repositories.nodes_repository.NodesRepository.remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a node from the database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ip</strong> – the ip of the node to be removed.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-motey.repositories.service_repository"></span><dl class="class">
+<dt id="motey.repositories.service_repository.ServiceRepository">
+<em class="property">class </em><code class="descclassname">motey.repositories.service_repository.</code><code class="descname">ServiceRepository</code><a class="reference internal" href="_modules/motey/repositories/service_repository.html#ServiceRepository"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.repositories.service_repository.ServiceRepository" title="Permalink to this definition">¶</a></dt>
+<dd><p>Repository for all service specific actions.</p>
+<dl class="method">
+<dt id="motey.repositories.service_repository.ServiceRepository.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>service</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/repositories/service_repository.html#ServiceRepository.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.repositories.service_repository.ServiceRepository.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new service to the database if they not exist yet.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>service</strong> – a service model to be stored</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.repositories.service_repository.ServiceRepository.has">
+<code class="descname">has</code><span class="sig-paren">(</span><em>service_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/repositories/service_repository.html#ServiceRepository.has"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.repositories.service_repository.ServiceRepository.has" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the given <code class="docutils literal"><span class="pre">id</span></code> exist in the database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>service_id</strong> – the id of the service to search for.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if the service exists, otherwise False</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.repositories.service_repository.ServiceRepository.remove">
+<code class="descname">remove</code><span class="sig-paren">(</span><em>service_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/repositories/service_repository.html#ServiceRepository.remove"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.repositories.service_repository.ServiceRepository.remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a service from the database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>service_id</strong> – the id of the service to be removed.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="utils.html" class="btn btn-neutral float-right" title="Documentation Utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="orchestrator.html" class="btn btn-neutral" title="Documentation Orchestrator" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Markus Paeschke.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

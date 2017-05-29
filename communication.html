@@ -1,0 +1,468 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Documentation Communication &mdash; Motey 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Motey 0.0.1 documentation" href="index.html"/>
+        <link rel="next" title="Documentation Communication - API Routes" href="communication_api_routes.html"/>
+        <link rel="prev" title="Documentation cli" href="cli.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Motey
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="core.html">Documentation Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">Documentation cli</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Documentation Communication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="communication_api_routes.html">Documentation Communication - API Routes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="labelingengine.html">Documentation Labeling Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">Documentation Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="orchestrator.html">Documentation Orchestrator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="repositories.html">Documentation Repositories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Documentation Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="val.html">Documentation Virtualization Abstraction Layer (VAL)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="val_plugins.html">Documentation Virtualization Abstraction Layer (VAL) Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="validation.html">Documentation Validation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Motey</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Documentation Communication</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/communication.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-motey.communication.apiserver">
+<span id="documentation-communication"></span><h1>Documentation Communication<a class="headerlink" href="#module-motey.communication.apiserver" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="motey.communication.apiserver.APIServer">
+<em class="property">class </em><code class="descclassname">motey.communication.apiserver.</code><code class="descname">APIServer</code><span class="sig-paren">(</span><em>logger</em>, <em>host=‘127.0.0.1’</em>, <em>port=5023</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/apiserver.html#APIServer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.apiserver.APIServer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts a Flask webserver which acts as an REST API to control the Motey service.
+The webserver runs in a separate thread and will not block the main thread.</p>
+<dl class="method">
+<dt id="motey.communication.apiserver.APIServer.check_heartbeat">
+<code class="descname">check_heartbeat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/apiserver.html#APIServer.check_heartbeat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.apiserver.APIServer.check_heartbeat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to get the heartbeat.
+Checks if all the requirements for a healthy webserver are fulfilled.
+:return: True if the service is in a healthy state, otherwise False.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.communication.apiserver.APIServer.configure_url">
+<code class="descname">configure_url</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/apiserver.html#APIServer.configure_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.apiserver.APIServer.configure_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds all the configured api endpoints.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.communication.apiserver.APIServer.is_running">
+<code class="descname">is_running</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/apiserver.html#APIServer.is_running"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.apiserver.APIServer.is_running" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the webserver is still running.
+:return: True if the server is running, otherwise False.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.communication.apiserver.APIServer.run_server">
+<code class="descname">run_server</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/apiserver.html#APIServer.run_server"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.apiserver.APIServer.run_server" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the server and add an info to the logs, that the webserver is started.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.communication.apiserver.APIServer.start">
+<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/apiserver.html#APIServer.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.apiserver.APIServer.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the execution thread.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.communication.apiserver.APIServer.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/apiserver.html#APIServer.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.apiserver.APIServer.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops the webserver and add an info the logs, that the webserver is stopped.</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-motey.communication.mqttserver"></span><dl class="class">
+<dt id="motey.communication.mqttserver.MQTTServer">
+<em class="property">class </em><code class="descclassname">motey.communication.mqttserver.</code><code class="descname">MQTTServer</code><span class="sig-paren">(</span><em>logger</em>, <em>nodes_repository</em>, <em>host=‘127.0.0.1’</em>, <em>port=1883</em>, <em>username=None</em>, <em>password=None</em>, <em>keepalive=60</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/mqttserver.html#MQTTServer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.mqttserver.MQTTServer" title="Permalink to this definition">¶</a></dt>
+<dd><p>MQTT server to register and unregister adjacent fog nodes.
+The webserver runs in a separate thread and will not block the main thread.</p>
+<dl class="method">
+<dt id="motey.communication.mqttserver.MQTTServer.handle_nodes_request">
+<code class="descname">handle_nodes_request</code><span class="sig-paren">(</span><em>client</em>, <em>userdata</em>, <em>message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/mqttserver.html#MQTTServer.handle_nodes_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.mqttserver.MQTTServer.handle_nodes_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the node request callback implementation.
+Will execute the callback of the request to fetch the ip from all existing nodes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>client</strong> – the client instance for this callback</li>
+<li><strong>userdata</strong> – the private user data as set in Client() or userdata_set()</li>
+<li><strong>message</strong> – the data which was send</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.communication.mqttserver.MQTTServer.handle_on_connect">
+<code class="descname">handle_on_connect</code><span class="sig-paren">(</span><em>client</em>, <em>userdata</em>, <em>flags</em>, <em>resultcode</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/mqttserver.html#MQTTServer.handle_on_connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.mqttserver.MQTTServer.handle_on_connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the connect callback implementation.
+If the client is connected to the MQTT broker, the nodes will be registered and the <code class="docutils literal"><span class="pre">_after_connect</span></code> method
+will be executed.</p>
+<dl class="docutils">
+<dt>flags is a dict that contains response flags from the broker:</dt>
+<dd><dl class="first last docutils">
+<dt>flags[‘session present’] - this flag is useful for clients that are</dt>
+<dd>using clean session set to 0 only. If a client with clean
+session=0, that reconnects to a broker that it has previously
+connected to, this flag indicates whether the broker still has the
+session information for the client. If 1, the session still exists.</dd>
+</dl>
+</dd>
+<dt>The value of rc indicates success or not:</dt>
+<dd>0: Connection successful
+1: Connection refused - incorrect protocol version
+2: Connection refused - invalid client identifier
+3: Connection refused - server unavailable
+4: Connection refused - bad username or password
+5: Connection refused - not authorised
+6-255: Currently unused.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>client</strong> – the client instance for this callback</li>
+<li><strong>userdata</strong> – the private user data as set in Client() or userdata_set()</li>
+<li><strong>flags</strong> – response flags sent by the broker</li>
+<li><strong>resultcode</strong> – the connection result</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.communication.mqttserver.MQTTServer.handle_on_disconnect">
+<code class="descname">handle_on_disconnect</code><span class="sig-paren">(</span><em>client</em>, <em>userdata</em>, <em>resultcode</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/mqttserver.html#MQTTServer.handle_on_disconnect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.mqttserver.MQTTServer.handle_on_disconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the disconnect callback implementation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>client</strong> – the client instance for this callback</li>
+<li><strong>userdata</strong> – the private user data as set in Client() or userdata_set()</li>
+<li><strong>resultcode</strong> – the connection result</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.communication.mqttserver.MQTTServer.handle_receive_nodes">
+<code class="descname">handle_receive_nodes</code><span class="sig-paren">(</span><em>client</em>, <em>userdata</em>, <em>message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/mqttserver.html#MQTTServer.handle_receive_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.mqttserver.MQTTServer.handle_receive_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the receive new node callback implementation.
+Adds the new node to the <code class="docutils literal"><span class="pre">NodesRepository</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>client</strong> – the client instance for this callback</li>
+<li><strong>userdata</strong> – the private user data as set in Client() or userdata_set()</li>
+<li><strong>message</strong> – the data which was send</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.communication.mqttserver.MQTTServer.publish_new_node">
+<code class="descname">publish_new_node</code><span class="sig-paren">(</span><em>ip=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/mqttserver.html#MQTTServer.publish_new_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.mqttserver.MQTTServer.publish_new_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Publish the info that a new node is available to the all subscribers.
+If the <code class="docutils literal"><span class="pre">ip</span></code> is none, nothing will be send.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ip</strong> – The IP address of the new node. Default is None.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.communication.mqttserver.MQTTServer.publish_node_request">
+<code class="descname">publish_node_request</code><span class="sig-paren">(</span><em>ip=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/mqttserver.html#MQTTServer.publish_node_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.mqttserver.MQTTServer.publish_node_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Publish the request to fetch the ip from all existing nodes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ip</strong> – the own ip to let the other nodes know where the request cames from.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.communication.mqttserver.MQTTServer.register_routes">
+<code class="descname">register_routes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/mqttserver.html#MQTTServer.register_routes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.mqttserver.MQTTServer.register_routes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds all the configured MQTT endpoints.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.communication.mqttserver.MQTTServer.remove_node">
+<code class="descname">remove_node</code><span class="sig-paren">(</span><em>ip=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/mqttserver.html#MQTTServer.remove_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.mqttserver.MQTTServer.remove_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a specific node and publish it to all subscribers.
+If the <code class="docutils literal"><span class="pre">ip</span></code> is none, nothing will be send.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ip</strong> – The IP address of the new node. Default is None.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.communication.mqttserver.MQTTServer.run_server">
+<code class="descname">run_server</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/mqttserver.html#MQTTServer.run_server"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.mqttserver.MQTTServer.run_server" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the server and add an info to the logs, that the MQTT server is started.
+Also adds an error message to the logs if the broker is not available.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.communication.mqttserver.MQTTServer.start">
+<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/mqttserver.html#MQTTServer.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.mqttserver.MQTTServer.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the execution thread.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.communication.mqttserver.MQTTServer.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/mqttserver.html#MQTTServer.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.mqttserver.MQTTServer.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops the MQTT server and add an info the logs, that the server is stopped.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="communication_api_routes.html" class="btn btn-neutral float-right" title="Documentation Communication - API Routes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="cli.html" class="btn btn-neutral" title="Documentation cli" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Markus Paeschke.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
