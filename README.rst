@@ -5,8 +5,6 @@ Motey
 
 .. contents::
 
-.. section-numbering::
-
 
 What is Motey
 =============
