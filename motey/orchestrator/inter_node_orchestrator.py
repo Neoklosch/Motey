@@ -1,3 +1,4 @@
+import json
 import threading
 
 import yaml
@@ -8,6 +9,8 @@ from motey.models.image import Image
 from motey.models.service import Service
 from motey.validation.schemas import blueprint_schema
 
+import copy
+
 
 class InterNodeOrchestrator(object):
     """
@@ -16,7 +19,7 @@ class InterNodeOrchestrator(object):
     It also can communicate with other nodes to start instances there if the requirements does not fit with the
     possibilities of the current node.
     """
-    def __init__(self, logger, valmanager, service_repository, labeling_repository):
+    def __init__(self, logger, valmanager, service_repository, labeling_repository, node_repository, zeromq_server):
         """
         Instantiates the ``Logger``, the ``VALManagger``, ``ServiceRepository`` and subscribe to the blueprint endpoint.
         """
@@ -24,6 +27,8 @@ class InterNodeOrchestrator(object):
         self.valmanager = valmanager
         self.service_repository = service_repository
         self.labeling_repository = labeling_repository
+        self.node_repository = node_repository
+        self.zeromq_server = zeromq_server
         self.blueprint_stream = BlueprintEndpoint.yaml_post_stream.subscribe(self.handle_blueprint)
 
     def parse_local_blueprint_file(self, file_path):
@@ -47,14 +52,32 @@ class InterNodeOrchestrator(object):
             self.service_repository.update(service)
             for image in service.images:
                 if 'capabilities' not in image:
+                    self.deploy_locally([image])
                     continue
                 for capability in image.capabilities:
                     if not self.labeling_repository.has(label=capability):
-                        # TODO: find node with capability
-                        image.node = 'other'
-            self.valmanager.instantiate(service.images)
+                        external_service = copy.deepcopy(service)
+                        external_service.images = []
+                        external_service.images.append(copy.deepcopy(image))
+                        self.deploy_externally(external_service)
+                        break
+                else:
+                    self.deploy_locally([image])
+
             service.state = Service.ServiceState.RUNNING
             self.service_repository.update(service)
+
+    def deploy_locally(self, image):
+        self.valmanager.instantiate(image)
+
+    def deploy_externally(self, service):
+        for node in self.node_repository.all():
+            capabilities = self.zeromq_server.request_capabilities(node)
+            try:
+                json_result = json.loads(capabilities)
+                # TODO: check cap with needs
+            except json.JSONDecodeError:
+                pass
 
     def terminate_instances(self, service):
         """

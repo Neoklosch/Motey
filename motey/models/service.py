@@ -17,10 +17,11 @@ class Service(object):
         MASTER = 'master'
         SLAVE = 'slave'
 
-    def __init__(self, name, images, id=uuid.uuid4().hex, state=ServiceState.INITIAL, action=ServiceAction.ADD, type=ServiceType.MASTER):
+    def __init__(self, name, images, id=uuid.uuid4().hex, state=ServiceState.INITIAL, action=ServiceAction.ADD,
+                 node_type=ServiceType.MASTER):
         self.id = id
         self.state = state
         self.action = action
         self.name = name
         self.images = images
-        self.type = type
+        self.node_type = node_type

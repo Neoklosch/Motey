@@ -1,6 +1,7 @@
 ---
 service_name: first_service
 action: add
+node_type: master
 images:
 - image_name: alpine
   parameters:

@@ -10,6 +10,7 @@ from motey.repositories.nodes_repository import NodesRepository
 from motey.repositories.service_repository import ServiceRepository
 from motey.utils.logger import Logger
 from motey.val.valmanager import VALManager
+from motey.communication.zeromq_server import ZeroMQServer
 
 
 class DICore(containers.DeclarativeContainer):
@@ -23,8 +24,10 @@ class DIRepositories(containers.DeclarativeContainer):
 
 
 class DIServices(containers.DeclarativeContainer):
+    zeromq_server = providers.Singleton(ZeroMQServer, logger=DICore.logger)
     labeling_engine = providers.Singleton(LabelingEngine, logger=DICore.logger,
-                                          labeling_repository=DIRepositories.labeling_repository)
+                                          labeling_repository=DIRepositories.labeling_repository,
+                                          zeromq_server=zeromq_server)
     plugin_manager = PluginManager()
     valmanager = providers.Singleton(VALManager, logger=DICore.logger,
                                      labeling_engine=DIRepositories.labeling_repository, plugin_manager=plugin_manager)
@@ -37,4 +40,4 @@ class Application(containers.DeclarativeContainer):
     core = providers.Callable(Core, logger=DICore.logger, labeling_repository=DIRepositories.labeling_repository,
                               nodes_repository=DIRepositories.nodes_repository, valmanager=DIServices.valmanager,
                               inter_node_orchestrator=DIServices.inter_node_orchestrator,
-                              hardware_event_engine=DIServices.labeling_engine)
+                              zeromq_server=DIServices.zeromq_server, hardware_event_engine=DIServices.labeling_engine)

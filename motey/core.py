@@ -18,11 +18,25 @@ class Core(object):
     After it is started via self.start() it will be executed until self.stop() is executed.
     """
 
-    def __init__(self, logger, labeling_repository, valmanager, nodes_repository, inter_node_orchestrator,
-                 hardware_event_engine, as_daemon=True):
+    def __init__(self, logger, labeling_repository, nodes_repository, valmanager, inter_node_orchestrator,
+                 zeromq_server, hardware_event_engine, as_daemon=True):
         """
         Constructor of the core.
 
+        :param logger: DI injected 
+        :type logger: motey.utils.logger.Logger
+        :param labeling_repository: DI injected 
+        :type labeling_repository: motey.repositories.labeling_repository.LabelingRepository
+        :param nodes_repository: DI injected
+        :type nodes_repository: motey.repositories.nodes_repository.NodesRepository
+        :param valmanager: DI injected
+        :type valmanager: motey.val.valmanager.VALManager
+        :param inter_node_orchestrator: DI injected
+        :type inter_node_orchestrator: motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator
+        :param zeromq_server: DI injected
+        :type zeromq_server: motey.communication.zeromq_server.ZeroMQServer
+        :param hardware_event_engine: DI injected
+        :type hardware_event_engine: motey.labelingengine.labelingengine.LabelingEngine
         :param as_daemon: Executes the core as a daemon. Default is True.
         """
 
@@ -38,19 +52,23 @@ class Core(object):
                                      username=config['MQTT']['username'], password=config['MQTT']['password'],
                                      keepalive=int(config['MQTT']['keepalive']))
         self.labeling_repository = labeling_repository
+        self.nodes_repository = nodes_repository
         self.valmanager = valmanager
         self.inter_node_orchestrator = inter_node_orchestrator
+        self.zeromq_server = zeromq_server
         self.hardware_event_engine = hardware_event_engine
         self.mqttserver.after_connect = self.after_connect_callback
         self.mqttserver.nodes_request_callback = self.__nodes_request_callback
 
     def start(self):
         """
-        Start the core component. If self.as_daemon is set to True, the component will be started as a daemon services.
+        Start the core component. At first clean up config if necessary.
+        If self.as_daemon is set to True, the component will be started as a daemon services.
         It will use the path to the pid which is configured in the config.ini.
         If self.as_daemon is set to False, the component will be executed in foreground.
         """
 
+        self.startup_clean()
         if self.as_daemon:
             self.daemon = Daemonize(app=config['GENERAL']['app_name'], pid=config['GENERAL']['pid'], action=self.run)
             self.daemon.start()
@@ -60,12 +78,14 @@ class Core(object):
     def run(self):
         """
         The method is the main app loop.
-        It starts the API server as well as the MQTT server and will be executed until self.stop() is executed.
+        It starts the API server as well as the MQTT server, ZeroMQ server and it will be executed until self.stop()
+        is executed.
         """
 
         self.logger.info('Core started')
         self.webserver.start()
         self.mqttserver.start()
+        self.zeromq_server.start()
         self.hardware_event_engine.start()
 
         while not self.stopped:
@@ -113,3 +133,10 @@ class Core(object):
         if self.daemon:
             self.daemon.exit()
         self.logger.info('Core stopped')
+
+    def startup_clean(self):
+        """
+        Clean up the labeling and nodes database to remove old entries.
+        """
+        self.labeling_repository.clear()
+        self.nodes_repository.clear()

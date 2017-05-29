@@ -5,6 +5,12 @@ blueprint_schema = {
         "service_name": {
             "type": "string"
         },
+        "action": {
+            "type": "string"
+        },
+        "node_type": {
+            "type": "string"
+        },
         "images": {
             "type": "array",
             "items": {
@@ -31,5 +37,5 @@ blueprint_schema = {
             "uniqueItems": True
         }
     },
-    "required": ["service_name", "images"]
+    "required": ["service_name", "images", "action"]
 }
