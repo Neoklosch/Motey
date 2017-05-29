@@ -1,5 +1,0 @@
-Documentation Decorators
-========================
-
-.. automodule:: motey.decorators.singleton
-    :members:
