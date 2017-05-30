@@ -89,3 +89,5 @@ ENV/
 .ropeproject
 
 .idea
+
+motey/data/databases/
