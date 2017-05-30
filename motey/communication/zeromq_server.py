@@ -1,3 +1,4 @@
+import json
 from rx.subjects import Subject
 import threading
 
@@ -13,14 +14,23 @@ class ZeroMQServer(object):
         self.logger = logger
         self.context = zmq.Context()
         self.capabilities_subscriber = self.context.socket(zmq.SUB)
-        self.capabilities_sender = self.context.socket(zmq.REP)
+        self.capabilities_replier = self.context.socket(zmq.REP)
 
         self.capabilities_subscriber_thread = threading.Thread(target=self.__run_capabilities_subscriber_thread, args=())
         self.capabilities_subscriber_thread.daemon = True
 
-        self.capabilities_sender_thread = threading.Thread(target=self.__run_capabilities_sender_thread, args=())
-        self.capabilities_sender_thread.daemon = True
+        self.capabilities_replier_thread = threading.Thread(target=self.__run_capabilities_replier_thread, args=())
+        self.capabilities_replier_thread.daemon = True
         self.stopped = False
+        self.after_capabilities_request_handler = None
+
+    @property
+    def after_capabilities_request(self):
+        return self.after_capabilities_request_handler
+
+    @after_capabilities_request.setter
+    def after_capabilities_request(self, handler):
+        self.after_capabilities_request_handler = handler
 
     def start(self):
         """
@@ -32,8 +42,8 @@ class ZeroMQServer(object):
         self.capabilities_subscriber.setsockopt_string(zmq.SUBSCRIBE, 'labelingevent')
         self.capabilities_subscriber_thread.start()
 
-        self.capabilities_sender.bind('tcp://*:%s' % config['CAPABILITIES_SENDER']['port'])
-        self.capabilities_sender_thread.start()
+        self.capabilities_replier.bind('tcp://*:%s' % config['CAPABILITIES_REPLIER']['port'])
+        self.capabilities_replier_thread.start()
 
         self.logger.info('ZeroMQ server started')
 
@@ -56,18 +66,10 @@ class ZeroMQServer(object):
             topic, output = result.split('#', 1)
             self.capability_event_stream.on_next(output)
 
-    def __run_capabilities_sender_thread(self):
+    def __run_capabilities_replier_thread(self):
         while not self.stopped:
-            result = self.capabilities_sender.recv_string()
-            topic, output = result.split('#', 1)
-            # TODO: do somtething with output
-            self.capabilities_sender.send_string('')
-
-    def request_capabilities(self, ip):
-        if not ip:
-            return None
-        socket = self.context.socket(zmq.REQ)
-        socket.connect("tcp://%s:%s" % (ip, config['CAPABILITIES_SENDER']['port']))
-        socket.send_string("a")
-        message = socket.recv()
-        return message
+            result = self.capabilities_replier.recv_string()
+            if self.after_capabilities_request_handler:
+                self.after_capabilities_request_handler(self.capabilities_replier)
+            else:
+                self.capabilities_replier.send_string(json.dumps([]))

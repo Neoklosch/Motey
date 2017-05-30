@@ -18,6 +18,8 @@ class VALManager(object):
         self.logger = logger
         self.labeling_engine = labeling_engine
         self.plugin_manager = plugin_manager
+
+    def start(self):
         self.register_plugins()
 
     def register_plugins(self):

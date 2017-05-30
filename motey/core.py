@@ -23,9 +23,9 @@ class Core(object):
         """
         Constructor of the core.
 
-        :param logger: DI injected 
+        :param logger: DI injected
         :type logger: motey.utils.logger.Logger
-        :param labeling_repository: DI injected 
+        :param labeling_repository: DI injected
         :type labeling_repository: motey.repositories.labeling_repository.LabelingRepository
         :param nodes_repository: DI injected
         :type nodes_repository: motey.repositories.nodes_repository.NodesRepository
@@ -87,6 +87,7 @@ class Core(object):
         self.mqttserver.start()
         self.zeromq_server.start()
         self.hardware_event_engine.start()
+        self.valmanager.start()
 
         while not self.stopped:
             sleep(.1)

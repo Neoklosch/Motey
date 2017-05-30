@@ -45,6 +45,7 @@ class LabelingEngine(object):
         self.logger = logger
         self.labeling_repository = labeling_repository
         self.zeromq_server = zeromq_server
+        self.zeromq_server.after_capabilities_request = self.handle_capabilities_request
 
     def start(self):
         """
@@ -66,7 +67,7 @@ class LabelingEngine(object):
         """
         Private function which is be executed after an event is received.
         After receiving an event a new label will be added to the LabelingDatabase.
-        
+
         :param data: the received data
         """
 
@@ -79,6 +80,9 @@ class LabelingEngine(object):
                 self.__perform_label_action(json_result)
         except (TypeError, json.JSONDecodeError):
             pass
+
+    def handle_capabilities_request(self, capabilities_replier):
+        capabilities_replier.send_string(json.dumps(self.labeling_repository.all()))
 
     def __perform_label_action(self, entry):
         """

@@ -21,4 +21,4 @@ class BaseRepository(object):
         """
         Remove all entries from the database.
         """
-        self.db.remove()
+        self.db.purge()
