@@ -77,15 +77,15 @@ class InterNodeOrchestrator(object):
             for needed_capability in service.images[0]['capabilities']:
                 for capability in capabilities:
                     if needed_capability['label'] == capability['label'] and needed_capability['type'] == capability['type']:
-                        break # found them
+                        break  # found them
                     else:
-                        pass # not found - continue loop
-                else: # no break - capability not found - break outer loop and try next node
+                        pass  # not found - continue loop
+                else:  # no break - capability not found - break outer loop and try next node
                     break
-            else: # no break - all capabilities succeeded
+            else:  # no break - all capabilities succeeded
                 # TODO: deploy externally
                 break
-        else: # found none of them - fuck
+        else:  # found none of them - fuck
             # TODO: mark as error
             pass
 
