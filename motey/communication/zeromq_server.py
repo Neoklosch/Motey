@@ -73,3 +73,17 @@ class ZeroMQServer(object):
                 self.after_capabilities_request_handler(self.capabilities_replier)
             else:
                 self.capabilities_replier.send_string(json.dumps([]))
+
+    def request_capabilities(self, ip):
+        if not ip:
+            return None
+        socket = self.context.socket(zmq.REQ)
+        socket.connect("tcp://%s:%s" % (ip, config['CAPABILITIES_REPLIER']['port']))
+        socket.send_string("")
+        capabilities = socket.recv()
+        json_capabilities = []
+        try:
+            json_capabilities = json.loads(capabilities)
+        except json.JSONDecodeError:
+            self.logger.error("Got invalid json from capability request")
+        return json_capabilities

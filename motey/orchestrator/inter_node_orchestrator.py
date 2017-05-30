@@ -10,6 +10,7 @@ from motey.models.service import Service
 from motey.validation.schemas import blueprint_schema
 
 import copy
+from motey.utils.json_helper import ordered
 
 
 class InterNodeOrchestrator(object):
@@ -73,11 +74,20 @@ class InterNodeOrchestrator(object):
     def deploy_externally(self, service):
         for node in self.node_repository.all():
             capabilities = self.zeromq_server.request_capabilities(node)
-            try:
-                json_result = json.loads(capabilities)
-                # TODO: check cap with needs
-            except json.JSONDecodeError:
-                pass
+            for needed_capability in service.images[0]['capabilities']:
+                for capability in capabilities:
+                    if needed_capability['label'] == capability['label'] and needed_capability['type'] == capability['type']:
+                        break # found them
+                    else:
+                        pass # not found - continue loop
+                else: # no break - capability not found - break outer loop and try next node
+                    break
+            else: # no break - all capabilities succeeded
+                # TODO: deploy externally
+                break
+        else: # found none of them - fuck
+            # TODO: mark as error
+            pass
 
     def terminate_instances(self, service):
         """
