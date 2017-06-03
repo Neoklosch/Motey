@@ -1,10 +1,6 @@
 import json
-import threading
 
-import zmq
 from jsonschema import validate, ValidationError
-
-from motey.configuration.configreader import config
 
 
 class LabelingEngine(object):

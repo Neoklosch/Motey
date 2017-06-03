@@ -2,6 +2,7 @@ import dependency_injector.containers as containers
 import dependency_injector.providers as providers
 from yapsy.PluginManager import PluginManager
 
+from motey.communication.zeromq_server import ZeroMQServer
 from motey.core import Core
 from motey.labelingengine.labelingengine import LabelingEngine
 from motey.orchestrator.inter_node_orchestrator import InterNodeOrchestrator
@@ -10,7 +11,6 @@ from motey.repositories.nodes_repository import NodesRepository
 from motey.repositories.service_repository import ServiceRepository
 from motey.utils.logger import Logger
 from motey.val.valmanager import VALManager
-from motey.communication.zeromq_server import ZeroMQServer
 
 
 class DICore(containers.DeclarativeContainer):

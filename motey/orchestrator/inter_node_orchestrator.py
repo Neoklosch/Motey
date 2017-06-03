@@ -1,4 +1,4 @@
-import json
+import copy
 import threading
 
 import yaml
@@ -8,9 +8,6 @@ from motey.communication.api_routes.blueprintendpoint import BlueprintEndpoint
 from motey.models.image import Image
 from motey.models.service import Service
 from motey.validation.schemas import blueprint_schema
-
-import copy
-from motey.utils.json_helper import ordered
 
 
 class InterNodeOrchestrator(object):
@@ -55,39 +52,60 @@ class InterNodeOrchestrator(object):
                 if 'capabilities' not in image:
                     self.deploy_locally([image])
                     continue
+
                 for capability in image.capabilities:
                     if not self.labeling_repository.has(label=capability):
                         external_service = copy.deepcopy(service)
                         external_service.images = []
                         external_service.images.append(copy.deepcopy(image))
-                        self.deploy_externally(external_service)
+                        successfully_deployed = self.deploy_externally(external_service)
+                        if not successfully_deployed:
+                            service.state = Service.ServiceState.ERROR
+                            self.service_repository.update(service)
                         break
-                else:
+                else:  # never broke - all capabilities are succeeded locally
                     self.deploy_locally([image])
 
-            service.state = Service.ServiceState.RUNNING
-            self.service_repository.update(service)
+            if service.state != Service.ServiceState.ERROR:
+                service.state = Service.ServiceState.RUNNING
+                self.service_repository.update(service)
 
     def deploy_locally(self, image):
+        # TODO: should return intance id and store them in the image
         self.valmanager.instantiate(image)
 
     def deploy_externally(self, service):
         for node in self.node_repository.all():
             capabilities = self.zeromq_server.request_capabilities(node)
-            for needed_capability in service.images[0]['capabilities']:
-                for capability in capabilities:
-                    if needed_capability['label'] == capability['label'] and needed_capability['type'] == capability['type']:
-                        break  # found them
-                    else:
-                        pass  # not found - continue loop
-                else:  # no break - capability not found - break outer loop and try next node
-                    break
-            else:  # no break - all capabilities succeeded
+            if self.compare_capabilities(service.images[0]['capabilities'], capabilities):
                 # TODO: deploy externally
+                # 1. have an endpoint to deploy to
+                # 2. connect to the node
+                # 3. send service
+                # 4. request status (loop until running or error
                 break
-        else:  # found none of them - fuck
-            # TODO: mark as error
-            pass
+        else:  # never broke - no node fulfill capabilities
+            return False
+        return True
+
+    def compare_capabilities(self, external_capabilities, needed_capabilities):
+        """
+        Compares to capabilitiy dicts.
+
+        :param external_capabilities: the capabilties to check
+        :param needed_capabilities: the capabilities to compare with
+        :return: True if all capabilities are fulfilled, otherwiese False
+        """
+        for external_capability in external_capabilities:
+            for capability in needed_capabilities:
+                if external_capability['label'] == capability['label'] and \
+                   external_capability['type'] == capability['type']:
+                    break  # found them
+            else:  # never broke - capability not found - break outer loop and try next node
+                break
+        else:  # never broke - all capabilities succeeded
+            return True
+        return False
 
     def terminate_instances(self, service):
         """
@@ -100,8 +118,7 @@ class InterNodeOrchestrator(object):
                 service.state = Service.ServiceState.STOPPING
                 self.service_repository.update(service)
                 for image in service.images:
-                    # TODO: pass in instances here
-                    self.valmanager.terminate([])
+                    self.valmanager.terminate(image.id)
                 service.state = Service.ServiceState.TERMINATED
                 self.service_repository.update(service)
             else:
@@ -149,7 +166,7 @@ class InterNodeOrchestrator(object):
 
     def __translate_to_image_list(self, yaml_data):
         """
-        Priavte method to translate a list of images into a list of image models.
+        Private method to translate a list of images into a list of image models.
 
         :param yaml_data: list of images which should be translated
         :return: a list of translated image models

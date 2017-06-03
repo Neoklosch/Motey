@@ -1,8 +1,8 @@
 import json
-from rx.subjects import Subject
 import threading
 
 import zmq
+from rx.subjects import Subject
 
 from motey.configuration.configreader import config
 
