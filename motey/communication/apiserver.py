@@ -18,6 +18,7 @@ class APIServer(object):
         """
         Constructor of the webserver.
 
+        :param logger: the DI injected logger instance
         :param host: the hostname to listen on. Set this to ``'0.0.0.0'`` to
                      have the server available externally as well. Defaults to
                      ``'127.0.0.1'``.

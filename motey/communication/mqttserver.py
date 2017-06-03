@@ -17,10 +17,15 @@ class MQTTServer(object):
         'nodes_request': 'motey/v1/nodes_request',
     }
 
-    def __init__(self, logger, nodes_repository, host='127.0.0.1', port=1883, username=None, password=None, keepalive=60):
+    def __init__(self, logger, nodes_repository, host='127.0.0.1', port=1883, username=None, password=None,
+                 keepalive=60):
         """
         Constructor ot the MQTT server.
 
+        :param logger: DI injected
+        :type logger: motey.utils.logger.Logger
+        :param nodes_repository: DI injected
+        :type nodes_repository: motey.repositories.nodes_repository.NodesRepository
         :param host: The host of the MQTT broker. Default is ``'127.0.0.1'``.
         :param port: The port of the MQTT broker. Default is ``1883``.
         :param username: Username to authenticate on the MQTT broker. Default is None.

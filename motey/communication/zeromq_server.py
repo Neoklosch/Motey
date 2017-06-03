@@ -8,9 +8,20 @@ from motey.configuration.configreader import config
 
 
 class ZeroMQServer(object):
+    """
+    ZeroMQ server to communicate with adjacent fog nodes and to reply to requests.
+    The different listeners will be executed in a separate thread and will not block the main thread.
+    """
+
     capability_event_stream = Subject()
 
     def __init__(self, logger):
+        """
+        Constructor ot the MQTT server.
+
+        :param logger: DI injected
+        :type logger: motey.utils.logger.Logger
+        """
         self.logger = logger
         self.context = zmq.Context()
         self.capabilities_subscriber = self.context.socket(zmq.SUB)
@@ -67,6 +78,12 @@ class ZeroMQServer(object):
             self.capability_event_stream.on_next(output)
 
     def __run_capabilities_replier_thread(self):
+        """
+        Private function which is be executed after the start method is called.
+        The method will wait for an event where it is subscribed on.
+        After receiving an event a list with all the available capabilities will be send to the client who sends the
+        request.
+        """
         while not self.stopped:
             result = self.capabilities_replier.recv_string()
             if self.after_capabilities_request_handler:
@@ -75,6 +92,14 @@ class ZeroMQServer(object):
                 self.capabilities_replier.send_string(json.dumps([]))
 
     def request_capabilities(self, ip):
+        """
+        Method to request all capabilities from another node.
+        Will request via the `ZeroMQ.REQ` pattern.
+        After the request is send, the method will wait for the response.
+
+        :param ip: the IP address of the node to request the capabilities
+        :return: the capabilities as a JSON object
+        """
         if not ip:
             return None
         socket = self.context.socket(zmq.REQ)

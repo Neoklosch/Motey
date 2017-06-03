@@ -12,6 +12,13 @@ class VALManager(object):
     def __init__(self, logger, labeling_engine, plugin_manager):
         """
         Constructor of the VALManger.
+
+        :param logger: DI injected
+        :type logger: motey.utils.logger.Logger
+        :param labeling_engine: the DI injected labeling engine instance
+        :type labeling_engine: motey.labelingengine.labelingengine.LabelingEngine
+        :param plugin_manager: the DI injected plugin manager
+        :type plugin_manager: yapsy.PluginManager.PluginManager
         """
 
         self.plugin_stream = Subject()
@@ -20,6 +27,10 @@ class VALManager(object):
         self.plugin_manager = plugin_manager
 
     def start(self):
+        """
+        Starts the VALManager and register all the available plugins.
+        """
+
         self.register_plugins()
 
     def register_plugins(self):
@@ -50,7 +61,9 @@ class VALManager(object):
                             * image_name = 'alpine'
                             * image_name = ['alpine', 'busybox',]
                             * image_name = [{'image_name': 'alpine', 'parameters': {'ports': {'80/tcp': 8080}, 'name': 'motey_alpine'}},]
-        :param plugin_type: Will only be executed with the given plugin. Must be a str. Default None.
+        :type image_name: list
+        :param plugin_type: Will only be executed with the given plugin. Default None.
+        :type plugin_type: str or list
         """
 
         for plugin in self.plugin_manager.getAllPlugins():
@@ -68,6 +81,14 @@ class VALManager(object):
                         plugin.plugin_object.start_instance(single_image['image_name'], parameters)
 
     def terminate(self, instance_name, plugin_type=None):
+        """
+        Terminate a running instance.
+
+        :param instance_name: the name of the instance
+        :type instance_name: str
+        :param plugin_type: The instance will only be terminated for the given plugin. Default None.
+        :type plugin_type: str or list
+        """
         for plugin in self.plugin_manager.getAllPlugins():
             if plugin_type and not plugin.plugin_object.get_plugin_type() == plugin_type:
                 continue
