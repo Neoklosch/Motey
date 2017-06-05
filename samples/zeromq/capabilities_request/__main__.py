@@ -1,16 +1,13 @@
 import signal
 import sys
-from time import sleep
 import threading
 from time import sleep
-import json
 
 import zmq
 
-
 context = zmq.Context()
-publisher = context.socket(zmq.REQ)
-count = 0
+server = context.socket(zmq.REP)
+client = context.socket(zmq.REQ)
 
 
 def signal_handler(signal, frame):
@@ -19,17 +16,34 @@ def signal_handler(signal, frame):
 
 
 def main():
-    context = zmq.Context()
+    server.bind("tcp://*:5555")
 
-    #  Socket to talk to server
-    print("Connecting to hello world server")
-    publisher.connect("tcp://localhost:5091")
+    server_thread = threading.Thread(target=start_server, args=())
+    server_thread.daemon = True
+    server_thread.start()
 
-    publisher.send_string("a")
+    client.connect("tcp://localhost:5555")
 
-    #  Get the reply.
-    message = publisher.recv_string()
-    print("Received reply %s" % message)
+    for request in range(10):
+        print("Sending request %s" % request)
+        client.send_string("Hello ")
+
+        #  Get the reply.
+        message = client.recv_string()
+        print("Received reply %s [ %s ]" % (request, message))
+
+
+def start_server():
+    while True:
+        #  Wait for next request from client
+        message = server.recv_string()
+        print("Received request: %s" % message)
+
+        #  Do some 'work'
+        sleep(1)
+
+        #  Send reply back to client
+        server.send_string("World")
 
 
 if __name__ == '__main__':

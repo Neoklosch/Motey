@@ -90,16 +90,21 @@ class DockerVAL(abstractVAL.AbstractVAL):
 
         :param image_name: the name of the image which should be created
         :param parameters: execution parameters. Same as in the ``docker.create_container``.
+        :return: the id of the created instance
         """
+        container_id = None
         client = self.get_docker_client()
         try:
-            client.containers.create(image_name, **parameters)
+            if 'detach' in parameters:
+                parameters.pop('detach')
+                container = client.containers.create(image_name, detach=True, **parameters)
         except ContainerError as ce:
             self.logger.error("create docker instance > container could not be created")
         except ImageNotFound as inf:
             self.logger.error("create docker instance > image not found")
         except APIError as apie:
             self.logger.error("create docker instance > api error")
+        return container_id
 
     def start_instance(self, instance_name, parameters={}):
         """
@@ -108,16 +113,22 @@ class DockerVAL(abstractVAL.AbstractVAL):
 
         :param instance_name: the name of the existing instance
         :param parameters: execution parameters. Same as in the ``docker.create_container``.
+        :return: the id of the started instance
         """
+        container_id = None
         client = self.get_docker_client()
         try:
-            client.containers.run(instance_name, **parameters)
+            if 'detach' in parameters:
+                parameters.pop('detach')
+            container = client.containers.run(instance_name, detach=True, **parameters)
+            container_id = container.id
         except ContainerError as ce:
             self.logger.error("start docker instance > container could not be created")
         except ImageNotFound as inf:
             self.logger.error("start docker instance > image not found")
         except APIError as apie:
             self.logger.error("start docker instance > api error")
+        return container_id
 
     def stop_instance(self, container_name):
         """

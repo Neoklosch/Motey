@@ -58,6 +58,7 @@ class AbstractVAL(IPlugin):
 
         :param image_name: the name of the image which should be created
         :param parameters: execution parameters
+        :return: the id of the created instance
         """
         raise NotImplementedError("Should have implemented this")
 
@@ -67,6 +68,7 @@ class AbstractVAL(IPlugin):
 
         :param instance_name: the name of the existing instance
         :param parameters: execution parameters
+        :return: should return the id of the started instance
         """
         raise NotImplementedError("Should have implemented this")
 

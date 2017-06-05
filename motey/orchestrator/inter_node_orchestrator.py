@@ -1,5 +1,6 @@
 import copy
 import threading
+from time import sleep
 
 import yaml
 from jsonschema import validate, ValidationError
@@ -8,11 +9,12 @@ from motey.communication.api_routes.blueprintendpoint import BlueprintEndpoint
 from motey.models.image import Image
 from motey.models.service import Service
 from motey.validation.schemas import blueprint_schema
+from motey.utils.network_utils import get_own_ip
 
 
 class InterNodeOrchestrator(object):
     """
-    This class orchestrates yaml blueprints.
+    This class orchestpassrates yaml blueprints.
     It will start and stop virtual instances of images defined in the blueprint.
     It also can communicate with other nodes to start instances there if the requirements does not fit with the
     possibilities of the current node.
@@ -50,62 +52,68 @@ class InterNodeOrchestrator(object):
             self.service_repository.update(service)
             for image in service.images:
                 if 'capabilities' not in image:
-                    self.deploy_locally([image])
+                    # no capabilities, deploy locally
+                    image.node = get_own_ip()
                     continue
 
                 for capability in image.capabilities:
                     if not self.labeling_repository.has(label=capability):
-                        external_service = copy.deepcopy(service)
-                        external_service.images = []
-                        external_service.images.append(copy.deepcopy(image))
-                        successfully_deployed = self.deploy_externally(external_service)
-                        if not successfully_deployed:
+                        # if a single capability is not satisfied, search for external node
+                        node = self.find_node(image)
+                        if node:
+                            image.node = node
+                        else:
+                            # does not found any node - error
                             service.state = Service.ServiceState.ERROR
-                            self.service_repository.update(service)
-                        break
-                else:  # never broke - all capabilities are succeeded locally
-                    self.deploy_locally([image])
+                            break
+                else:
+                    # never broke - all capabilities are succeeded locally
+                    image.node = get_own_ip()
 
-            if service.state != Service.ServiceState.ERROR:
-                service.state = Service.ServiceState.RUNNING
-                self.service_repository.update(service)
+                if service.state == Service.ServiceState.ERROR:
+                    self.service_repository.update(service)
+                    break
+            else:
+                # never broke - no errors occurred - deploy
+                self.deploy_service(service=service)
 
-    def deploy_locally(self, image):
-        # TODO: should return intance id and store them in the image
-        self.valmanager.instantiate(image)
+    def deploy_service(self, service):
+        for image in service.images:
+            image.id = self.zeromq_server.deploy_image(image)
+        self.service_repository.update(service)
 
-    def deploy_externally(self, service):
-        for node in self.node_repository.all():
-            capabilities = self.zeromq_server.request_capabilities(node)
-            if self.compare_capabilities(service.images[0]['capabilities'], capabilities):
-                # TODO: deploy externally
-                # 1. have an endpoint to deploy to
-                # 2. connect to the node
-                # 3. send service
-                # 4. request status (loop until running or error
-                break
-        else:  # never broke - no node fulfill capabilities
-            return False
-        return True
+    def get_service_status(self, service):
+        for image in service.images:
+            image_status = self.zeromq_server.request_image_status(image)
+            # TODO: calculate service state based on instance states
 
-    def compare_capabilities(self, external_capabilities, needed_capabilities):
+    def compare_capabilities(self, needed_capabilities, node_capabilities):
         """
-        Compares to capabilitiy dicts.
+        Compares two dicts with capabilities.
 
-        :param external_capabilities: the capabilties to check
         :param needed_capabilities: the capabilities to compare with
+        :param node_capabilities: the capabilties to check
         :return: True if all capabilities are fulfilled, otherwiese False
         """
-        for external_capability in external_capabilities:
+        for node_capability in node_capabilities:
             for capability in needed_capabilities:
-                if external_capability['label'] == capability['label'] and \
-                   external_capability['type'] == capability['type']:
-                    break  # found them
-            else:  # never broke - capability not found - break outer loop and try next node
+                if node_capability['label'] == capability['label'] and node_capability['type'] == capability['type']:
+                    # found them
+                    break
+            else:
+                # never broke - capability not found - break outer loop and try next node
                 break
-        else:  # never broke - all capabilities succeeded
+        else:
+            # never broke - all capabilities succeeded
             return True
         return False
+
+    def find_node(self, image):
+        for node in self.node_repository.all():
+            capabilities = self.zeromq_server.request_capabilities(node)
+            if self.compare_capabilities(needed_capabilities=image['capabilities'], node_capabilities=capabilities):
+                return node
+        return None
 
     def terminate_instances(self, service):
         """
@@ -118,9 +126,7 @@ class InterNodeOrchestrator(object):
                 service.state = Service.ServiceState.STOPPING
                 self.service_repository.update(service)
                 for image in service.images:
-                    self.valmanager.terminate(image.id)
-                service.state = Service.ServiceState.TERMINATED
-                self.service_repository.update(service)
+                    self.zeromq_server.terminate_image(image)
             else:
                 self.logger.error('Service `%s` with the id `%s` is not available' % (service.name, service.id))
 

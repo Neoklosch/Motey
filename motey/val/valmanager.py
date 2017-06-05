@@ -1,6 +1,7 @@
 import os
 
 from rx.subjects import Subject
+from motey.models.image import Image
 
 
 class VALManager(object):
@@ -9,21 +10,21 @@ class VALManager(object):
     Loads the plugins and wrapps the commands.
     """
 
-    def __init__(self, logger, labeling_engine, plugin_manager):
+    def __init__(self, logger, labeling_repository, plugin_manager):
         """
         Constructor of the VALManger.
 
         :param logger: DI injected
         :type logger: motey.utils.logger.Logger
-        :param labeling_engine: the DI injected labeling engine instance
-        :type labeling_engine: motey.labelingengine.labelingengine.LabelingEngine
+        :param labeling_repository: the DI injected labeling engine instance
+        :type labeling_repository: motey.repositories.labeling_repository.LabelingRepository
         :param plugin_manager: the DI injected plugin manager
         :type plugin_manager: yapsy.PluginManager.PluginManager
         """
 
         self.plugin_stream = Subject()
         self.logger = logger
-        self.labeling_engine = labeling_engine
+        self.labeling_repository = labeling_repository
         self.plugin_manager = plugin_manager
 
     def start(self):
@@ -41,63 +42,45 @@ class VALManager(object):
         with the related plugin type will be added to the labeling engine.
         """
 
-        self.labeling_engine.remove_all_from_type('plugin')
+        self.labeling_repository.remove_all_from_type('plugin')
         self.plugin_manager.setPluginPlaces([os.path.abspath("motey/val/plugins")])
         self.plugin_manager.collectPlugins()
         for plugin in self.plugin_manager.getAllPlugins():
             plugin.plugin_object.activate()
-            self.labeling_engine.add(plugin.plugin_object.get_plugin_type(), 'plugin')
+            self.labeling_repository.add(plugin.plugin_object.get_plugin_type(), 'plugin')
 
-    def instantiate(self, image_name, plugin_type=None):
+    def instantiate(self, image, plugin_type):
         """
         Instantiate an image.
 
-        :param image_name: The image_name can be type of str or list. The list can contain again str or a dict.
-                           If the image_name is a str, the instance with this specific name will be instantiated,
-                           if it a list with str in it, all the images in the list will be instantiated and
-                           if it is a list with a dict in it, each dict needs to have a key ``image_name`` in it and an
-                           optional key ``parameters`` which can be again a dict with different execution parameters.
-                           samples:
-                            * image_name = 'alpine'
-                            * image_name = ['alpine', 'busybox',]
-                            * image_name = [{'image_name': 'alpine', 'parameters': {'ports': {'80/tcp': 8080}, 'name': 'motey_alpine'}},]
-        :type image_name: list
-        :param plugin_type: Will only be executed with the given plugin. Default None.
-        :type plugin_type: str or list
+        :param image: the image which should be executed
+        :type image: motey.models.image.Image
+        :param plugin_type: Will only be executed with the given plugin
+        :type plugin_type: str
+        :return: the image id of the instantiated image
         """
-
+        image_id = None
         for plugin in self.plugin_manager.getAllPlugins():
             if plugin_type and not plugin.plugin_object.get_plugin_type() == plugin_type:
                 continue
 
-            if isinstance(image_name, str):
-                plugin.plugin_object.start_instance(image_name)
-            elif isinstance(image_name, list):
-                for single_image in image_name:
-                    if isinstance(single_image, str):
-                        plugin.plugin_object.start_instance(single_image)
-                    elif isinstance(single_image, dict):
-                        parameters = single_image['parameters'] if 'parameters' in single_image else {}
-                        plugin.plugin_object.start_instance(single_image['image_name'], parameters)
+            image_id = plugin.plugin_object.start_instance(image.name, image.parameters)
+        return image_id
 
-    def terminate(self, instance_name, plugin_type=None):
+    def terminate(self, instance_name, plugin_type):
         """
         Terminate a running instance.
 
         :param instance_name: the name of the instance
         :type instance_name: str
-        :param plugin_type: The instance will only be terminated for the given plugin. Default None.
-        :type plugin_type: str or list
+        :param plugin_type: The instance will only be terminated for the given plugin
+        :type plugin_type: str
         """
         for plugin in self.plugin_manager.getAllPlugins():
             if plugin_type and not plugin.plugin_object.get_plugin_type() == plugin_type:
                 continue
 
-            if isinstance(instance_name, str):
-                plugin.plugin_object.stop_instance(instance_name)
-            elif isinstance(instance_name, list):
-                for single_instance in instance_name:
-                    plugin.plugin_object.stop_instance(single_instance)
+            plugin.plugin_object.stop_instance(instance_name)
 
     def close(self):
         """
@@ -107,5 +90,5 @@ class VALManager(object):
         """
 
         for plugin in self.plugin_manager.getAllPlugins():
-            self.labeling_engine.remove(plugin.plugin_object.get_plugin_type())
+            self.labeling_repository.remove(plugin.plugin_object.get_plugin_type())
             plugin.plugin_object.deactivate()

@@ -26,18 +26,19 @@ class DIRepositories(containers.DeclarativeContainer):
 class DIServices(containers.DeclarativeContainer):
     plugin_manager = PluginManager()
 
+    valmanager = providers.Singleton(VALManager,
+                                     logger=DICore.logger,
+                                     labeling_repository=DIRepositories.labeling_repository,
+                                     plugin_manager=plugin_manager)
+
     zeromq_server = providers.Singleton(ZeroMQServer,
-                                        logger=DICore.logger)
+                                        logger=DICore.logger,
+                                        valmanager=valmanager)
 
     labeling_engine = providers.Singleton(LabelingEngine,
                                           logger=DICore.logger,
                                           labeling_repository=DIRepositories.labeling_repository,
                                           zeromq_server=zeromq_server)
-
-    valmanager = providers.Singleton(VALManager,
-                                     logger=DICore.logger,
-                                     labeling_engine=DIRepositories.labeling_repository,
-                                     plugin_manager=plugin_manager)
 
     inter_node_orchestrator = providers.Singleton(InterNodeOrchestrator,
                                                   logger=DICore.logger,

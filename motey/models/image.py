@@ -5,7 +5,24 @@ class Image(object):
     All of them are optional.
     """
 
-    def __init__(self, name, id='', parameters={}, capabilities={}, node=None):
+    class ImageState(object):
+        """
+        Enum with service states.
+         * INITIAL
+         * INSTANTIATING
+         * RUNNING
+         * STOPPING
+         * TERMINATED
+         * ERROR
+        """
+        INITIAL = 0
+        INSTANTIATING = 1
+        RUNNING = 2
+        STOPPING = 3
+        TERMINATED = 4
+        ERROR = 5
+
+    def __init__(self, name, id='', parameters={}, capabilities={}, node=None, state=ImageState.INITIAL):
         """
         Construcotr of the model object.
 
@@ -20,6 +37,8 @@ class Image(object):
         :type capabilities: dict
         :param node: the node where the image is executed. Default None which is equivalent to the current node.
         :type node: str
+        :param state: current state of the image. Default `INITIAL`.
+        :type state: motey.models.image.Image.ImageState
         """
 
         self.id = id
@@ -27,3 +46,4 @@ class Image(object):
         self.parameters = parameters
         self.capabilities = capabilities
         self.node = node
+        self.status = state
