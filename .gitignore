@@ -90,4 +90,4 @@ ENV/
 
 .idea
 
-motey/data/databases/
+motey/databases/
