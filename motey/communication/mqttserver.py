@@ -167,18 +167,6 @@ class MQTTServer(object):
         if self._after_connect:
             self._after_connect()
 
-    def handle_receive_nodes(self, client, userdata, message):
-        """
-        Define the receive new node callback implementation.
-        Adds the new node to the ``NodesRepository``.
-
-        :param client:     the client instance for this callback
-        :param userdata:   the private user data as set in Client() or userdata_set()
-        :param message:    the data which was send
-        """
-        new_node = message.payload.decode('utf-8')
-        self.nodes_repository.add(ip=new_node)
-
     def handle_nodes_request(self, client, userdata, message):
         """
         Define the node request callback implementation.
@@ -195,7 +183,16 @@ class MQTTServer(object):
         pass
 
     def handle_register_node(self, client, userdata, message):
-        pass
+        """
+        Define the register new node callback implementation.
+        Adds the new node to the ``NodesRepository``.
+
+        :param client:     the client instance for this callback
+        :param userdata:   the private user data as set in Client() or userdata_set()
+        :param message:    the data which was send
+                """
+        new_node = message.payload.decode('utf-8')
+        self.nodes_repository.add(ip=new_node)
 
     def handle_on_disconnect(self, client, userdata, resultcode):
         """
