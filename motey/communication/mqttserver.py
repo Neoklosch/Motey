@@ -75,7 +75,7 @@ class MQTTServer(object):
         """
         for key, value in self.ROUTES.items():
             if value['callback']:
-                self.client.message_callback_add(sub=self.ROUTES['receive_nodes'], callback=value['callback'])
+                self.client.message_callback_add(sub=value['topic'], callback=value['callback'])
 
     def start(self):
         """
