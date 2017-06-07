@@ -4,8 +4,8 @@
 Labeling event command line tool.
 
 Usage:
-  __main__.py --label=<label> [--type=<labelingevent>] [--action=<add|remove>]
-  __main__.py -h | --help | --version
+  addlabel.py --label=<label> [--type=<labelingevent>] [--action=<add|remove>]
+  addlabel.py -h | --help | --version
 """
 
 

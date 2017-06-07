@@ -78,7 +78,7 @@ class InterNodeOrchestrator(object):
     def deploy_service(self, service):
         for image in service.images:
             image.id = self.zeromq_server.deploy_image(image)
-        self.service_repository.update(service)
+        # self.service_repository.update(service)
 
     def get_service_status(self, service):
         for image in service.images:
