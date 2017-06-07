@@ -39,7 +39,6 @@ def main():
     publisher.send_string(output)
 
 
-
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)
     main()
