@@ -9,14 +9,6 @@ class MQTTServer(object):
     The webserver runs in a separate thread and will not block the main thread.
     """
 
-    # Routes for registering and unregistering nodes
-    ROUTES = {
-        'register_node': 'motey/v1/register',
-        'remove_node':   'motey/v1/remove',
-        'receive_nodes': 'motey/v1/receive_nodes',
-        'nodes_request': 'motey/v1/nodes_request',
-    }
-
     def __init__(self, logger, nodes_repository, host='127.0.0.1', port=1883, username=None, password=None,
                  keepalive=60):
         """
@@ -34,6 +26,23 @@ class MQTTServer(object):
         broker. If no other messages are being exchanged, this controls the
         rate at which the client will send ping messages to the broker.
         """
+
+        # Routes for registering and unregistering nodes
+        self.ROUTES = {
+            'register_node': {
+                'topic': 'motey/v1/register',
+                'callback': self.handle_register_node
+            },
+            'remove_node': {
+                'topic': 'motey/v1/remove',
+                'callback': self.handle_nodes_removal
+            },
+            'nodes_request': {
+                'topic': 'motey/v1/nodes_request',
+                'callback': self.handle_nodes_request
+            },
+        }
+
         self.host = host
         self.port = port
         self.keepalive = keepalive
@@ -64,8 +73,9 @@ class MQTTServer(object):
         """
         Adds all the configured MQTT endpoints.
         """
-        self.client.message_callback_add(sub=self.ROUTES['receive_nodes'], callback=self.handle_receive_nodes)
-        self.client.message_callback_add(sub=self.ROUTES['nodes_request'], callback=self.handle_nodes_request)
+        for key, value in self.ROUTES:
+            if value['callback']:
+                self.client.message_callback_add(sub=self.ROUTES['receive_nodes'], callback=value['callback'])
 
     def start(self):
         """
@@ -80,8 +90,8 @@ class MQTTServer(object):
         """
         try:
             self.client.connect(host=self.host, port=self.port, keepalive=self.keepalive)
-            self.client.loop_forever()
             self.logger.info('MQTT server started')
+            self.client.loop_forever()
         except OSError:
             self.logger.error('MQTT broker is not available')
 
@@ -100,7 +110,7 @@ class MQTTServer(object):
         :param ip: The IP address of the new node. Default is None.
         """
         if ip:
-            self.client.publish(topic=self.ROUTES['register_node'], payload=ip)
+            self.client.publish(topic=self.ROUTES['register_node']['topic'], payload=ip)
 
     def publish_node_request(self, ip=None):
         """
@@ -109,7 +119,7 @@ class MQTTServer(object):
         :param ip: the own ip to let the other nodes know where the request cames from.
         """
         if ip:
-            self.client.publish(topic=self.ROUTES['nodes_request'], payload=ip)
+            self.client.publish(topic=self.ROUTES['nodes_request']['topic'], payload=ip)
 
     def remove_node(self, ip=None):
         """
@@ -119,7 +129,7 @@ class MQTTServer(object):
         :param ip: The IP address of the new node. Default is None.
         """
         if ip:
-            self.client.publish(topic=self.ROUTES['remove_node'], payload=ip)
+            self.client.publish(topic=self.ROUTES['remove_node']['topic'], payload=ip)
 
     def handle_on_connect(self, client, userdata, flags, resultcode):
         """
@@ -152,8 +162,8 @@ class MQTTServer(object):
         if resultcode is not 0:
             self.logger.info("Connection to the broker failed")
         else:
-            client.subscribe(topic=self.ROUTES['receive_nodes'])
-            client.subscribe(topic=self.ROUTES['nodes_request'])
+            for key, value in self.ROUTES:
+                client.subscribe(topic=value['topic'])
         if self._after_connect:
             self._after_connect()
 
@@ -180,6 +190,12 @@ class MQTTServer(object):
         """
         if self.nodes_request_callback:
             self.nodes_request_callback(client, userdata, message)
+
+    def handle_nodes_removal(self, client, userdata, message):
+        pass
+
+    def handle_register_node(self, client, userdata, message):
+        pass
 
     def handle_on_disconnect(self, client, userdata, resultcode):
         """
