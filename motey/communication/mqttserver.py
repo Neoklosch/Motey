@@ -73,7 +73,7 @@ class MQTTServer(object):
         """
         Adds all the configured MQTT endpoints.
         """
-        for key, value in self.ROUTES:
+        for key, value in self.ROUTES.items():
             if value['callback']:
                 self.client.message_callback_add(sub=self.ROUTES['receive_nodes'], callback=value['callback'])
 
@@ -162,7 +162,7 @@ class MQTTServer(object):
         if resultcode is not 0:
             self.logger.info("Connection to the broker failed")
         else:
-            for key, value in self.ROUTES:
+            for key, value in self.ROUTES.items():
                 client.subscribe(topic=value['topic'])
         if self._after_connect:
             self._after_connect()
