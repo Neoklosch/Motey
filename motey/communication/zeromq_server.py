@@ -65,20 +65,20 @@ class ZeroMQServer(object):
         This method will be executed on a separate thread.
         """
 
-        self.capabilities_subscriber.bind('tcp://*:%s' % config['LABELINGENGINE']['port'])
+        self.capabilities_subscriber.bind('tcp://*:%s' % config['ZEROMQ']['labeling_engine'])
         self.capabilities_subscriber.setsockopt_string(zmq.SUBSCRIBE, 'labelingevent')
         self.capabilities_subscriber_thread.start()
 
-        self.capabilities_replier.bind('tcp://*:%s' % config['CAPABILITIES_REPLIER']['port'])
+        self.capabilities_replier.bind('tcp://*:%s' % config['ZEROMQ']['capabilities_replier'])
         self.capabilities_replier_thread.start()
 
-        self.deploy_image_replier.bind('tcp://*:%s' % config['DEPLOY_IMAGE_REPLIER']['port'])
+        self.deploy_image_replier.bind('tcp://*:%s' % config['ZEROMQ']['deploy_image_replier'])
         self.deploy_image_replier_thread.start()
 
-        self.image_status_replier.bind('tcp://*:%s' % config['IMAGE_STATUS_REPLIER']['port'])
+        self.image_status_replier.bind('tcp://*:%s' % config['ZEROMQ']['image_status_replier'])
         self.image_status_replier_thread.start()
 
-        self.image_terminate_replier.bind('tcp://*:%s' % config['IMAGE_TERMINATE_REPLIER']['port'])
+        self.image_terminate_replier.bind('tcp://*:%s' % config['ZEROMQ']['image_terminate_replier'])
         self.image_terminate_thread.start()
 
         self.logger.info('ZeroMQ server started')
@@ -151,7 +151,7 @@ class ZeroMQServer(object):
             return None
 
         socket = self.context.socket(zmq.REQ)
-        socket.connect("tcp://%s:%s" % (ip, config['CAPABILITIES_REPLIER']['port']))
+        socket.connect("tcp://%s:%s" % (ip, config['ZEROMQ']['capabilities_replier']))
         socket.send_string("")
         capabilities = socket.recv_string()
         json_capabilities = []
@@ -166,7 +166,7 @@ class ZeroMQServer(object):
             return None
 
         socket = self.context.socket(zmq.REQ)
-        socket.connect("tcp://%s:%s" % (image.node, config['DEPLOY_IMAGE_REPLIER']['port']))
+        socket.connect("tcp://%s:%s" % (image.node, config['ZEROMQ']['deploy_image_replier']))
         socket.send_string(json.dumps(image))
         external_image_id = socket.recv_string()
         return external_image_id
@@ -176,7 +176,7 @@ class ZeroMQServer(object):
             return None
 
         socket = self.context.socket(zmq.REQ)
-        socket.connect("tcp://%s:%s" % (image.node, config['IMAGE_STATUS_REPLIER']['port']))
+        socket.connect("tcp://%s:%s" % (image.node, config['ZEROMQ']['image_status_replier']))
         socket.send_string(image.id)
         external_image_status = socket.recv_string()
         return external_image_status
@@ -186,6 +186,6 @@ class ZeroMQServer(object):
             return None
 
         socket = self.context.socket(zmq.REQ)
-        socket.connect("tcp://%s:%s" % (image.node, config['IMAGE_TERMINATE_REPLIER']['port']))
+        socket.connect("tcp://%s:%s" % (image.node, config['ZEROMQ']['image_terminate_replier']))
         socket.send_string(image.id)
         result = socket.recv_string()
