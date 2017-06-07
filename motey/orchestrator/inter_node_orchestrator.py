@@ -1,6 +1,4 @@
-import copy
 import threading
-from time import sleep
 
 import yaml
 from jsonschema import validate, ValidationError
@@ -8,8 +6,8 @@ from jsonschema import validate, ValidationError
 from motey.communication.api_routes.blueprintendpoint import BlueprintEndpoint
 from motey.models.image import Image
 from motey.models.service import Service
-from motey.validation.schemas import blueprint_schema
 from motey.utils.network_utils import get_own_ip
+from motey.validation.schemas import blueprint_schema
 
 
 class InterNodeOrchestrator(object):

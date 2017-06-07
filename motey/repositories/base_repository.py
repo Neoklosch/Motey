@@ -1,3 +1,8 @@
+import os
+
+from motey.configuration.configreader import config
+
+
 class BaseRepository(object):
     """
     Base repository to wrapp database handling.
@@ -8,6 +13,9 @@ class BaseRepository(object):
         Constructor of the class.
         """
         self.db = None
+        directory = os.path.abspath(config['DATABASE']['path'])
+        if not os.path.exists(directory):
+            os.makedirs(directory)
 
     def all(self):
         """

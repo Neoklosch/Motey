@@ -1,7 +1,6 @@
 import os
 
 from rx.subjects import Subject
-from motey.models.image import Image
 
 
 class VALManager(object):
