@@ -53,17 +53,25 @@ class Image(object):
         yield 'name', self.name
         yield 'parameters', self.parameters
         yield 'capabilities', self.capabilities
+        yield 'node', self.node
         yield 'status', self.status
 
     @staticmethod
-    def transform(json_data):
-        if 'name' not in json_data:
+    def transform(data):
+        """
+        Static method to translate an image dict into a image model.
+
+        :param data: a dict with image data
+        :type data: dict
+        :return: the translated image model, None if something goes wrong
+        """
+        if 'name' not in data:
             return None
         return Image(
-            name=json_data['name'],
-            id=json_data['id'] if 'id' in json_data else '',
-            parameters=json_data['parameters'] if 'parameters' in json_data else {},
-            capabilities=json_data['capabilities'] if 'capabilities' in json_data else {},
-            node=json_data['node'] if 'node' in json_data else {},
-            state=json_data['state'] if 'state' in json_data else {}
+            name=data['name'],
+            id=data['id'] if 'id' in data else '',
+            parameters=data['parameters'] if 'parameters' in data else {},
+            capabilities=data['capabilities'] if 'capabilities' in data else {},
+            node=data['node'] if 'node' in data else {},
+            state=data['state'] if 'state' in data else {}
         )

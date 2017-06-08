@@ -60,6 +60,8 @@ class InterNodeOrchestrator(object):
                         node = self.find_node(image)
                         if node:
                             image.node = node['ip']
+                            # found a node which handle the container - we can break the loop
+                            break
                         else:
                             # does not found any node - error
                             service.state = Service.ServiceState.ERROR
@@ -137,7 +139,7 @@ class InterNodeOrchestrator(object):
         try:
             loaded_data = yaml.load(blueprint_data)
             validate(loaded_data, blueprint_schema)
-            service = self.__translate_to_service(loaded_data)
+            service = Service.transform(loaded_data)
             worker_thread = None
             if service.action == Service.ServiceAction.ADD:
                 worker_thread = threading.Thread(target=self.instantiate_service, args=(service,))
@@ -153,41 +155,3 @@ class InterNodeOrchestrator(object):
 
         except (yaml.YAMLError, ValidationError):
             self.logger.error('YAML file could not be parsed: %s' % blueprint_data)
-
-    def __translate_to_service(self, blueprint_data):
-        """
-        Private method to translate the blueprint data into a service model.
-
-        :param blueprint_data: data in YAML format which matches the ``validation.schemas.blueprint_schema``
-        :return: the translated service model
-        """
-        return Service(
-            name=blueprint_data['service_name'],
-            images=self.__translate_to_image_list(blueprint_data['images'])
-        )
-
-    def __translate_to_image_list(self, yaml_data):
-        """
-        Private method to translate a list of images into a list of image models.
-
-        :param yaml_data: list of images which should be translated
-        :return: a list of translated image models
-        """
-        result_list = []
-        for image in yaml_data:
-            result_list.append(self.__translate_to_image(image))
-        return result_list
-
-    def __translate_to_image(self, yaml_data):
-        """
-        Private method to translate a single yaml image data into a image model.
-
-        :param yaml_data: a single yaml image data
-        :return: the translated image model
-        """
-        image = Image(
-            name=yaml_data['image_name'],
-            parameters=yaml_data['parameters'],
-            capabilities=yaml_data['capabilities']
-        )
-        return image
