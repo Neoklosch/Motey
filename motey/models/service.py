@@ -67,3 +67,10 @@ class Service(object):
         self.name = name
         self.images = images
         self.node_type = node_type
+
+    def __iter__(self):
+        yield 'id', self.id
+        yield 'state', self.state
+        yield 'action', self.action
+        yield 'node_type', self.node_type
+        yield 'images', [dict(image) for image in self.images]

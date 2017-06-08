@@ -47,3 +47,10 @@ class Image(object):
         self.capabilities = capabilities
         self.node = node
         self.status = state
+
+    def __iter__(self):
+        yield 'id', self.id
+        yield 'name', self.name
+        yield 'parameters', self.parameters
+        yield 'capabilities', self.capabilities
+        yield 'status', self.status
