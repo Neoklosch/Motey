@@ -54,3 +54,16 @@ class Image(object):
         yield 'parameters', self.parameters
         yield 'capabilities', self.capabilities
         yield 'status', self.status
+
+    @staticmethod
+    def transform(json_data):
+        if 'name' not in json_data:
+            return None
+        return Image(
+            name=json_data['name'],
+            id=json_data['id'] if 'id' in json_data else '',
+            parameters=json_data['parameters'] if 'parameters' in json_data else {},
+            capabilities=json_data['capabilities'] if 'capabilities' in json_data else {},
+            node=json_data['node'] if 'node' in json_data else {},
+            state=json_data['state'] if 'state' in json_data else {}
+        )

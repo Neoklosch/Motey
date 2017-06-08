@@ -5,6 +5,7 @@ import zmq
 from rx.subjects import Subject
 
 from motey.configuration.configreader import config
+from motey.models.image import Image
 
 
 class ZeroMQServer(object):
@@ -120,12 +121,15 @@ class ZeroMQServer(object):
     def __run_deploy_image_replier_thread(self):
         while not self.stopped:
             result = self.deploy_image_replier.recv_string()
+            image_id = ''
             try:
-                image = json.loads(result)
-                # TODO: check json
-                self.valmanager.instantiate(image=image, plugin_type='docker')
+                image_json = json.loads(result)
+                image = Image.transform(image_json)
+                if image:
+                    image_id = self.valmanager.instantiate(image=image, plugin_type='docker')
             except json.JSONDecodeError:
                 pass
+            self.deploy_image_replier.send_string(image_id)
 
     def __run_image_status_replier_thread(self):
         while not self.stopped:
@@ -162,12 +166,12 @@ class ZeroMQServer(object):
         return json_capabilities
 
     def deploy_image(self, image):
-        if not image or not image.id or not image.node:
+        if not image or not image.node:
             return None
 
         socket = self.context.socket(zmq.REQ)
         socket.connect("tcp://%s:%s" % (image.node, config['ZEROMQ']['deploy_image_replier']))
-        socket.send_string(json.dumps(image))
+        socket.send_string(json.dumps(dict(image)))
         external_image_id = socket.recv_string()
         return external_image_id
 
