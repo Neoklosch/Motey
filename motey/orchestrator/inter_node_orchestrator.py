@@ -73,6 +73,7 @@ class InterNodeOrchestrator(object):
                     break
             else:
                 # never broke - no errors occurred - deploy
+                self.service_repository.update(dict(service))
                 self.deploy_service(service=service)
 
     def deploy_service(self, service):
@@ -93,18 +94,15 @@ class InterNodeOrchestrator(object):
         :param node_capabilities: the capabilties to check
         :return: True if all capabilities are fulfilled, otherwiese False
         """
-        for node_capability in node_capabilities:
-            for capability in needed_capabilities:
+        for capability in needed_capabilities:
+            for node_capability in node_capabilities:
                 if node_capability['label'] == capability:
                     # found them
                     break
             else:
                 # never broke - capability not found - break outer loop and try next node
-                break
-        else:
-            # never broke - all capabilities succeeded
-            return True
-        return False
+                return False
+        return True
 
     def find_node(self, image):
         for node in self.node_repository.all():
