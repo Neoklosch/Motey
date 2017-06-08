@@ -59,7 +59,7 @@ class InterNodeOrchestrator(object):
                         # if a single capability is not satisfied, search for external node
                         node = self.find_node(image)
                         if node:
-                            image.node = node
+                            image.node = node['ip']
                         else:
                             # does not found any node - error
                             service.state = Service.ServiceState.ERROR

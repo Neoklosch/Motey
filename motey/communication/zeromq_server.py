@@ -121,7 +121,7 @@ class ZeroMQServer(object):
     def __run_deploy_image_replier_thread(self):
         while not self.stopped:
             result = self.deploy_image_replier.recv_string()
-            image_id = ''
+            image_id = None
             try:
                 image_json = json.loads(result)
                 image = Image.transform(image_json)
@@ -129,7 +129,7 @@ class ZeroMQServer(object):
                     image_id = self.valmanager.instantiate(image=image, plugin_type='docker')
             except json.JSONDecodeError:
                 pass
-            self.deploy_image_replier.send_string(image_id)
+            self.deploy_image_replier.send_string(image_id if image_id else '')
 
     def __run_image_status_replier_thread(self):
         while not self.stopped:
