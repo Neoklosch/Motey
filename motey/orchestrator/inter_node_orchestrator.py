@@ -45,11 +45,11 @@ class InterNodeOrchestrator(object):
         :param service: the service to be used.
         """
         if service.action == Service.ServiceAction.ADD:
-            self.service_repository.add(service)
+            self.service_repository.add(dict(service))
             service.state = Service.ServiceState.INSTANTIATING
-            self.service_repository.update(service)
+            self.service_repository.update(dict(service))
             for image in service.images:
-                if 'capabilities' not in image:
+                if not image.capabilities:
                     # no capabilities, deploy locally
                     image.node = get_own_ip()
                     continue
@@ -69,7 +69,7 @@ class InterNodeOrchestrator(object):
                     image.node = get_own_ip()
 
                 if service.state == Service.ServiceState.ERROR:
-                    self.service_repository.update(service)
+                    self.service_repository.update(dict(service))
                     break
             else:
                 # never broke - no errors occurred - deploy
@@ -78,7 +78,7 @@ class InterNodeOrchestrator(object):
     def deploy_service(self, service):
         for image in service.images:
             image.id = self.zeromq_server.deploy_image(image)
-        # self.service_repository.update(service)
+        # self.service_repository.update(dict(service))
 
     def get_service_status(self, service):
         for image in service.images:
@@ -122,7 +122,7 @@ class InterNodeOrchestrator(object):
         if service.action == Service.ServiceAction.REMOVE:
             if self.service_repository.has(service_id=service.id):
                 service.state = Service.ServiceState.STOPPING
-                self.service_repository.update(service)
+                self.service_repository.update(dict(service))
                 for image in service.images:
                     self.zeromq_server.terminate_image(image)
             else:
@@ -163,10 +163,10 @@ class InterNodeOrchestrator(object):
         :param blueprint_data: data in YAML format which matches the ``validation.schemas.blueprint_schema``
         :return: the translated service model
         """
-        service = Service()
-        service.name = blueprint_data['service_name']
-        service.images = self.__translate_to_image_list(blueprint_data['images'])
-        return service
+        return Service(
+            name=blueprint_data['service_name'],
+            images=self.__translate_to_image_list(blueprint_data['images'])
+        )
 
     def __translate_to_image_list(self, yaml_data):
         """
@@ -187,8 +187,9 @@ class InterNodeOrchestrator(object):
         :param yaml_data: a single yaml image data
         :return: the translated image model
         """
-        image = Image()
-        image.name = yaml_data['image_name']
-        image.parameters = yaml_data['parameters']
-        image.capabilities = yaml_data['capabilities']
+        image = Image(
+            name=yaml_data['image_name'],
+            parameters=yaml_data['parameters'],
+            capabilities=yaml_data['capabilities']
+        )
         return image

@@ -25,11 +25,11 @@ class ServiceRepository(BaseRepository):
 
         :param service: a service model to be stored
         """
-        if not self.has(service.id):
+        if not self.has(service['id']):
             self.db.insert(service)
 
     def update(self, service):
-        self.db.update(service, Query().id == service.id)
+        self.db.update(service, Query().id == service['id'])
 
     def remove(self, service_id):
         """

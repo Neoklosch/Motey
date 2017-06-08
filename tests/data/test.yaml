@@ -8,14 +8,16 @@ images:
     ports:
       80/tcp: 8080
       7070/udp: 9001
-    name: motey_alpine
+    name: alpine_from_motey
+  capabilities:
+    - alpine
 - image_name: busybox
   parameters:
     ports:
       80/tcp: 8080
-    name: busybox_test_container
+    name: busybox_from_motey
   capabilities:
-    - docker
+    - blub
 - image_name: nginx
   parameters:
     ports:
@@ -23,4 +25,4 @@ images:
     detach: true
     name: nginx_from_motey
   capabilities:
-    - docker
+    - nginx
