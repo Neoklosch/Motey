@@ -95,7 +95,7 @@ class InterNodeOrchestrator(object):
         """
         for node_capability in node_capabilities:
             for capability in needed_capabilities:
-                if node_capability['label'] == capability['label'] and node_capability['type'] == capability['type']:
+                if node_capability['label'] == capability:
                     # found them
                     break
             else:
@@ -108,8 +108,8 @@ class InterNodeOrchestrator(object):
 
     def find_node(self, image):
         for node in self.node_repository.all():
-            capabilities = self.zeromq_server.request_capabilities(node)
-            if self.compare_capabilities(needed_capabilities=image['capabilities'], node_capabilities=capabilities):
+            capabilities = self.zeromq_server.request_capabilities(node['ip'])
+            if self.compare_capabilities(needed_capabilities=image.capabilities, node_capabilities=capabilities):
                 return node
         return None
 
