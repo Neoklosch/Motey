@@ -25,7 +25,7 @@ script:
 
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
-    docker --version  # document the version travis is using
+    docker --version
     docker build -t neoklosch/motey motey-docker-image/.
     docker tag neoklosch/motey:latest
     docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
