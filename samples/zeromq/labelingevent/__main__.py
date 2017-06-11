@@ -12,10 +12,10 @@ Usage:
 import json
 import signal
 import sys
+from time import sleep
 
 import zmq
 from docopt import docopt
-from time import sleep
 
 context = zmq.Context()
 publisher = context.socket(zmq.PUB)

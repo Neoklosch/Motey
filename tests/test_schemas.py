@@ -1,8 +1,8 @@
 import unittest
-import yaml
-from jsonschema import validate, ValidationError
 
-from motey.validation.schemas import blueprint_schema
+from jsonschema import validate
+
+from motey.models.schemas import blueprint_yaml_schema
 
 
 class TestSchemas(unittest.TestCase):
@@ -45,7 +45,7 @@ class TestSchemas(unittest.TestCase):
                 }
             ]
         }
-        validate(data, blueprint_schema)
+        validate(data, blueprint_yaml_schema)
 
 
 if __name__ == '__main__':

@@ -2,29 +2,14 @@ import json
 
 from jsonschema import validate, ValidationError
 
+from motey.models.schemas import label_json_schema
+
 
 class LabelingEngine(object):
     """
     This module provides a connection endpoint for the hardware layer.
     New labels can be added via a ZeroMQ tcp publisher which is defined in the ``ZeroMQServer``.
     """
-
-    # JSON schema for a valid label entry
-    json_schema = {
-        "type": "object",
-        "properties": {
-            "label": {
-                "type": "string"
-            },
-            "label_type": {
-                "type": "string"
-            },
-            "action": {
-                "enum": ["add", "remove"]
-            }
-        },
-        "required": ["label", "label_type", "action"]
-    }
 
     def __init__(self, logger, labeling_repository, zeromq_server):
         """
@@ -85,11 +70,12 @@ class LabelingEngine(object):
         Perform a specific action for the given entry.
         Possible action types are `add` and `remove`.
 
-        :param entry: the label entry which should be used to perform the action. The entry must match the `json_schema`
+        :param entry: the label entry which should be used to perform the action.
+                      The entry must match the `motey.models.schemas.label_json_schema`
         """
 
         try:
-            validate(entry, self.json_schema)
+            validate(entry, label_json_schema)
             if entry['action'] == 'add':
                 self.labeling_repository.add(label=entry['label'], label_type=entry['label_type'])
             elif entry['action'] == 'remove':

@@ -4,7 +4,7 @@ from flask.views import MethodView
 from jsonschema import validate, ValidationError
 from rx.subjects import Subject
 
-from motey.validation.schemas import blueprint_schema
+from motey.models.schemas import blueprint_yaml_schema
 
 
 class BlueprintEndpoint(MethodView):
@@ -28,7 +28,7 @@ class BlueprintEndpoint(MethodView):
             result = request.get_data(cache=False, as_text=True)
             try:
                 loaded_data = yaml.load(result)
-                validate(loaded_data, blueprint_schema)
+                validate(loaded_data, blueprint_yaml_schema)
                 self.yaml_post_stream.on_next(result)
             except (yaml.YAMLError, ValidationError):
                 return abort(400)

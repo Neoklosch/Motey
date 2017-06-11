@@ -2,6 +2,8 @@ from flask import jsonify, request
 from flask.views import MethodView
 from jsonschema import validate, ValidationError
 
+from motey.models.schemas import capability_json_schema
+
 
 class Capabilities(MethodView):
     """
@@ -9,23 +11,6 @@ class Capabilities(MethodView):
     A capability is basically a label for the whole node.
     New capabilities can be added or deleted via this endpoint or a list with the existing ones can be fetched.
     """
-
-    # The schema to validate the sent json data.
-    json_schema = {
-        "type": "array",
-        "items": {
-            "type": "object",
-            "properties": {
-                "label": {
-                    "type": "string"
-                },
-                "label_type": {
-                    "type": "string"
-                }
-            },
-            "required": ["label", "label_type"]
-        }
-    }
 
     def get(self):
         """
@@ -43,14 +28,14 @@ class Capabilities(MethodView):
         The content type of the request must be ``application/json``, otherwise the request will fail.
 
         :return: 201 - Created if at least one capability was added, 304 - Not Modified if non of the sent capabilities
-         was added or 400 - Bad Request if the wrong content type was sent or the json does not match the
-         ``json_schema``.
+                 was added or 400 - Bad Request if the wrong content type was sent or the json does not match the
+                 ``motey.models.schemas.capability_schema``.
         """
         from motey.di.app_module import DIRepositories
         if request.content_type == 'application/json':
             data = request.json
             try:
-                validate(data, self.json_schema)
+                validate(data, capability_json_schema)
                 labeling_repository = DIRepositories.labeling_repository()
                 nothing_added = True
                 for entry in data:
@@ -72,13 +57,13 @@ class Capabilities(MethodView):
 
         :return: 201 - Created if at least one capability was removed, 304 - Not Modified if non of the sent
                  capabilities was removed because they don not exists or 400 - Bad Request if the wrong content type was sent or
-                 the json does not match the ``json_schema``.
+                 the json does not match the ``motey.models.schemas.capability_schema``.
         """
         from motey.di.app_module import DIRepositories
         if request.content_type == 'application/json':
             data = request.json
             try:
-                validate(data, self.json_schema)
+                validate(data, capability_json_schema)
                 labeling_repository = DIRepositories.labeling_repository()
                 nothing_removed = True
                 for entry in data:

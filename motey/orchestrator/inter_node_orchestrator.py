@@ -4,10 +4,9 @@ import yaml
 from jsonschema import validate, ValidationError
 
 from motey.communication.api_routes.blueprintendpoint import BlueprintEndpoint
-from motey.models.image import Image
+from motey.models.schemas import blueprint_yaml_schema
 from motey.models.service import Service
 from motey.utils.network_utils import get_own_ip
-from motey.validation.schemas import blueprint_schema
 
 
 class InterNodeOrchestrator(object):
@@ -131,14 +130,14 @@ class InterNodeOrchestrator(object):
     def handle_blueprint(self, blueprint_data):
         """
         Try to load the YAML data from the given blueprint data and validates them by using the
-        ``validation.schemas.blueprint_schema``.
+        ``motey.models.schemas.blueprint_yaml_schema``.
         If the data is valid, they will be transformed into a services model and handed over to the ``VALManager``.
 
-        :param blueprint_data: data in YAML format which matches the ``validation.schemas.blueprint_schema``
+        :param blueprint_data: data in YAML format which matches the ``motey.models.schemas.blueprint_yaml_schema``
         """
         try:
             loaded_data = yaml.load(blueprint_data)
-            validate(loaded_data, blueprint_schema)
+            validate(loaded_data, blueprint_yaml_schema)
             service = Service.transform(loaded_data)
             worker_thread = None
             if service.action == Service.ServiceAction.ADD:
