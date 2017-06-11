@@ -24,10 +24,4 @@ script:
 
 
 after_success:
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then
-    docker --version
-    docker build -t neoklosch/motey motey-docker-image/.
-    docker tag neoklosch/motey:latest
-    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker push neoklosch/motey
-    fi
+  - if [[ "$TRAVIS_BRANCH" = "master" ]]; then docker --version; docker build -t neoklosch/motey motey-docker-image; docker tag neoklosch/motey:latest; docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"; docker push neoklosch/motey; fi
