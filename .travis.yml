@@ -1,4 +1,4 @@
-sudo: false
+sudo: true
 
 language: python
 
@@ -24,4 +24,10 @@ script:
 
 
 after_success:
-  - pip install python-coveralls && coveralls
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+    docker --version  # document the version travis is using
+    docker build -t neoklosch/motey motey-docker-image/.
+    docker tag neoklosch/motey:latest
+    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+    docker push neoklosch/motey
+    fi
