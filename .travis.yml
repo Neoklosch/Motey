@@ -29,5 +29,11 @@ after_success:
     fi
   - if [[ "$TRAVIS_BRANCH" = "master" ]]; then
     cd docs/;
+    git init
+    git config user.name "Markus Paeschke"
+    git config user.email "markus.paeschke@gmail.com"
+    git remote add origin "https://$GH_TOKEN@github.com/Neoklosch/Motey.git"
+    git fetch origin
+    git reset origin/gh-pages
     make gh-pages;
     fi

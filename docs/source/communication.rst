@@ -6,3 +6,6 @@ Documentation Communication
 
 .. automodule:: motey.communication.mqttserver
     :members:
+
+.. automodule:: motey.communication.zeromq_server
+    :members:
