@@ -102,7 +102,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../utils.html">Documentation Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../val.html">Documentation Virtualization Abstraction Layer (VAL)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../val_plugins.html">Documentation Virtualization Abstraction Layer (VAL) Plugins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../validation.html">Documentation Validation</a></li>
 </ul>
 
             
@@ -187,11 +186,25 @@
 <span class="sd">    After it is started via self.start() it will be executed until self.stop() is executed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">labeling_repository</span><span class="p">,</span> <span class="n">valmanager</span><span class="p">,</span> <span class="n">nodes_repository</span><span class="p">,</span> <span class="n">inter_node_orchestrator</span><span class="p">,</span>
-                 <span class="n">hardware_event_engine</span><span class="p">,</span> <span class="n">as_daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">labeling_repository</span><span class="p">,</span> <span class="n">nodes_repository</span><span class="p">,</span> <span class="n">valmanager</span><span class="p">,</span> <span class="n">inter_node_orchestrator</span><span class="p">,</span>
+                 <span class="n">zeromq_server</span><span class="p">,</span> <span class="n">hardware_event_engine</span><span class="p">,</span> <span class="n">as_daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructor of the core.</span>
 
+<span class="sd">        :param logger: DI injected</span>
+<span class="sd">        :type logger: motey.utils.logger.Logger</span>
+<span class="sd">        :param labeling_repository: DI injected</span>
+<span class="sd">        :type labeling_repository: motey.repositories.labeling_repository.LabelingRepository</span>
+<span class="sd">        :param nodes_repository: DI injected</span>
+<span class="sd">        :type nodes_repository: motey.repositories.nodes_repository.NodesRepository</span>
+<span class="sd">        :param valmanager: DI injected</span>
+<span class="sd">        :type valmanager: motey.val.valmanager.VALManager</span>
+<span class="sd">        :param inter_node_orchestrator: DI injected</span>
+<span class="sd">        :type inter_node_orchestrator: motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator</span>
+<span class="sd">        :param zeromq_server: DI injected</span>
+<span class="sd">        :type zeromq_server: motey.communication.zeromq_server.ZeroMQServer</span>
+<span class="sd">        :param hardware_event_engine: DI injected</span>
+<span class="sd">        :type hardware_event_engine: motey.labelingengine.labelingengine.LabelingEngine</span>
 <span class="sd">        :param as_daemon: Executes the core as a daemon. Default is True.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -207,19 +220,23 @@
                                      <span class="n">username</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;MQTT&#39;</span><span class="p">][</span><span class="s1">&#39;username&#39;</span><span class="p">],</span> <span class="n">password</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;MQTT&#39;</span><span class="p">][</span><span class="s1">&#39;password&#39;</span><span class="p">],</span>
                                      <span class="n">keepalive</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;MQTT&#39;</span><span class="p">][</span><span class="s1">&#39;keepalive&#39;</span><span class="p">]))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">labeling_repository</span> <span class="o">=</span> <span class="n">labeling_repository</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodes_repository</span> <span class="o">=</span> <span class="n">nodes_repository</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">valmanager</span> <span class="o">=</span> <span class="n">valmanager</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inter_node_orchestrator</span> <span class="o">=</span> <span class="n">inter_node_orchestrator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zeromq_server</span> <span class="o">=</span> <span class="n">zeromq_server</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hardware_event_engine</span> <span class="o">=</span> <span class="n">hardware_event_engine</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mqttserver</span><span class="o">.</span><span class="n">after_connect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">after_connect_callback</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mqttserver</span><span class="o">.</span><span class="n">nodes_request_callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__nodes_request_callback</span>
 
 <div class="viewcode-block" id="Core.start"><a class="viewcode-back" href="../../core.html#motey.core.Core.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Start the core component. If self.as_daemon is set to True, the component will be started as a daemon services.</span>
+<span class="sd">        Start the core component. At first clean up config if necessary.</span>
+<span class="sd">        If self.as_daemon is set to True, the component will be started as a daemon services.</span>
 <span class="sd">        It will use the path to the pid which is configured in the config.ini.</span>
 <span class="sd">        If self.as_daemon is set to False, the component will be executed in foreground.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">startup_clean</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_daemon</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="n">Daemonize</span><span class="p">(</span><span class="n">app</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;GENERAL&#39;</span><span class="p">][</span><span class="s1">&#39;app_name&#39;</span><span class="p">],</span> <span class="n">pid</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;GENERAL&#39;</span><span class="p">][</span><span class="s1">&#39;pid&#39;</span><span class="p">],</span> <span class="n">action</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">daemon</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
@@ -229,13 +246,16 @@
 <div class="viewcode-block" id="Core.run"><a class="viewcode-back" href="../../core.html#motey.core.Core.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The method is the main app loop.</span>
-<span class="sd">        It starts the API server as well as the MQTT server and will be executed until self.stop() is executed.</span>
+<span class="sd">        It starts the API server as well as the MQTT server, ZeroMQ server and it will be executed until self.stop()</span>
+<span class="sd">        is executed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Core started&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">webserver</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mqttserver</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zeromq_server</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hardware_event_engine</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">valmanager</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
         <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">stopped</span><span class="p">:</span>
             <span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">1</span><span class="p">)</span></div>
@@ -281,7 +301,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">webserver</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">daemon</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">daemon</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Core stopped&#39;</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Core stopped&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Core.startup_clean"><a class="viewcode-back" href="../../core.html#motey.core.Core.startup_clean">[docs]</a>    <span class="k">def</span> <span class="nf">startup_clean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clean up the labeling and nodes database to remove old entries.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labeling_repository</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodes_repository</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div></div>
 </pre></div>
 
            </div>

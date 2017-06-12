@@ -103,7 +103,6 @@
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Documentation Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="val.html">Documentation Virtualization Abstraction Layer (VAL)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="val_plugins.html">Documentation Virtualization Abstraction Layer (VAL) Plugins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="validation.html">Documentation Validation</a></li>
 </ul>
 
             
@@ -167,11 +166,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-motey.cli">
-<span id="documentation-core"></span><h1>Documentation Core<a class="headerlink" href="#module-motey.cli" title="Permalink to this headline">¶</a></h1>
-<span class="target" id="module-motey.communication"></span><span class="target" id="module-motey.core"></span><dl class="class">
+  <div class="section" id="module-motey.core">
+<span id="documentation-core"></span><h1>Documentation Core<a class="headerlink" href="#module-motey.core" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
 <dt id="motey.core.Core">
-<em class="property">class </em><code class="descclassname">motey.core.</code><code class="descname">Core</code><span class="sig-paren">(</span><em>logger</em>, <em>labeling_repository</em>, <em>valmanager</em>, <em>nodes_repository</em>, <em>inter_node_orchestrator</em>, <em>hardware_event_engine</em>, <em>as_daemon=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/core.html#Core"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.core.Core" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">motey.core.</code><code class="descname">Core</code><span class="sig-paren">(</span><em>logger</em>, <em>labeling_repository</em>, <em>nodes_repository</em>, <em>valmanager</em>, <em>inter_node_orchestrator</em>, <em>zeromq_server</em>, <em>hardware_event_engine</em>, <em>as_daemon=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/core.html#Core"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.core.Core" title="Permalink to this definition">¶</a></dt>
 <dd><p>This module provides the core functionality of Motey.
 It can be executed as a daemon service or can be executed in foreground.
 It will start an API webserver and a MQTTServer which can be configured via the config.ini file.
@@ -195,15 +194,23 @@ Send out a request to fetch the ip from all existing nodes.</p>
 <dt id="motey.core.Core.run">
 <code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/core.html#Core.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.core.Core.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>The method is the main app loop.
-It starts the API server as well as the MQTT server and will be executed until self.stop() is executed.</p>
+It starts the API server as well as the MQTT server, ZeroMQ server and it will be executed until self.stop()
+is executed.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="motey.core.Core.start">
 <code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/core.html#Core.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.core.Core.start" title="Permalink to this definition">¶</a></dt>
-<dd><p>Start the core component. If self.as_daemon is set to True, the component will be started as a daemon services.
+<dd><p>Start the core component. At first clean up config if necessary.
+If self.as_daemon is set to True, the component will be started as a daemon services.
 It will use the path to the pid which is configured in the config.ini.
 If self.as_daemon is set to False, the component will be executed in foreground.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.core.Core.startup_clean">
+<code class="descname">startup_clean</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/core.html#Core.startup_clean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.core.Core.startup_clean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clean up the labeling and nodes database to remove old entries.</p>
 </dd></dl>
 
 <dl class="method">

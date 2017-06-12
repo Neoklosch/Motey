@@ -102,7 +102,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../utils.html">Documentation Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../val.html">Documentation Virtualization Abstraction Layer (VAL)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../val_plugins.html">Documentation Virtualization Abstraction Layer (VAL) Plugins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../validation.html">Documentation Validation</a></li>
 </ul>
 
             
@@ -259,16 +258,21 @@
 
 <span class="sd">        :param image_name: the name of the image which should be created</span>
 <span class="sd">        :param parameters: execution parameters. Same as in the ``docker.create_container``.</span>
+<span class="sd">        :return: the id of the created instance</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">container_id</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_docker_client</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">client</span><span class="o">.</span><span class="n">containers</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">image_name</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s1">&#39;detach&#39;</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
+                <span class="n">parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;detach&#39;</span><span class="p">)</span>
+                <span class="n">container</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">containers</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">image_name</span><span class="p">,</span> <span class="n">detach</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">ContainerError</span> <span class="k">as</span> <span class="n">ce</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;create docker instance &gt; container could not be created&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">ImageNotFound</span> <span class="k">as</span> <span class="n">inf</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;create docker instance &gt; image not found&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">APIError</span> <span class="k">as</span> <span class="n">apie</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;create docker instance &gt; api error&quot;</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;create docker instance &gt; api error&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">container_id</span></div>
 
 <div class="viewcode-block" id="DockerVAL.start_instance"><a class="viewcode-back" href="../../../../val_plugins.html#motey.val.plugins.dockerVAL.DockerVAL.start_instance">[docs]</a>    <span class="k">def</span> <span class="nf">start_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance_name</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="p">{}):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -277,16 +281,22 @@
 
 <span class="sd">        :param instance_name: the name of the existing instance</span>
 <span class="sd">        :param parameters: execution parameters. Same as in the ``docker.create_container``.</span>
+<span class="sd">        :return: the id of the started instance</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">container_id</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_docker_client</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">client</span><span class="o">.</span><span class="n">containers</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">instance_name</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s1">&#39;detach&#39;</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
+                <span class="n">parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;detach&#39;</span><span class="p">)</span>
+            <span class="n">container</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">containers</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">instance_name</span><span class="p">,</span> <span class="n">detach</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+            <span class="n">container_id</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">id</span>
         <span class="k">except</span> <span class="n">ContainerError</span> <span class="k">as</span> <span class="n">ce</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;start docker instance &gt; container could not be created&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">ImageNotFound</span> <span class="k">as</span> <span class="n">inf</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;start docker instance &gt; image not found&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">APIError</span> <span class="k">as</span> <span class="n">apie</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;start docker instance &gt; api error&quot;</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;start docker instance &gt; api error&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">container_id</span></div>
 
 <div class="viewcode-block" id="DockerVAL.stop_instance"><a class="viewcode-back" href="../../../../val_plugins.html#motey.val.plugins.dockerVAL.DockerVAL.stop_instance">[docs]</a>    <span class="k">def</span> <span class="nf">stop_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container_name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

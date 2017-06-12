@@ -103,7 +103,6 @@
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Documentation Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="val.html">Documentation Virtualization Abstraction Layer (VAL)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="val_plugins.html">Documentation Virtualization Abstraction Layer (VAL) Plugins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="validation.html">Documentation Validation</a></li>
 </ul>
 
             
@@ -171,15 +170,28 @@
 <span id="documentation-labeling-engine"></span><h1>Documentation Labeling Engine<a class="headerlink" href="#module-motey.labelingengine.labelingengine" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="motey.labelingengine.labelingengine.LabelingEngine">
-<em class="property">class </em><code class="descclassname">motey.labelingengine.labelingengine.</code><code class="descname">LabelingEngine</code><span class="sig-paren">(</span><em>logger</em>, <em>labeling_repository</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/labelingengine/labelingengine.html#LabelingEngine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.labelingengine.labelingengine.LabelingEngine" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">motey.labelingengine.labelingengine.</code><code class="descname">LabelingEngine</code><span class="sig-paren">(</span><em>logger</em>, <em>labeling_repository</em>, <em>zeromq_server</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/labelingengine/labelingengine.html#LabelingEngine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.labelingengine.labelingengine.LabelingEngine" title="Permalink to this definition">¶</a></dt>
 <dd><p>This module provides a connection endpoint for the hardware layer.
-New labels can be added via a ZeroMQ tcp publisher.
-The port can be configured in the config.ini file.</p>
+New labels can be added via a ZeroMQ tcp publisher which is defined in the <code class="docutils literal"><span class="pre">ZeroMQServer</span></code>.</p>
+<dl class="method">
+<dt id="motey.labelingengine.labelingengine.LabelingEngine.handle_capability_event">
+<code class="descname">handle_capability_event</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/labelingengine/labelingengine.html#LabelingEngine.handle_capability_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.labelingengine.labelingengine.LabelingEngine.handle_capability_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private function which is be executed after an event is received.
+After receiving an event a new label will be added to the LabelingDatabase.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – the received data</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="motey.labelingengine.labelingengine.LabelingEngine.start">
 <code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/labelingengine/labelingengine.html#LabelingEngine.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.labelingengine.labelingengine.LabelingEngine.start" title="Permalink to this definition">¶</a></dt>
-<dd><p>Starts the listening on a given port.
-This method will be executed on a separate thread.</p>
+<dd><p>Subscibes to the <code class="docutils literal"><span class="pre">ZeroMQServer</span></code> event stream.</p>
 </dd></dl>
 
 <dl class="method">

@@ -102,7 +102,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Documentation Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../val.html">Documentation Virtualization Abstraction Layer (VAL)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../val_plugins.html">Documentation Virtualization Abstraction Layer (VAL) Plugins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../validation.html">Documentation Validation</a></li>
 </ul>
 
             
@@ -168,12 +167,82 @@
             
   <h1>Source code for motey.models.image</h1><div class="highlight"><pre>
 <div class="viewcode-block" id="Image"><a class="viewcode-back" href="../../../models.html#motey.models.image.Image">[docs]</a><span></span><span class="k">class</span> <span class="nc">Image</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="p">{},</span> <span class="n">capabilities</span><span class="o">=</span><span class="p">{},</span> <span class="n">node</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model object. Represent an image.</span>
+<span class="sd">    An image can have execution parameters, required capabilities and the node where it is executed.</span>
+<span class="sd">    All of them are optional.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Image.ImageState"><a class="viewcode-back" href="../../../models.html#motey.models.image.Image.ImageState">[docs]</a>    <span class="k">class</span> <span class="nc">ImageState</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Enum with service states.</span>
+<span class="sd">         * INITIAL</span>
+<span class="sd">         * INSTANTIATING</span>
+<span class="sd">         * RUNNING</span>
+<span class="sd">         * STOPPING</span>
+<span class="sd">         * TERMINATED</span>
+<span class="sd">         * ERROR</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">INITIAL</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">INSTANTIATING</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">RUNNING</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">STOPPING</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="n">TERMINATED</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="n">ERROR</span> <span class="o">=</span> <span class="mi">5</span></div>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="p">{},</span> <span class="n">capabilities</span><span class="o">=</span><span class="p">{},</span> <span class="n">node</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">ImageState</span><span class="o">.</span><span class="n">INITIAL</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construcotr of the model object.</span>
+
+<span class="sd">        :param name: the name of the image. Mostly related to the VAL plugin.</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :param id: the id of the executed image instance. Mostly related to the VAL plugin.</span>
+<span class="sd">        :type id: str</span>
+<span class="sd">        :param parameters: a dict with one or multiple execution parameters. Default empty dict.</span>
+<span class="sd">        :type parameters: dict</span>
+<span class="sd">        :param capabilities: a dict with one or multiple capabilities which are necessary for running the image. Default</span>
+<span class="sd">                             empty dict.</span>
+<span class="sd">        :type capabilities: dict</span>
+<span class="sd">        :param node: the node where the image is executed. Default None which is equivalent to the current node.</span>
+<span class="sd">        :type node: str</span>
+<span class="sd">        :param state: current state of the image. Default `INITIAL`.</span>
+<span class="sd">        :type state: motey.models.image.Image.ImageState</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="nb">id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">parameters</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span> <span class="o">=</span> <span class="n">capabilities</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">node</span> <span class="o">=</span> <span class="n">node</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node</span> <span class="o">=</span> <span class="n">node</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">state</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">yield</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">yield</span> <span class="s1">&#39;parameters&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span>
+        <span class="k">yield</span> <span class="s1">&#39;capabilities&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span>
+        <span class="k">yield</span> <span class="s1">&#39;node&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span>
+        <span class="k">yield</span> <span class="s1">&#39;status&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span>
+
+<div class="viewcode-block" id="Image.transform"><a class="viewcode-back" href="../../../models.html#motey.models.image.Image.transform">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Static method to translate an image dict into a image model.</span>
+
+<span class="sd">        :param data: a dict with image data</span>
+<span class="sd">        :type data: dict</span>
+<span class="sd">        :return: the translated image model, None if something goes wrong</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s1">&#39;name&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">Image</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+            <span class="nb">id</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;id&#39;</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">parameters</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;parameters&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;parameters&#39;</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">else</span> <span class="p">{},</span>
+            <span class="n">capabilities</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;capabilities&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;capabilities&#39;</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">else</span> <span class="p">{},</span>
+            <span class="n">node</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;node&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;node&#39;</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">else</span> <span class="p">{},</span>
+            <span class="n">state</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;state&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;state&#39;</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="p">)</span></div></div>
 </pre></div>
 
            </div>

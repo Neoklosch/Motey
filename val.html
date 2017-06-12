@@ -103,7 +103,6 @@
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Documentation Utils</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Documentation Virtualization Abstraction Layer (VAL)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="val_plugins.html">Documentation Virtualization Abstraction Layer (VAL) Plugins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="validation.html">Documentation Validation</a></li>
 </ul>
 
             
@@ -171,7 +170,7 @@
 <span id="documentation-virtualization-abstraction-layer-val"></span><h1>Documentation Virtualization Abstraction Layer (VAL)<a class="headerlink" href="#module-motey.val.valmanager" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="motey.val.valmanager.VALManager">
-<em class="property">class </em><code class="descclassname">motey.val.valmanager.</code><code class="descname">VALManager</code><span class="sig-paren">(</span><em>logger</em>, <em>labeling_engine</em>, <em>plugin_manager</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/valmanager.html#VALManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.valmanager.VALManager" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">motey.val.valmanager.</code><code class="descname">VALManager</code><span class="sig-paren">(</span><em>logger</em>, <em>labeling_repository</em>, <em>plugin_manager</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/valmanager.html#VALManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.valmanager.VALManager" title="Permalink to this definition">¶</a></dt>
 <dd><p>Manger for all the virtual abstraction layer plugins.
 Loads the plugins and wrapps the commands.</p>
 <dl class="method">
@@ -184,29 +183,19 @@ each plugin will be executed.</p>
 
 <dl class="method">
 <dt id="motey.val.valmanager.VALManager.instantiate">
-<code class="descname">instantiate</code><span class="sig-paren">(</span><em>image_name</em>, <em>plugin_type=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/valmanager.html#VALManager.instantiate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.valmanager.VALManager.instantiate" title="Permalink to this definition">¶</a></dt>
+<code class="descname">instantiate</code><span class="sig-paren">(</span><em>image</em>, <em>plugin_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/valmanager.html#VALManager.instantiate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.valmanager.VALManager.instantiate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Instantiate an image.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>image_name</strong> – <p>The image_name can be type of str or list. The list can contain again str or a dict.
-If the image_name is a str, the instance with this specific name will be instantiated,
-if it a list with str in it, all the images in the list will be instantiated and
-if it is a list with a dict in it, each dict needs to have a key <code class="docutils literal"><span class="pre">image_name</span></code> in it and an
-optional key <code class="docutils literal"><span class="pre">parameters</span></code> which can be again a dict with different execution parameters.
-samples:</p>
-<blockquote>
-<div><ul>
-<li>image_name = ‘alpine’</li>
-<li>image_name = [‘alpine’, ‘busybox’,]</li>
-<li>image_name = [{‘image_name’: ‘alpine’, ‘parameters’: {‘ports’: {‘80/tcp’: 8080}, ‘name’: ‘motey_alpine’}},]</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>image</strong> (<a class="reference internal" href="models.html#motey.models.image.Image" title="motey.models.image.Image"><em>motey.models.image.Image</em></a>) – the image which should be executed</li>
+<li><strong>plugin_type</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Will only be executed with the given plugin</li>
 </ul>
-</div></blockquote>
-</li>
-<li><strong>plugin_type</strong> – Will only be executed with the given plugin. Must be a str. Default None.</li>
-</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the image id of the instantiated image</p>
 </td>
 </tr>
 </tbody>
@@ -220,6 +209,30 @@ samples:</p>
 A plugin has to be located under motey/val/plugins.
 After all the available plugins are loaded, the <code class="docutils literal"><span class="pre">activate</span></code> method of the plugin will be executed and a label
 with the related plugin type will be added to the labeling engine.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.val.valmanager.VALManager.start">
+<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/valmanager.html#VALManager.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.valmanager.VALManager.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the VALManager and register all the available plugins.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.val.valmanager.VALManager.terminate">
+<code class="descname">terminate</code><span class="sig-paren">(</span><em>instance_name</em>, <em>plugin_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/valmanager.html#VALManager.terminate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.valmanager.VALManager.terminate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Terminate a running instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>instance_name</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – the name of the instance</li>
+<li><strong>plugin_type</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – The instance will only be terminated for the given plugin</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>

@@ -103,7 +103,6 @@
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Documentation Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="val.html">Documentation Virtualization Abstraction Layer (VAL)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="val_plugins.html">Documentation Virtualization Abstraction Layer (VAL) Plugins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="validation.html">Documentation Validation</a></li>
 </ul>
 
             
@@ -171,22 +170,43 @@
 <span id="documentation-orchestrator"></span><h1>Documentation Orchestrator<a class="headerlink" href="#module-motey.orchestrator.inter_node_orchestrator" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator">
-<em class="property">class </em><code class="descclassname">motey.orchestrator.inter_node_orchestrator.</code><code class="descname">InterNodeOrchestrator</code><span class="sig-paren">(</span><em>logger</em>, <em>valmanager</em>, <em>service_repository</em>, <em>labeling_repository</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/orchestrator/inter_node_orchestrator.html#InterNodeOrchestrator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator" title="Permalink to this definition">¶</a></dt>
-<dd><p>This class orchestrates yaml blueprints.
+<em class="property">class </em><code class="descclassname">motey.orchestrator.inter_node_orchestrator.</code><code class="descname">InterNodeOrchestrator</code><span class="sig-paren">(</span><em>logger</em>, <em>valmanager</em>, <em>service_repository</em>, <em>labeling_repository</em>, <em>node_repository</em>, <em>zeromq_server</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/orchestrator/inter_node_orchestrator.html#InterNodeOrchestrator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class orchestpassrates yaml blueprints.
 It will start and stop virtual instances of images defined in the blueprint.
 It also can communicate with other nodes to start instances there if the requirements does not fit with the
 possibilities of the current node.</p>
 <dl class="method">
+<dt id="motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator.compare_capabilities">
+<code class="descname">compare_capabilities</code><span class="sig-paren">(</span><em>needed_capabilities</em>, <em>node_capabilities</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/orchestrator/inter_node_orchestrator.html#InterNodeOrchestrator.compare_capabilities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator.compare_capabilities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compares two dicts with capabilities.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>needed_capabilities</strong> – the capabilities to compare with</li>
+<li><strong>node_capabilities</strong> – the capabilties to check</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">True if all capabilities are fulfilled, otherwiese False</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator.handle_blueprint">
 <code class="descname">handle_blueprint</code><span class="sig-paren">(</span><em>blueprint_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/orchestrator/inter_node_orchestrator.html#InterNodeOrchestrator.handle_blueprint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator.handle_blueprint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Try to load the YAML data from the given blueprint data and validates them by using the
-<code class="docutils literal"><span class="pre">validation.schemas.blueprint_schema</span></code>.
+<code class="docutils literal"><span class="pre">motey.models.schemas.blueprint_yaml_schema</span></code>.
 If the data is valid, they will be transformed into a services model and handed over to the <code class="docutils literal"><span class="pre">VALManager</span></code>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>blueprint_data</strong> – data in YAML format which matches the <code class="docutils literal"><span class="pre">validation.schemas.blueprint_schema</span></code></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>blueprint_data</strong> – data in YAML format which matches the <code class="docutils literal"><span class="pre">motey.models.schemas.blueprint_yaml_schema</span></code></td>
 </tr>
 </tbody>
 </table>

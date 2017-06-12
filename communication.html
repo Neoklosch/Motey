@@ -103,7 +103,6 @@
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Documentation Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="val.html">Documentation Virtualization Abstraction Layer (VAL)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="val_plugins.html">Documentation Virtualization Abstraction Layer (VAL) Plugins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="validation.html">Documentation Validation</a></li>
 </ul>
 
             
@@ -301,9 +300,9 @@ session information for the client. If 1, the session still exists.</dd>
 </dd></dl>
 
 <dl class="method">
-<dt id="motey.communication.mqttserver.MQTTServer.handle_receive_nodes">
-<code class="descname">handle_receive_nodes</code><span class="sig-paren">(</span><em>client</em>, <em>userdata</em>, <em>message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/mqttserver.html#MQTTServer.handle_receive_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.mqttserver.MQTTServer.handle_receive_nodes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Define the receive new node callback implementation.
+<dt id="motey.communication.mqttserver.MQTTServer.handle_register_node">
+<code class="descname">handle_register_node</code><span class="sig-paren">(</span><em>client</em>, <em>userdata</em>, <em>message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/mqttserver.html#MQTTServer.handle_register_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.mqttserver.MQTTServer.handle_register_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the register new node callback implementation.
 Adds the new node to the <code class="docutils literal"><span class="pre">NodesRepository</span></code>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -387,6 +386,44 @@ Also adds an error message to the logs if the broker is not available.</p>
 <dt id="motey.communication.mqttserver.MQTTServer.stop">
 <code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/mqttserver.html#MQTTServer.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.mqttserver.MQTTServer.stop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stops the MQTT server and add an info the logs, that the server is stopped.</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-motey.communication.zeromq_server"></span><dl class="class">
+<dt id="motey.communication.zeromq_server.ZeroMQServer">
+<em class="property">class </em><code class="descclassname">motey.communication.zeromq_server.</code><code class="descname">ZeroMQServer</code><span class="sig-paren">(</span><em>logger</em>, <em>valmanager</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/zeromq_server.html#ZeroMQServer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.zeromq_server.ZeroMQServer" title="Permalink to this definition">¶</a></dt>
+<dd><p>ZeroMQ server to communicate with adjacent fog nodes and to reply to requests.
+The different listeners will be executed in a separate thread and will not block the main thread.</p>
+<dl class="method">
+<dt id="motey.communication.zeromq_server.ZeroMQServer.request_capabilities">
+<code class="descname">request_capabilities</code><span class="sig-paren">(</span><em>ip</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/zeromq_server.html#ZeroMQServer.request_capabilities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.zeromq_server.ZeroMQServer.request_capabilities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to request all capabilities from another node.
+Will request via the <cite>ZeroMQ.REQ</cite> pattern.
+After the request is send, the method will wait for the response.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ip</strong> – the IP address of the node to request the capabilities</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the capabilities as a JSON object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.communication.zeromq_server.ZeroMQServer.start">
+<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/zeromq_server.html#ZeroMQServer.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.zeromq_server.ZeroMQServer.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the listening on a given port.
+This method will be executed on a separate thread.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.communication.zeromq_server.ZeroMQServer.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/zeromq_server.html#ZeroMQServer.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.zeromq_server.ZeroMQServer.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Should be executed to clean up the labeling engine</p>
 </dd></dl>
 
 </dd></dl>

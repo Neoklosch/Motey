@@ -102,7 +102,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../utils.html">Documentation Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../val.html">Documentation Virtualization Abstraction Layer (VAL)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../val_plugins.html">Documentation Virtualization Abstraction Layer (VAL) Plugins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../validation.html">Documentation Validation</a></li>
 </ul>
 
             
@@ -171,6 +170,8 @@
 <span class="kn">from</span> <span class="nn">flask.views</span> <span class="k">import</span> <span class="n">MethodView</span>
 <span class="kn">from</span> <span class="nn">jsonschema</span> <span class="k">import</span> <span class="n">validate</span><span class="p">,</span> <span class="n">ValidationError</span>
 
+<span class="kn">from</span> <span class="nn">motey.models.schemas</span> <span class="k">import</span> <span class="n">capability_json_schema</span>
+
 
 <div class="viewcode-block" id="Capabilities"><a class="viewcode-back" href="../../../../communication_api_routes.html#motey.communication.api_routes.capabilities.Capabilities">[docs]</a><span class="k">class</span> <span class="nc">Capabilities</span><span class="p">(</span><span class="n">MethodView</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -178,23 +179,6 @@
 <span class="sd">    A capability is basically a label for the whole node.</span>
 <span class="sd">    New capabilities can be added or deleted via this endpoint or a list with the existing ones can be fetched.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="c1"># The schema to validate the sent json data.</span>
-    <span class="n">json_schema</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="p">{</span>
-                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-                <span class="p">},</span>
-                <span class="s2">&quot;label_type&quot;</span><span class="p">:</span> <span class="p">{</span>
-                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-                <span class="p">}</span>
-            <span class="p">},</span>
-            <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="s2">&quot;label_type&quot;</span><span class="p">]</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
 
 <div class="viewcode-block" id="Capabilities.get"><a class="viewcode-back" href="../../../../communication_api_routes.html#motey.communication.api_routes.capabilities.Capabilities.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -212,14 +196,14 @@
 <span class="sd">        The content type of the request must be ``application/json``, otherwise the request will fail.</span>
 
 <span class="sd">        :return: 201 - Created if at least one capability was added, 304 - Not Modified if non of the sent capabilities</span>
-<span class="sd">         was added or 400 - Bad Request if the wrong content type was sent or the json does not match the</span>
-<span class="sd">         ``json_schema``.</span>
+<span class="sd">                 was added or 400 - Bad Request if the wrong content type was sent or the json does not match the</span>
+<span class="sd">                 ``motey.models.schemas.capability_schema``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">motey.di.app_module</span> <span class="k">import</span> <span class="n">DIRepositories</span>
         <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">content_type</span> <span class="o">==</span> <span class="s1">&#39;application/json&#39;</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">validate</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">json_schema</span><span class="p">)</span>
+                <span class="n">validate</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">capability_json_schema</span><span class="p">)</span>
                 <span class="n">labeling_repository</span> <span class="o">=</span> <span class="n">DIRepositories</span><span class="o">.</span><span class="n">labeling_repository</span><span class="p">()</span>
                 <span class="n">nothing_added</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
@@ -241,13 +225,13 @@
 
 <span class="sd">        :return: 201 - Created if at least one capability was removed, 304 - Not Modified if non of the sent</span>
 <span class="sd">                 capabilities was removed because they don not exists or 400 - Bad Request if the wrong content type was sent or</span>
-<span class="sd">                 the json does not match the ``json_schema``.</span>
+<span class="sd">                 the json does not match the ``motey.models.schemas.capability_schema``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">motey.di.app_module</span> <span class="k">import</span> <span class="n">DIRepositories</span>
         <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">content_type</span> <span class="o">==</span> <span class="s1">&#39;application/json&#39;</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">validate</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">json_schema</span><span class="p">)</span>
+                <span class="n">validate</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">capability_json_schema</span><span class="p">)</span>
                 <span class="n">labeling_repository</span> <span class="o">=</span> <span class="n">DIRepositories</span><span class="o">.</span><span class="n">labeling_repository</span><span class="p">()</span>
                 <span class="n">nothing_removed</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>

@@ -102,7 +102,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Documentation Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../val.html">Documentation Virtualization Abstraction Layer (VAL)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../val_plugins.html">Documentation Virtualization Abstraction Layer (VAL) Plugins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../validation.html">Documentation Validation</a></li>
 </ul>
 
             
@@ -168,63 +167,41 @@
             
   <h1>Source code for motey.labelingengine.labelingengine</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">threading</span>
 
-<span class="kn">import</span> <span class="nn">zmq</span>
 <span class="kn">from</span> <span class="nn">jsonschema</span> <span class="k">import</span> <span class="n">validate</span><span class="p">,</span> <span class="n">ValidationError</span>
 
-<span class="kn">from</span> <span class="nn">motey.configuration.configreader</span> <span class="k">import</span> <span class="n">config</span>
+<span class="kn">from</span> <span class="nn">motey.models.schemas</span> <span class="k">import</span> <span class="n">label_json_schema</span>
 
 
 <div class="viewcode-block" id="LabelingEngine"><a class="viewcode-back" href="../../../labelingengine.html#motey.labelingengine.labelingengine.LabelingEngine">[docs]</a><span class="k">class</span> <span class="nc">LabelingEngine</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This module provides a connection endpoint for the hardware layer.</span>
-<span class="sd">    New labels can be added via a ZeroMQ tcp publisher.</span>
-<span class="sd">    The port can be configured in the config.ini file.</span>
+<span class="sd">    New labels can be added via a ZeroMQ tcp publisher which is defined in the ``ZeroMQServer``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># the socket of the subscriber</span>
-    <span class="n">subscriber</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1"># JSON schema for a valid label entry</span>
-    <span class="n">json_schema</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-            <span class="p">},</span>
-            <span class="s2">&quot;label_type&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-            <span class="p">},</span>
-            <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;enum&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;add&quot;</span><span class="p">,</span> <span class="s2">&quot;remove&quot;</span><span class="p">]</span>
-            <span class="p">}</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="s2">&quot;label_type&quot;</span><span class="p">,</span> <span class="s2">&quot;action&quot;</span><span class="p">]</span>
-    <span class="p">}</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">labeling_repository</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">labeling_repository</span><span class="p">,</span> <span class="n">zeromq_server</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructor the the labeling engine.</span>
+
+<span class="sd">        :param logger: DI injected</span>
+<span class="sd">        :type logger: motey.utils.logger.Logger</span>
+<span class="sd">        :param labeling_repository: DI injected</span>
+<span class="sd">        :type labeling_repository: motey.repositories.labeling_repository.LabelingRepository</span>
+<span class="sd">        :param zeromq_server: DI injected</span>
+<span class="sd">        :type zeromq_server: motey.communication.zeromq_server.ZeroMQServer</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logger</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">labeling_repository</span> <span class="o">=</span> <span class="n">labeling_repository</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">subscriber</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUB</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">receiver_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__run_receiver_thread</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">receiver_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">stopped</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zeromq_server</span> <span class="o">=</span> <span class="n">zeromq_server</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zeromq_server</span><span class="o">.</span><span class="n">after_capabilities_request</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_capabilities_request</span>
 
 <div class="viewcode-block" id="LabelingEngine.start"><a class="viewcode-back" href="../../../labelingengine.html#motey.labelingengine.labelingengine.LabelingEngine.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Starts the listening on a given port.</span>
-<span class="sd">        This method will be executed on a separate thread.</span>
+<span class="sd">        Subscibes to the ``ZeroMQServer`` event stream.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">subscriber</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;tcp://*:</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;LABELINGENGINE&#39;</span><span class="p">][</span><span class="s1">&#39;port&#39;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">subscriber</span><span class="o">.</span><span class="n">setsockopt_string</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUBSCRIBE</span><span class="p">,</span> <span class="s1">&#39;labelingevent&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">receiver_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zeromq_server</span><span class="o">.</span><span class="n">capability_event_stream</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_capability_event</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;labeling engine started&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="LabelingEngine.stop"><a class="viewcode-back" href="../../../labelingengine.html#motey.labelingengine.labelingengine.LabelingEngine.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -232,38 +209,41 @@
 <span class="sd">        Should be executed to clean up the labeling engine</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">zeromq_server</span><span class="o">.</span><span class="n">capability_event_stream</span><span class="o">.</span><span class="n">unsubscribe</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;labeling engine stopped&#39;</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">__run_receiver_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="LabelingEngine.handle_capability_event"><a class="viewcode-back" href="../../../labelingengine.html#motey.labelingengine.labelingengine.LabelingEngine.handle_capability_event">[docs]</a>    <span class="k">def</span> <span class="nf">handle_capability_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Private function which is be executed after the start method is called.</span>
-<span class="sd">        The method will wait for an event where it is subscribed on.</span>
+<span class="sd">        Private function which is be executed after an event is received.</span>
 <span class="sd">        After receiving an event a new label will be added to the LabelingDatabase.</span>
+
+<span class="sd">        :param data: the received data</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">stopped</span><span class="p">:</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subscriber</span><span class="o">.</span><span class="n">recv_string</span><span class="p">()</span>
-            <span class="n">topic</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">json_result</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">json_result</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-                    <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">json_result</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">__perform_label_action</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">json_result</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">__perform_label_action</span><span class="p">(</span><span class="n">json_result</span><span class="p">)</span>
-            <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">):</span>
-                <span class="k">pass</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">json_result</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">json_result</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">json_result</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__perform_label_action</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">json_result</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__perform_label_action</span><span class="p">(</span><span class="n">json_result</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">):</span>
+            <span class="k">pass</span></div>
+
+    <span class="k">def</span> <span class="nf">handle_capabilities_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">capabilities_replier</span><span class="p">):</span>
+        <span class="n">capabilities_replier</span><span class="o">.</span><span class="n">send_string</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">labeling_repository</span><span class="o">.</span><span class="n">all</span><span class="p">()))</span>
 
     <span class="k">def</span> <span class="nf">__perform_label_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Perform a specific action for the given entry.</span>
 <span class="sd">        Possible action types are `add` and `remove`.</span>
 
-<span class="sd">        :param entry: the label entry which should be used to perform the action. The entry must match the `json_schema`</span>
+<span class="sd">        :param entry: the label entry which should be used to perform the action.</span>
+<span class="sd">                      The entry must match the `motey.models.schemas.label_json_schema`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">validate</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">json_schema</span><span class="p">)</span>
+            <span class="n">validate</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">label_json_schema</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;action&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;add&#39;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">labeling_repository</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">],</span> <span class="n">label_type</span><span class="o">=</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;label_type&#39;</span><span class="p">])</span>
             <span class="k">elif</span> <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;action&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;remove&#39;</span><span class="p">:</span>

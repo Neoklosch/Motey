@@ -102,7 +102,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Documentation Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../val.html">Documentation Virtualization Abstraction Layer (VAL)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../val_plugins.html">Documentation Virtualization Abstraction Layer (VAL) Plugins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../validation.html">Documentation Validation</a></li>
 </ul>
 
             
@@ -178,18 +177,15 @@
 <span class="sd">    The webserver runs in a separate thread and will not block the main thread.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># Routes for registering and unregistering nodes</span>
-    <span class="n">ROUTES</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;register_node&#39;</span><span class="p">:</span> <span class="s1">&#39;motey/v1/register&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;remove_node&#39;</span><span class="p">:</span>   <span class="s1">&#39;motey/v1/remove&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;receive_nodes&#39;</span><span class="p">:</span> <span class="s1">&#39;motey/v1/receive_nodes&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;nodes_request&#39;</span><span class="p">:</span> <span class="s1">&#39;motey/v1/nodes_request&#39;</span><span class="p">,</span>
-    <span class="p">}</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">nodes_repository</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">1883</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepalive</span><span class="o">=</span><span class="mi">60</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">nodes_repository</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">1883</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">keepalive</span><span class="o">=</span><span class="mi">60</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructor ot the MQTT server.</span>
 
+<span class="sd">        :param logger: DI injected</span>
+<span class="sd">        :type logger: motey.utils.logger.Logger</span>
+<span class="sd">        :param nodes_repository: DI injected</span>
+<span class="sd">        :type nodes_repository: motey.repositories.nodes_repository.NodesRepository</span>
 <span class="sd">        :param host: The host of the MQTT broker. Default is ``&#39;127.0.0.1&#39;``.</span>
 <span class="sd">        :param port: The port of the MQTT broker. Default is ``1883``.</span>
 <span class="sd">        :param username: Username to authenticate on the MQTT broker. Default is None.</span>
@@ -198,6 +194,23 @@
 <span class="sd">        broker. If no other messages are being exchanged, this controls the</span>
 <span class="sd">        rate at which the client will send ping messages to the broker.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Routes for registering and unregistering nodes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ROUTES</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;register_node&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;topic&#39;</span><span class="p">:</span> <span class="s1">&#39;motey/v1/register&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;callback&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_register_node</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;remove_node&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;topic&#39;</span><span class="p">:</span> <span class="s1">&#39;motey/v1/remove&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;callback&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_nodes_removal</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;nodes_request&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;topic&#39;</span><span class="p">:</span> <span class="s1">&#39;motey/v1/nodes_request&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;callback&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_nodes_request</span>
+            <span class="p">},</span>
+        <span class="p">}</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">keepalive</span> <span class="o">=</span> <span class="n">keepalive</span>
@@ -228,8 +241,9 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds all the configured MQTT endpoints.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">message_callback_add</span><span class="p">(</span><span class="n">sub</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ROUTES</span><span class="p">[</span><span class="s1">&#39;receive_nodes&#39;</span><span class="p">],</span> <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_receive_nodes</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">message_callback_add</span><span class="p">(</span><span class="n">sub</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ROUTES</span><span class="p">[</span><span class="s1">&#39;nodes_request&#39;</span><span class="p">],</span> <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_nodes_request</span><span class="p">)</span></div>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ROUTES</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">value</span><span class="p">[</span><span class="s1">&#39;callback&#39;</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">message_callback_add</span><span class="p">(</span><span class="n">sub</span><span class="o">=</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;topic&#39;</span><span class="p">],</span> <span class="n">callback</span><span class="o">=</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;callback&#39;</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="MQTTServer.start"><a class="viewcode-back" href="../../../communication.html#motey.communication.mqttserver.MQTTServer.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -244,8 +258,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">,</span> <span class="n">keepalive</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">keepalive</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">loop_forever</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;MQTT server started&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">loop_forever</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;MQTT broker is not available&#39;</span><span class="p">)</span></div>
 
@@ -264,7 +278,7 @@
 <span class="sd">        :param ip: The IP address of the new node. Default is None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ip</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">topic</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ROUTES</span><span class="p">[</span><span class="s1">&#39;register_node&#39;</span><span class="p">],</span> <span class="n">payload</span><span class="o">=</span><span class="n">ip</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">topic</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ROUTES</span><span class="p">[</span><span class="s1">&#39;register_node&#39;</span><span class="p">][</span><span class="s1">&#39;topic&#39;</span><span class="p">],</span> <span class="n">payload</span><span class="o">=</span><span class="n">ip</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MQTTServer.publish_node_request"><a class="viewcode-back" href="../../../communication.html#motey.communication.mqttserver.MQTTServer.publish_node_request">[docs]</a>    <span class="k">def</span> <span class="nf">publish_node_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -273,7 +287,7 @@
 <span class="sd">        :param ip: the own ip to let the other nodes know where the request cames from.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ip</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">topic</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ROUTES</span><span class="p">[</span><span class="s1">&#39;nodes_request&#39;</span><span class="p">],</span> <span class="n">payload</span><span class="o">=</span><span class="n">ip</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">topic</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ROUTES</span><span class="p">[</span><span class="s1">&#39;nodes_request&#39;</span><span class="p">][</span><span class="s1">&#39;topic&#39;</span><span class="p">],</span> <span class="n">payload</span><span class="o">=</span><span class="n">ip</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MQTTServer.remove_node"><a class="viewcode-back" href="../../../communication.html#motey.communication.mqttserver.MQTTServer.remove_node">[docs]</a>    <span class="k">def</span> <span class="nf">remove_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -283,7 +297,7 @@
 <span class="sd">        :param ip: The IP address of the new node. Default is None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ip</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">topic</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ROUTES</span><span class="p">[</span><span class="s1">&#39;remove_node&#39;</span><span class="p">],</span> <span class="n">payload</span><span class="o">=</span><span class="n">ip</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">topic</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ROUTES</span><span class="p">[</span><span class="s1">&#39;remove_node&#39;</span><span class="p">][</span><span class="s1">&#39;topic&#39;</span><span class="p">],</span> <span class="n">payload</span><span class="o">=</span><span class="n">ip</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MQTTServer.handle_on_connect"><a class="viewcode-back" href="../../../communication.html#motey.communication.mqttserver.MQTTServer.handle_on_connect">[docs]</a>    <span class="k">def</span> <span class="nf">handle_on_connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="n">resultcode</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -316,22 +330,10 @@
         <span class="k">if</span> <span class="n">resultcode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Connection to the broker failed&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">client</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">topic</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ROUTES</span><span class="p">[</span><span class="s1">&#39;receive_nodes&#39;</span><span class="p">])</span>
-            <span class="n">client</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">topic</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ROUTES</span><span class="p">[</span><span class="s1">&#39;nodes_request&#39;</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ROUTES</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">client</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">topic</span><span class="o">=</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;topic&#39;</span><span class="p">])</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_after_connect</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_after_connect</span><span class="p">()</span></div>
-
-<div class="viewcode-block" id="MQTTServer.handle_receive_nodes"><a class="viewcode-back" href="../../../communication.html#motey.communication.mqttserver.MQTTServer.handle_receive_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">handle_receive_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Define the receive new node callback implementation.</span>
-<span class="sd">        Adds the new node to the ``NodesRepository``.</span>
-
-<span class="sd">        :param client:     the client instance for this callback</span>
-<span class="sd">        :param userdata:   the private user data as set in Client() or userdata_set()</span>
-<span class="sd">        :param message:    the data which was send</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">new_node</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nodes_repository</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ip</span><span class="o">=</span><span class="n">new_node</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MQTTServer.handle_nodes_request"><a class="viewcode-back" href="../../../communication.html#motey.communication.mqttserver.MQTTServer.handle_nodes_request">[docs]</a>    <span class="k">def</span> <span class="nf">handle_nodes_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -344,6 +346,21 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes_request_callback</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">nodes_request_callback</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">handle_nodes_removal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="MQTTServer.handle_register_node"><a class="viewcode-back" href="../../../communication.html#motey.communication.mqttserver.MQTTServer.handle_register_node">[docs]</a>    <span class="k">def</span> <span class="nf">handle_register_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Define the register new node callback implementation.</span>
+<span class="sd">        Adds the new node to the ``NodesRepository``.</span>
+
+<span class="sd">        :param client:     the client instance for this callback</span>
+<span class="sd">        :param userdata:   the private user data as set in Client() or userdata_set()</span>
+<span class="sd">        :param message:    the data which was send</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+        <span class="n">new_node</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodes_repository</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ip</span><span class="o">=</span><span class="n">new_node</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MQTTServer.handle_on_disconnect"><a class="viewcode-back" href="../../../communication.html#motey.communication.mqttserver.MQTTServer.handle_on_disconnect">[docs]</a>    <span class="k">def</span> <span class="nf">handle_on_disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">resultcode</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

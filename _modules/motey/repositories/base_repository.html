@@ -102,7 +102,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Documentation Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../val.html">Documentation Virtualization Abstraction Layer (VAL)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../val_plugins.html">Documentation Virtualization Abstraction Layer (VAL) Plugins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../validation.html">Documentation Validation</a></li>
 </ul>
 
             
@@ -167,7 +166,12 @@
            <div itemprop="articleBody">
             
   <h1>Source code for motey.repositories.base_repository</h1><div class="highlight"><pre>
-<div class="viewcode-block" id="BaseRepository"><a class="viewcode-back" href="../../../repositories.html#motey.repositories.base_repository.BaseRepository">[docs]</a><span></span><span class="k">class</span> <span class="nc">BaseRepository</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">motey.configuration.configreader</span> <span class="k">import</span> <span class="n">config</span>
+
+
+<div class="viewcode-block" id="BaseRepository"><a class="viewcode-back" href="../../../repositories.html#motey.repositories.base_repository.BaseRepository">[docs]</a><span class="k">class</span> <span class="nc">BaseRepository</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base repository to wrapp database handling.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -177,6 +181,9 @@
 <span class="sd">        Constructor of the class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;DATABASE&#39;</span><span class="p">][</span><span class="s1">&#39;path&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
 
 <div class="viewcode-block" id="BaseRepository.all"><a class="viewcode-back" href="../../../repositories.html#motey.repositories.base_repository.BaseRepository.all">[docs]</a>    <span class="k">def</span> <span class="nf">all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -190,7 +197,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Remove all entries from the database.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">purge</span><span class="p">()</span></div></div>
 </pre></div>
 
            </div>

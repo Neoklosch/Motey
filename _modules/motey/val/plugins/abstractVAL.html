@@ -102,7 +102,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../utils.html">Documentation Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../val.html">Documentation Virtualization Abstraction Layer (VAL)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../val_plugins.html">Documentation Virtualization Abstraction Layer (VAL) Plugins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../validation.html">Documentation Validation</a></li>
 </ul>
 
             
@@ -227,6 +226,7 @@
 
 <span class="sd">        :param image_name: the name of the image which should be created</span>
 <span class="sd">        :param parameters: execution parameters</span>
+<span class="sd">        :return: the id of the created instance</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Should have implemented this&quot;</span><span class="p">)</span></div>
 
@@ -236,6 +236,7 @@
 
 <span class="sd">        :param instance_name: the name of the existing instance</span>
 <span class="sd">        :param parameters: execution parameters</span>
+<span class="sd">        :return: should return the id of the started instance</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Should have implemented this&quot;</span><span class="p">)</span></div>
 

@@ -102,7 +102,6 @@
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Documentation Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="val.html">Documentation Virtualization Abstraction Layer (VAL)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="val_plugins.html">Documentation Virtualization Abstraction Layer (VAL) Plugins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="validation.html">Documentation Validation</a></li>
 </ul>
 
             
@@ -183,6 +182,7 @@
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
  | <a href="#V"><strong>V</strong></a>
+ | <a href="#Z"><strong>Z</strong></a>
  
 </div>
 <h2 id="A">A</h2>
@@ -236,9 +236,11 @@
       </ul></li>
       <li><a href="repositories.html#motey.repositories.base_repository.BaseRepository.clear">clear() (motey.repositories.base_repository.BaseRepository method)</a>
 </li>
+      <li><a href="val.html#motey.val.valmanager.VALManager.close">close() (motey.val.valmanager.VALManager method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="val.html#motey.val.valmanager.VALManager.close">close() (motey.val.valmanager.VALManager method)</a>
+      <li><a href="orchestrator.html#motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator.compare_capabilities">compare_capabilities() (motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator method)</a>
 </li>
       <li><a href="communication.html#motey.communication.apiserver.APIServer.configure_url">configure_url() (motey.communication.apiserver.APIServer method)</a>
 </li>
@@ -322,13 +324,15 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="orchestrator.html#motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator.handle_blueprint">handle_blueprint() (motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator method)</a>
 </li>
+      <li><a href="labelingengine.html#motey.labelingengine.labelingengine.LabelingEngine.handle_capability_event">handle_capability_event() (motey.labelingengine.labelingengine.LabelingEngine method)</a>
+</li>
       <li><a href="communication.html#motey.communication.mqttserver.MQTTServer.handle_nodes_request">handle_nodes_request() (motey.communication.mqttserver.MQTTServer method)</a>
 </li>
       <li><a href="communication.html#motey.communication.mqttserver.MQTTServer.handle_on_connect">handle_on_connect() (motey.communication.mqttserver.MQTTServer method)</a>
 </li>
       <li><a href="communication.html#motey.communication.mqttserver.MQTTServer.handle_on_disconnect">handle_on_disconnect() (motey.communication.mqttserver.MQTTServer method)</a>
 </li>
-      <li><a href="communication.html#motey.communication.mqttserver.MQTTServer.handle_receive_nodes">handle_receive_nodes() (motey.communication.mqttserver.MQTTServer method)</a>
+      <li><a href="communication.html#motey.communication.mqttserver.MQTTServer.handle_register_node">handle_register_node() (motey.communication.mqttserver.MQTTServer method)</a>
 </li>
       <li><a href="repositories.html#motey.repositories.labeling_repository.LabelingRepository.has">has() (motey.repositories.labeling_repository.LabelingRepository method)</a>
 
@@ -361,6 +365,8 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="models.html#motey.models.image.Image">Image (class in motey.models.image)</a>
+</li>
+      <li><a href="models.html#motey.models.image.Image.ImageState">Image.ImageState (class in motey.models.image)</a>
 </li>
       <li><a href="val.html#motey.val.valmanager.VALManager.instantiate">instantiate() (motey.val.valmanager.VALManager method)</a>
 </li>
@@ -398,9 +404,7 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="cli.html#module-motey.cli">motey.cli (module)</a>, <a href="core.html#module-motey.cli">[1]</a>
-</li>
-      <li><a href="core.html#module-motey.communication">motey.communication (module)</a>
+      <li><a href="cli.html#module-motey.cli">motey.cli (module)</a>
 </li>
       <li><a href="communication_api_routes.html#module-motey.communication.api_routes.blueprintendpoint">motey.communication.api_routes.blueprintendpoint (module)</a>
 </li>
@@ -411,6 +415,8 @@
       <li><a href="communication.html#module-motey.communication.apiserver">motey.communication.apiserver (module)</a>
 </li>
       <li><a href="communication.html#module-motey.communication.mqttserver">motey.communication.mqttserver (module)</a>
+</li>
+      <li><a href="communication.html#module-motey.communication.zeromq_server">motey.communication.zeromq_server (module)</a>
 </li>
       <li><a href="core.html#module-motey.core">motey.core (module)</a>
 </li>
@@ -434,6 +440,8 @@
 </li>
       <li><a href="utils.html#module-motey.utils.heartbeat">motey.utils.heartbeat (module)</a>
 </li>
+      <li><a href="utils.html#module-motey.utils.json_helper">motey.utils.json_helper (module)</a>
+</li>
       <li><a href="utils.html#module-motey.utils.logger">motey.utils.logger (module)</a>
 </li>
       <li><a href="utils.html#module-motey.utils.network_utils">motey.utils.network_utils (module)</a>
@@ -443,8 +451,6 @@
       <li><a href="val_plugins.html#module-motey.val.plugins.dockerVAL">motey.val.plugins.dockerVAL (module)</a>
 </li>
       <li><a href="val.html#module-motey.val.valmanager">motey.val.valmanager (module)</a>
-</li>
-      <li><a href="validation.html#module-motey.validation.schemas">motey.validation.schemas (module)</a>
 </li>
       <li><a href="communication.html#motey.communication.mqttserver.MQTTServer">MQTTServer (class in motey.communication.mqttserver)</a>
 </li>
@@ -506,6 +512,8 @@
 </li>
       <li><a href="communication.html#motey.communication.mqttserver.MQTTServer.remove_node">remove_node() (motey.communication.mqttserver.MQTTServer method)</a>
 </li>
+      <li><a href="communication.html#motey.communication.zeromq_server.ZeroMQServer.request_capabilities">request_capabilities() (motey.communication.zeromq_server.ZeroMQServer method)</a>
+</li>
       <li><a href="core.html#motey.core.Core.restart">restart() (motey.core.Core method)</a>
 </li>
       <li><a href="core.html#motey.core.Core.run">run() (motey.core.Core method)</a>
@@ -522,7 +530,15 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="models.html#motey.models.schemas">schemas (in module motey.models)</a>
+</li>
       <li><a href="models.html#motey.models.service.Service">Service (class in motey.models.service)</a>
+</li>
+      <li><a href="models.html#motey.models.service.Service.ServiceAction">Service.ServiceAction (class in motey.models.service)</a>
+</li>
+      <li><a href="models.html#motey.models.service.Service.ServiceState">Service.ServiceState (class in motey.models.service)</a>
+</li>
+      <li><a href="models.html#motey.models.service.Service.ServiceType">Service.ServiceType (class in motey.models.service)</a>
 </li>
       <li><a href="repositories.html#motey.repositories.service_repository.ServiceRepository">ServiceRepository (class in motey.repositories.service_repository)</a>
 </li>
@@ -531,23 +547,31 @@
       <ul>
         <li><a href="communication.html#motey.communication.mqttserver.MQTTServer.start">(motey.communication.mqttserver.MQTTServer method)</a>
 </li>
+        <li><a href="communication.html#motey.communication.zeromq_server.ZeroMQServer.start">(motey.communication.zeromq_server.ZeroMQServer method)</a>
+</li>
         <li><a href="core.html#motey.core.Core.start">(motey.core.Core method)</a>
 </li>
         <li><a href="labelingengine.html#motey.labelingengine.labelingengine.LabelingEngine.start">(motey.labelingengine.labelingengine.LabelingEngine method)</a>
 </li>
+        <li><a href="val.html#motey.val.valmanager.VALManager.start">(motey.val.valmanager.VALManager method)</a>
+</li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="val_plugins.html#motey.val.plugins.abstractVAL.AbstractVAL.start_instance">start_instance() (motey.val.plugins.abstractVAL.AbstractVAL method)</a>
 
       <ul>
         <li><a href="val_plugins.html#motey.val.plugins.dockerVAL.DockerVAL.start_instance">(motey.val.plugins.dockerVAL.DockerVAL method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="core.html#motey.core.Core.startup_clean">startup_clean() (motey.core.Core method)</a>
+</li>
       <li><a href="communication.html#motey.communication.apiserver.APIServer.stop">stop() (motey.communication.apiserver.APIServer method)</a>
 
       <ul>
         <li><a href="communication.html#motey.communication.mqttserver.MQTTServer.stop">(motey.communication.mqttserver.MQTTServer method)</a>
+</li>
+        <li><a href="communication.html#motey.communication.zeromq_server.ZeroMQServer.stop">(motey.communication.zeromq_server.ZeroMQServer method)</a>
 </li>
         <li><a href="core.html#motey.core.Core.stop">(motey.core.Core method)</a>
 </li>
@@ -568,8 +592,18 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="val.html#motey.val.valmanager.VALManager.terminate">terminate() (motey.val.valmanager.VALManager method)</a>
+</li>
       <li><a href="orchestrator.html#motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator.terminate_instances">terminate_instances() (motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="models.html#motey.models.image.Image.transform">transform() (motey.models.image.Image static method)</a>
+
+      <ul>
+        <li><a href="models.html#motey.models.service.Service.transform">(motey.models.service.Service static method)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -581,6 +615,14 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="val.html#motey.val.valmanager.VALManager">VALManager (class in motey.val.valmanager)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="Z">Z</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="communication.html#motey.communication.zeromq_server.ZeroMQServer">ZeroMQServer (class in motey.communication.zeromq_server)</a>
 </li>
   </ul></td>
 </tr></table>

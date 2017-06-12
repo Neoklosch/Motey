@@ -103,7 +103,6 @@
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Documentation Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="val.html">Documentation Virtualization Abstraction Layer (VAL)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="val_plugins.html">Documentation Virtualization Abstraction Layer (VAL) Plugins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="validation.html">Documentation Validation</a></li>
 </ul>
 
             
@@ -171,13 +170,116 @@
 <h1>Documentation Models<a class="headerlink" href="#documentation-models" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="motey.models.image.Image">
-<em class="property">class </em><code class="descclassname">motey.models.image.</code><code class="descname">Image</code><span class="sig-paren">(</span><em>name</em>, <em>id=”</em>, <em>parameters={}</em>, <em>capabilities={}</em>, <em>node=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/models/image.html#Image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.models.image.Image" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property">class </em><code class="descclassname">motey.models.image.</code><code class="descname">Image</code><span class="sig-paren">(</span><em>name</em>, <em>id=”</em>, <em>parameters={}</em>, <em>capabilities={}</em>, <em>node=None</em>, <em>state=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/models/image.html#Image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.models.image.Image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Model object. Represent an image.
+An image can have execution parameters, required capabilities and the node where it is executed.
+All of them are optional.</p>
+<dl class="class">
+<dt id="motey.models.image.Image.ImageState">
+<em class="property">class </em><code class="descname">ImageState</code><a class="reference internal" href="_modules/motey/models/image.html#Image.ImageState"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.models.image.Image.ImageState" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Enum with service states.</dt>
+<dd><ul class="first last simple">
+<li>INITIAL</li>
+<li>INSTANTIATING</li>
+<li>RUNNING</li>
+<li>STOPPING</li>
+<li>TERMINATED</li>
+<li>ERROR</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="motey.models.image.Image.transform">
+<em class="property">static </em><code class="descname">transform</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/models/image.html#Image.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.models.image.Image.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Static method to translate an image dict into a image model.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) – a dict with image data</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the translated image model, None if something goes wrong</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="motey.models.schemas">
+<code class="descclassname">motey.models.</code><code class="descname">schemas</code><a class="headerlink" href="#motey.models.schemas" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#motey.models.schemas" title="motey.models.schemas"><code class="xref py py-class docutils literal"><span class="pre">motey.models.schemas</span></code></a></p>
+</dd></dl>
 
 <dl class="class">
 <dt id="motey.models.service.Service">
-<em class="property">class </em><code class="descclassname">motey.models.service.</code><code class="descname">Service</code><span class="sig-paren">(</span><em>name</em>, <em>images</em>, <em>id=’e91f04e40105409e97cad1562eda9101’</em>, <em>state=0</em>, <em>action=’add’</em>, <em>type=’master’</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/models/service.html#Service"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.models.service.Service" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property">class </em><code class="descclassname">motey.models.service.</code><code class="descname">Service</code><span class="sig-paren">(</span><em>name</em>, <em>images</em>, <em>id=’fd77a29a5e5c42dea958482060c2d25a’</em>, <em>state=0</em>, <em>action=’add’</em>, <em>node_type=’master’</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/models/service.html#Service"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.models.service.Service" title="Permalink to this definition">¶</a></dt>
+<dd><p>Model object. Represent a service.
+A service can have multiple states, action types and service types.</p>
+<dl class="class">
+<dt id="motey.models.service.Service.ServiceAction">
+<em class="property">class </em><code class="descname">ServiceAction</code><a class="reference internal" href="_modules/motey/models/service.html#Service.ServiceAction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.models.service.Service.ServiceAction" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Enum with action types.</dt>
+<dd><ul class="first last simple">
+<li>ADD</li>
+<li>REMOVE</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="motey.models.service.Service.ServiceState">
+<em class="property">class </em><code class="descname">ServiceState</code><a class="reference internal" href="_modules/motey/models/service.html#Service.ServiceState"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.models.service.Service.ServiceState" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Enum with service states.</dt>
+<dd><ul class="first last simple">
+<li>INITIAL</li>
+<li>INSTANTIATING</li>
+<li>RUNNING</li>
+<li>STOPPING</li>
+<li>TERMINATED</li>
+<li>ERROR</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="motey.models.service.Service.ServiceType">
+<em class="property">class </em><code class="descname">ServiceType</code><a class="reference internal" href="_modules/motey/models/service.html#Service.ServiceType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.models.service.Service.ServiceType" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Enum with service types.</dt>
+<dd><ul class="first last simple">
+<li>MASTER</li>
+<li>SLAVE</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="motey.models.service.Service.transform">
+<em class="property">static </em><code class="descname">transform</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/models/service.html#Service.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.models.service.Service.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Static method to translate the service dict data into a service model.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) – service dict to be transformed</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the translated service model, None if something went wrong</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
 
 <span class="target" id="module-motey.models.systemstatus"></span><dl class="class">
 <dt id="motey.models.systemstatus.SystemStatus">

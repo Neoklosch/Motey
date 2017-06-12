@@ -36,7 +36,6 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="Motey 0.0.1 documentation" href="index.html"/>
-        <link rel="next" title="Documentation Validation" href="validation.html"/>
         <link rel="prev" title="Documentation Virtualization Abstraction Layer (VAL)" href="val.html"/> 
 
   
@@ -103,7 +102,6 @@
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Documentation Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="val.html">Documentation Virtualization Abstraction Layer (VAL)</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Documentation Virtualization Abstraction Layer (VAL) Plugins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="validation.html">Documentation Validation</a></li>
 </ul>
 
             
@@ -191,10 +189,13 @@ See more at <a class="reference external" href="http://yapsy.sourceforge.net/">h
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>image_name</strong> – the name of the image which should be created</li>
 <li><strong>parameters</strong> – execution parameters</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the id of the created instance</p>
 </td>
 </tr>
 </tbody>
@@ -331,10 +332,13 @@ See more at <a class="reference external" href="http://yapsy.sourceforge.net/">h
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>instance_name</strong> – the name of the existing instance</li>
 <li><strong>parameters</strong> – execution parameters</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">should return the id of the started instance</p>
 </td>
 </tr>
 </tbody>
@@ -370,10 +374,13 @@ It is a wrapper around the <code class="docutils literal"><span class="pre">dock
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>image_name</strong> – the name of the image which should be created</li>
 <li><strong>parameters</strong> – execution parameters. Same as in the <code class="docutils literal"><span class="pre">docker.create_container</span></code>.</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the id of the created instance</p>
 </td>
 </tr>
 </tbody>
@@ -523,10 +530,13 @@ It is a wrapper around the <code class="docutils literal"><span class="pre">dock
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>instance_name</strong> – the name of the existing instance</li>
 <li><strong>parameters</strong> – execution parameters. Same as in the <code class="docutils literal"><span class="pre">docker.create_container</span></code>.</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the id of the started instance</p>
 </td>
 </tr>
 </tbody>
@@ -561,8 +571,6 @@ It is a wrapper around the <code class="docutils literal"><span class="pre">dock
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="validation.html" class="btn btn-neutral float-right" title="Documentation Validation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="val.html" class="btn btn-neutral" title="Documentation Virtualization Abstraction Layer (VAL)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
