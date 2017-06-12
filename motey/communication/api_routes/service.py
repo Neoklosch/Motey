@@ -1,4 +1,5 @@
 import yaml
+from flask import jsonify
 from flask import request, abort
 from flask.views import MethodView
 from jsonschema import validate, ValidationError
@@ -7,13 +8,24 @@ from rx.subjects import Subject
 from motey.models.schemas import blueprint_yaml_schema
 
 
-class BlueprintEndpoint(MethodView):
+class Service(MethodView):
     """
-    This REST API endpoint let the client upload an YAML file to the node.
+    This REST API endpoint for getting service informations and also let the client upload a YAML file to the node.
+    A service contain all the running images.
     """
 
     # RX subject which send a message, after a POST is received and successfully parsed.
     yaml_post_stream = Subject()
+
+    def get(self):
+        """
+        Returns a list off all existing capabilities of this node.
+
+        :return: a JSON object with all the existing capabilities of this node
+        """
+        from motey.di.app_module import DIRepositories
+        results = DIRepositories.service_repository().all()
+        return jsonify(results), 200
 
     def post(self):
         """

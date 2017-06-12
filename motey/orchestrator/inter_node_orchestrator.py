@@ -3,7 +3,7 @@ import threading
 import yaml
 from jsonschema import validate, ValidationError
 
-from motey.communication.api_routes.blueprintendpoint import BlueprintEndpoint
+from motey.communication.api_routes.service import Service as ServiceEndpoint
 from motey.models.schemas import blueprint_yaml_schema
 from motey.models.service import Service
 from motey.utils.network_utils import get_own_ip
@@ -26,7 +26,7 @@ class InterNodeOrchestrator(object):
         self.labeling_repository = labeling_repository
         self.node_repository = node_repository
         self.zeromq_server = zeromq_server
-        self.blueprint_stream = BlueprintEndpoint.yaml_post_stream.subscribe(self.handle_blueprint)
+        self.blueprint_stream = ServiceEndpoint.yaml_post_stream.subscribe(self.handle_blueprint)
 
     def parse_local_blueprint_file(self, file_path):
         """
@@ -80,7 +80,8 @@ class InterNodeOrchestrator(object):
     def deploy_service(self, service):
         for image in service.images:
             image.id = self.zeromq_server.deploy_image(image)
-        # self.service_repository.update(dict(service))
+        # store new image id
+        self.service_repository.update(dict(service))
 
     def get_service_status(self, service):
         for image in service.images:

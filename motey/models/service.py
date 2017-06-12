@@ -45,7 +45,7 @@ class Service(object):
         SLAVE = 'slave'
 
     def __init__(self, name, images, id=uuid.uuid4().hex, state=ServiceState.INITIAL, action=ServiceAction.ADD,
-                 node_type=ServiceType.MASTER):
+                 node_type=ServiceType.MASTER, state_message=''):
         """
         Constructor of the service model.
 
@@ -61,6 +61,8 @@ class Service(object):
         :type action: motey.models.service.Service.ServiceAction
         :param node_type: node type of the service. Default `MASER`.
         :type node_type: motey.models.service.Service.ServiceType
+        :param state_message: message for the current service state
+        :type state_message: str
         """
 
         self.id = id
@@ -69,6 +71,7 @@ class Service(object):
         self.name = name
         self.images = images
         self.node_type = node_type
+        self.state_message = state_message
 
     def __iter__(self):
         yield 'id', self.id
@@ -76,6 +79,7 @@ class Service(object):
         yield 'action', self.action
         yield 'node_type', self.node_type
         yield 'images', [dict(image) for image in self.images]
+        yield 'state_message', self.state_message
 
     @staticmethod
     def transform(data):
@@ -94,5 +98,6 @@ class Service(object):
             id=data['id'] if 'id' in data else uuid.uuid4().hex,
             state=data['state'] if 'state' in data else Service.ServiceState.INITIAL,
             action=data['action'] if 'action' in data else Service.ServiceAction.ADD,
-            node_type=data['node_type'] if 'node_type' in data else Service.ServiceType.MASTER
+            node_type=data['node_type'] if 'node_type' in data else Service.ServiceType.MASTER,
+            state_message=data['state_message'] if 'state_message' in data else ''
         )
