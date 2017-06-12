@@ -10,12 +10,7 @@ os:
 cache: pip
 
 python:
-  - "3.5"
-  - "3.5-dev" # 3.5 development branch
   - "3.6"
-  - "3.6-dev" # 3.6 development branch
-  - "3.7-dev" # 3.7 development branch
-  - "nightly" # currently points to 3.7-dev
 
 install: "pip install -r motey-docker-image/requirements.txt"
 
@@ -29,7 +24,10 @@ after_success:
   - if [[ "$TRAVIS_BRANCH" = "master" ]]; then
     docker --version;
     docker build -t neoklosch/motey motey-docker-image;
-    docker tag neoklosch/motey:latest;
     docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
     docker push neoklosch/motey;
+    fi
+  - if [[ "$TRAVIS_BRANCH" = "master" ]]; then
+    cd docs/;
+    make gh-pages;
     fi
