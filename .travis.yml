@@ -27,13 +27,3 @@ after_success:
     docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
     docker push neoklosch/motey;
     fi
-  - if [[ "$TRAVIS_BRANCH" = "master" ]]; then
-    git init;
-    git config user.name "Markus Paeschke";
-    git config user.email "markus.paeschke@gmail.com";
-    git remote add origin "https://$GH_TOKEN@github.com/Neoklosch/Motey.git";
-    git fetch origin;
-    git checkout development;
-    cd docs/;
-    make gh-pages;
-    fi
