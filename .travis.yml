@@ -28,12 +28,12 @@ after_success:
     docker push neoklosch/motey;
     fi
   - if [[ "$TRAVIS_BRANCH" = "master" ]]; then
-    cd docs/;
     git init;
     git config user.name "Markus Paeschke";
     git config user.email "markus.paeschke@gmail.com";
     git remote add origin "https://$GH_TOKEN@github.com/Neoklosch/Motey.git";
     git fetch origin;
-    git reset origin/gh-pages;
+    git checkout development;
+    cd docs/;
     make gh-pages;
     fi
