@@ -1,6 +1,7 @@
 import threading
 
 from flask import Flask, request
+from flask_cors import CORS
 
 from motey.communication.api_routes.capabilities import Capabilities
 from motey.communication.api_routes.nodestatus import NodeStatus
@@ -29,6 +30,7 @@ class APIServer(object):
         self.port = port
         self.logger = logger
         self.webserver = Flask(__name__)
+        CORS(self.webserver)
         self.configure_url()
         self.run_server_thread = threading.Thread(target=self.run_server, args=())
         self.run_server_thread.daemon = True
