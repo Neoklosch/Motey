@@ -18,7 +18,7 @@ class TestSchemas(unittest.TestCase):
             'node_type': 'MASTER',
             'images': [
                 {
-                    'image_name': 'test_image_name',
+                    'name': 'test_image_name',
                     'parameters': {
                         'ports': {
                             'tcp/80': 8080,
@@ -31,7 +31,7 @@ class TestSchemas(unittest.TestCase):
                     ]
                 },
                 {
-                    'image_name': 'second_test_image_name',
+                    'name': 'second_test_image_name',
                     'parameters': {
                         'ports': {
                             'tcp/9000': 9001,
@@ -41,7 +41,7 @@ class TestSchemas(unittest.TestCase):
                     }
                 },
                 {
-                    'image_name': 'third_test_image_name'
+                    'name': 'third_test_image_name'
                 }
             ]
         }
