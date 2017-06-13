@@ -1,3 +1,4 @@
+import errno
 import os
 
 from motey.configuration.configreader import config
@@ -13,9 +14,15 @@ class BaseRepository(object):
         Constructor of the class.
         """
         self.db = None
-        directory = os.path.abspath(config['DATABASE']['path'])
+        directory = config['DATABASE']['path']
         if not os.path.exists(directory):
-            os.makedirs(directory)
+            try:
+                os.makedirs(directory)
+            except OSError as oserror:
+                if oserror.errno == errno.EEXIST and os.path.isdir(directory):
+                    pass
+                else:
+                    raise
 
     def all(self):
         """

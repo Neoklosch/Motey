@@ -4,9 +4,9 @@ from flask import Flask, request
 from flask_cors import CORS
 
 from motey.communication.api_routes.capabilities import Capabilities
+from motey.communication.api_routes.nodes import Nodes
 from motey.communication.api_routes.nodestatus import NodeStatus
 from motey.communication.api_routes.service import Service
-from motey.communication.api_routes.nodes import Nodes
 from motey.utils.heartbeat import register_callback, register_heartbeat
 
 

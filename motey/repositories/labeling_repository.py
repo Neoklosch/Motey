@@ -1,5 +1,3 @@
-import os
-
 from tinydb import TinyDB, Query
 
 from motey.configuration.configreader import config
@@ -17,7 +15,7 @@ class LabelingRepository(BaseRepository):
         The database location can be configured via the ``config.ini`` file.
         """
         super(LabelingRepository, self).__init__()
-        self.db = TinyDB(os.path.abspath('%s/labels.json' % config['DATABASE']['path']))
+        self.db = TinyDB('%s/labels.json' % config['DATABASE']['path'])
 
     def add(self, label, label_type):
         """

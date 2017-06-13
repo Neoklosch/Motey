@@ -1,5 +1,3 @@
-import os
-
 from tinydb import TinyDB, Query
 
 from motey.configuration.configreader import config
@@ -17,7 +15,7 @@ class ServiceRepository(BaseRepository):
         The database location can be configured via the ``config.ini`` file.
         """
         super(ServiceRepository, self).__init__()
-        self.db = TinyDB(os.path.abspath('%s/services.json' % config['DATABASE']['path']))
+        self.db = TinyDB('%s/services.json' % config['DATABASE']['path'])
 
     def add(self, service):
         """

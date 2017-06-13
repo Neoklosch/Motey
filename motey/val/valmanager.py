@@ -1,6 +1,6 @@
-import os
-
 from rx.subjects import Subject
+
+from motey.utils.path_helper import absolute_file_path
 
 
 class VALManager(object):
@@ -42,7 +42,8 @@ class VALManager(object):
         """
 
         self.labeling_repository.remove_all_from_type('plugin')
-        self.plugin_manager.setPluginPlaces([os.path.abspath("motey/val/plugins")])
+        print(absolute_file_path("motey/val/plugins"))
+        self.plugin_manager.setPluginPlaces([absolute_file_path("motey/val/plugins")])
         self.plugin_manager.collectPlugins()
         for plugin in self.plugin_manager.getAllPlugins():
             plugin.plugin_object.activate()

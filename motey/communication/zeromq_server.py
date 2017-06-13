@@ -18,7 +18,7 @@ class ZeroMQServer(object):
 
     def __init__(self, logger, valmanager):
         """
-        Constructor ot the MQTT server.
+        Constructor ot the ZeroMQ server.
 
         :param logger: DI injected
         :type logger: motey.utils.logger.Logger
