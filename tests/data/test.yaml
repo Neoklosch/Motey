@@ -3,7 +3,7 @@ service_name: first_service
 action: add
 node_type: master
 images:
-- image_name: alpine
+- name: alpine
   parameters:
     ports:
       80/tcp: 8080
@@ -11,14 +11,14 @@ images:
     name: alpine_from_motey
   capabilities:
     - alpine
-- image_name: busybox
+- name: busybox
   parameters:
     ports:
       80/tcp: 8080
     name: busybox_from_motey
   capabilities:
     - blub
-- image_name: nginx
+- name: nginx
   parameters:
     ports:
       80/tcp: 8080

@@ -26,11 +26,11 @@
     <div id="app">
       <nav class="navbar navbar-default">
         <div class="container-fluid">
-          <div class="navbar-header inactive">
-            <router-link to="/">Motey</router-link>
-          </div>
           <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
+              <li>
+                <router-link to="/">Motey</router-link>
+              </li>
               <li class="inactive">
                 <router-link to="/services">Services</router-link>
               </li>
@@ -38,7 +38,7 @@
                 <router-link to="/nodes">Registered nodes</router-link>
               </li>
               <li class="inactive">
-                <router-link to="/blueprints">Send blueprint</router-link>
+                <router-link to="/blueprint">Send blueprint</router-link>
               </li>
             </ul>
           </div>
@@ -116,6 +116,16 @@
         </td>
       </tr>
     </table>
+  </template>
+
+  <template id="blueprint-template">
+    <div>
+      <div class="form-group">
+        <label for="comment">Blueprint YAML:</label>
+        <textarea v-model="blueprint" placeholder="Insert YAML definition here" class="form-control" rows="20" id="comment"></textarea>
+      </div>
+      <button v-on:click="sendBlueprint" style="float:right;clear:right;" class="btn btn-primary">send</button>
+    </div>
   </template>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>

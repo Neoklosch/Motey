@@ -16,7 +16,7 @@ blueprint_yaml_schema = {
             "items": {
                 "type": "object",
                 "properties": {
-                    "image_name": {
+                    "name": {
                         "type": "string"
                     },
                     "parameters": {
@@ -31,7 +31,7 @@ blueprint_yaml_schema = {
                         "uniqueItems": True,
                     }
                 },
-                "required": ["image_name"]
+                "required": ["name"]
             },
             "minItems": 1,
             "uniqueItems": True

@@ -48,6 +48,25 @@ var NodesListing = {
   }
 };
 
+var BlueprintTemplate = {
+  name: 'BlueprintTemplate',
+  template: '#blueprint-template',
+  data: function() {
+    return {
+      blueprint: ''
+    };
+  },
+  methods: {
+    sendBlueprint: function(event) {
+      this.$http.post('http://172.17.0.2:5023/v1/service', this.blueprint, {headers: {'Content-Type': 'application/x-yaml'}}).then(response => {
+        console.log(response.body);
+      }, response => {
+        console.error(response.body);
+      });
+    }
+  }
+};
+
 // Create the router
 var router = new VueRouter({
 	mode: 'hash',
@@ -55,11 +74,10 @@ var router = new VueRouter({
 	routes: [
 		{path: '/', component: Home},
 		{path: '/services', component: ServiceListing},
-    {path: '/nodes', component: NodesListing}
+    {path: '/nodes', component: NodesListing},
+    {path: '/blueprint', component: BlueprintTemplate}
 	]
 });
-
-
 
 const app = new Vue({
   el: "#app",
