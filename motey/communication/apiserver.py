@@ -5,6 +5,7 @@ from flask import Flask, request
 from motey.communication.api_routes.capabilities import Capabilities
 from motey.communication.api_routes.nodestatus import NodeStatus
 from motey.communication.api_routes.service import Service
+from motey.communication.api_routes.nodes import Nodes
 from motey.utils.heartbeat import register_callback, register_heartbeat
 
 
@@ -52,6 +53,7 @@ class APIServer(object):
         self.webserver.add_url_rule('/v1/capabilities', view_func=Capabilities.as_view('capabilities'))
         self.webserver.add_url_rule('/v1/nodestatus', view_func=NodeStatus.as_view('nodestatus'))
         self.webserver.add_url_rule('/v1/service', view_func=Service.as_view('service'))
+        self.webserver.add_url_rule('/v1/nodes', view_func=Nodes.as_view('nodes'))
         register_callback(self.check_heartbeat)
         register_heartbeat(self.webserver)
 
