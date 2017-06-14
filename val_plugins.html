@@ -165,8 +165,401 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="documentation-virtualization-abstraction-layer-val-plugins">
-<h1>Documentation Virtualization Abstraction Layer (VAL) Plugins<a class="headerlink" href="#documentation-virtualization-abstraction-layer-val-plugins" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-motey.val.plugins.abstractVAL">
+<span id="documentation-virtualization-abstraction-layer-val-plugins"></span><h1>Documentation Virtualization Abstraction Layer (VAL) Plugins<a class="headerlink" href="#module-motey.val.plugins.abstractVAL" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="motey.val.plugins.abstractVAL.AbstractVAL">
+<em class="property">class </em><code class="descclassname">motey.val.plugins.abstractVAL.</code><code class="descname">AbstractVAL</code><a class="reference internal" href="_modules/motey/val/plugins/abstractVAL.html#AbstractVAL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.plugins.abstractVAL.AbstractVAL" title="Permalink to this definition">¶</a></dt>
+<dd><p>An abstract implementation for a virtualization abstraction layer (VAL).
+Should be inherited to build an custom VAL plugin.
+A VAL plugin is implemented as an yapsy plugin.
+Each plugin must be configured via a yapsy-plugin file.
+See more at <a class="reference external" href="http://yapsy.sourceforge.net/">http://yapsy.sourceforge.net/</a></p>
+<dl class="method">
+<dt id="motey.val.plugins.abstractVAL.AbstractVAL.activate">
+<code class="descname">activate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/plugins/abstractVAL.html#AbstractVAL.activate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.plugins.abstractVAL.AbstractVAL.activate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called at plugin activation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.val.plugins.abstractVAL.AbstractVAL.create_instance">
+<code class="descname">create_instance</code><span class="sig-paren">(</span><em>image_name</em>, <em>parameters={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/plugins/abstractVAL.html#AbstractVAL.create_instance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.plugins.abstractVAL.AbstractVAL.create_instance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and start an instance of an image.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>image_name</strong> – the name of the image which should be created</li>
+<li><strong>parameters</strong> – execution parameters</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the id of the created instance</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.val.plugins.abstractVAL.AbstractVAL.deactivate">
+<code class="descname">deactivate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/plugins/abstractVAL.html#AbstractVAL.deactivate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.plugins.abstractVAL.AbstractVAL.deactivate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called when the plugin is disabled.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.val.plugins.abstractVAL.AbstractVAL.delete_image">
+<code class="descname">delete_image</code><span class="sig-paren">(</span><em>image_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/plugins/abstractVAL.html#AbstractVAL.delete_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.plugins.abstractVAL.AbstractVAL.delete_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete an image, but not the instance of it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>image_name</strong> – the image to be deleted.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.val.plugins.abstractVAL.AbstractVAL.get_all_instances_stats">
+<code class="descname">get_all_instances_stats</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/plugins/abstractVAL.html#AbstractVAL.get_all_instances_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.plugins.abstractVAL.AbstractVAL.get_all_instances_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns object which is type of <code class="docutils literal"><span class="pre">Status</span></code>. Represents the status of all instances of this plugin type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">object from type <code class="docutils literal"><span class="pre">Status</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.val.plugins.abstractVAL.AbstractVAL.get_all_running_instances">
+<code class="descname">get_all_running_instances</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/plugins/abstractVAL.html#AbstractVAL.get_all_running_instances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.plugins.abstractVAL.AbstractVAL.get_all_running_instances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list with all running instance in this VAL.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list of instances</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.val.plugins.abstractVAL.AbstractVAL.get_plugin_type">
+<code class="descname">get_plugin_type</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/plugins/abstractVAL.html#AbstractVAL.get_plugin_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.plugins.abstractVAL.AbstractVAL.get_plugin_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the specific plugin type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the specific plugin type.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.val.plugins.abstractVAL.AbstractVAL.get_stats">
+<code class="descname">get_stats</code><span class="sig-paren">(</span><em>instance_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/plugins/abstractVAL.html#AbstractVAL.get_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.plugins.abstractVAL.AbstractVAL.get_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns object which is type of <code class="docutils literal"><span class="pre">Status</span></code>. Represents the status of an instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>instance_name</strong> – the name of the instance</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">object from type <code class="docutils literal"><span class="pre">Status</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.val.plugins.abstractVAL.AbstractVAL.has_image">
+<code class="descname">has_image</code><span class="sig-paren">(</span><em>image_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/plugins/abstractVAL.html#AbstractVAL.has_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.plugins.abstractVAL.AbstractVAL.has_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if an specific images exists.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>image_name</strong> – the name of the image to search for.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if the image exist, otherwise False.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.val.plugins.abstractVAL.AbstractVAL.has_instance">
+<code class="descname">has_instance</code><span class="sig-paren">(</span><em>instance_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/plugins/abstractVAL.html#AbstractVAL.has_instance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.plugins.abstractVAL.AbstractVAL.has_instance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if an image instance exists.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>instance_name</strong> – the name of an existing instance</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.val.plugins.abstractVAL.AbstractVAL.load_image">
+<code class="descname">load_image</code><span class="sig-paren">(</span><em>image_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/plugins/abstractVAL.html#AbstractVAL.load_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.plugins.abstractVAL.AbstractVAL.load_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the image to the device, but does not start the image himself.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>image_name</strong> – the image to be loaded.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.val.plugins.abstractVAL.AbstractVAL.start_instance">
+<code class="descname">start_instance</code><span class="sig-paren">(</span><em>instance_name</em>, <em>parameters={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/plugins/abstractVAL.html#AbstractVAL.start_instance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.plugins.abstractVAL.AbstractVAL.start_instance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start an existing image instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>instance_name</strong> – the name of the existing instance</li>
+<li><strong>parameters</strong> – execution parameters</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">should return the id of the started instance</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.val.plugins.abstractVAL.AbstractVAL.stop_instance">
+<code class="descname">stop_instance</code><span class="sig-paren">(</span><em>instance_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/plugins/abstractVAL.html#AbstractVAL.stop_instance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.plugins.abstractVAL.AbstractVAL.stop_instance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop an existing image instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>instance_name</strong> – the name of the container to be stopped</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-motey.val.plugins.dockerVAL"></span><dl class="class">
+<dt id="motey.val.plugins.dockerVAL.DockerVAL">
+<em class="property">class </em><code class="descclassname">motey.val.plugins.dockerVAL.</code><code class="descname">DockerVAL</code><a class="reference internal" href="_modules/motey/val/plugins/dockerVAL.html#DockerVAL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.plugins.dockerVAL.DockerVAL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Concrete implementation of the docker virtualization abstraction layer (VAL).</p>
+<dl class="method">
+<dt id="motey.val.plugins.dockerVAL.DockerVAL.create_instance">
+<code class="descname">create_instance</code><span class="sig-paren">(</span><em>image_name</em>, <em>parameters={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/plugins/dockerVAL.html#DockerVAL.create_instance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.plugins.dockerVAL.DockerVAL.create_instance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and start an instance of an image.
+It is a wrapper around the <code class="docutils literal"><span class="pre">docker.containers.create</span></code> command.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>image_name</strong> – the name of the image which should be created</li>
+<li><strong>parameters</strong> – execution parameters. Same as in the <code class="docutils literal"><span class="pre">docker.create_container</span></code>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the id of the created instance</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.val.plugins.dockerVAL.DockerVAL.delete_image">
+<code class="descname">delete_image</code><span class="sig-paren">(</span><em>image_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/plugins/dockerVAL.html#DockerVAL.delete_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.plugins.dockerVAL.DockerVAL.delete_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete an image, but not the instance of it.
+It is a wrapper around the <code class="docutils literal"><span class="pre">docker.images.remove</span></code> command.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>image_name</strong> – the image to be deleted.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.val.plugins.dockerVAL.DockerVAL.get_all_instances_stats">
+<code class="descname">get_all_instances_stats</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/plugins/dockerVAL.html#DockerVAL.get_all_instances_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.plugins.dockerVAL.DockerVAL.get_all_instances_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns object which is type of <code class="docutils literal"><span class="pre">Status</span></code>. Represents the status of all docker container.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">object from type <code class="docutils literal"><span class="pre">Status</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.val.plugins.dockerVAL.DockerVAL.get_all_running_instances">
+<code class="descname">get_all_running_instances</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/plugins/dockerVAL.html#DockerVAL.get_all_running_instances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.plugins.dockerVAL.DockerVAL.get_all_running_instances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list with all running instance in this VAL.
+It is a wrapper around the <code class="docutils literal"><span class="pre">docker.containers.list(filters={'status':</span> <span class="pre">'running'})</span></code> command.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list of instances</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.val.plugins.dockerVAL.DockerVAL.get_docker_client">
+<code class="descname">get_docker_client</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/plugins/dockerVAL.html#DockerVAL.get_docker_client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.plugins.dockerVAL.DockerVAL.get_docker_client" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instantiates the docker client.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the docker client</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.val.plugins.dockerVAL.DockerVAL.get_plugin_type">
+<code class="descname">get_plugin_type</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/plugins/dockerVAL.html#DockerVAL.get_plugin_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.plugins.dockerVAL.DockerVAL.get_plugin_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the specific plugin type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the specific plugin type.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.val.plugins.dockerVAL.DockerVAL.get_stats">
+<code class="descname">get_stats</code><span class="sig-paren">(</span><em>container_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/plugins/dockerVAL.html#DockerVAL.get_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.plugins.dockerVAL.DockerVAL.get_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns object which is type of <code class="docutils literal"><span class="pre">Status</span></code>. Represents the status of a container.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>container_name</strong> – the name of the container</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">object from type <code class="docutils literal"><span class="pre">Status</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.val.plugins.dockerVAL.DockerVAL.has_image">
+<code class="descname">has_image</code><span class="sig-paren">(</span><em>image_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/plugins/dockerVAL.html#DockerVAL.has_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.plugins.dockerVAL.DockerVAL.has_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if an specific images exists.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>image_name</strong> – the name of the image to search for. Can be the <code class="docutils literal"><span class="pre">image.id</span></code> or the <code class="docutils literal"><span class="pre">image.short_id</span></code>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if the image exist, otherwise False.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.val.plugins.dockerVAL.DockerVAL.has_instance">
+<code class="descname">has_instance</code><span class="sig-paren">(</span><em>container_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/plugins/dockerVAL.html#DockerVAL.has_instance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.plugins.dockerVAL.DockerVAL.has_instance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if an image instance exists.
+It is a wrapper around the <code class="docutils literal"><span class="pre">docker.containers.get</span></code> command.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>container_name</strong> – the name of an existing instance</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.val.plugins.dockerVAL.DockerVAL.load_image">
+<code class="descname">load_image</code><span class="sig-paren">(</span><em>image_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/plugins/dockerVAL.html#DockerVAL.load_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.plugins.dockerVAL.DockerVAL.load_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the image to the device, but does not start the image himself.
+It is a wrapper around the <code class="docutils literal"><span class="pre">docker.images.pull</span></code> command.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>image_name</strong> – the image to be loaded.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.val.plugins.dockerVAL.DockerVAL.start_instance">
+<code class="descname">start_instance</code><span class="sig-paren">(</span><em>instance_name</em>, <em>parameters={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/plugins/dockerVAL.html#DockerVAL.start_instance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.plugins.dockerVAL.DockerVAL.start_instance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start an existing image instance.
+It is a wrapper around the <code class="docutils literal"><span class="pre">docker.containers.run</span></code> command.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>instance_name</strong> – the name of the existing instance</li>
+<li><strong>parameters</strong> – execution parameters. Same as in the <code class="docutils literal"><span class="pre">docker.create_container</span></code>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the id of the started instance</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.val.plugins.dockerVAL.DockerVAL.stop_instance">
+<code class="descname">stop_instance</code><span class="sig-paren">(</span><em>container_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/val/plugins/dockerVAL.html#DockerVAL.stop_instance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.val.plugins.dockerVAL.DockerVAL.stop_instance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop an existing image instance.
+It is a wrapper around the <code class="docutils literal"><span class="pre">docker.containers.stop</span></code> command.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>container_name</strong> – the name of the container to be stopped</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 

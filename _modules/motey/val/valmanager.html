@@ -210,10 +210,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">labeling_repository</span><span class="o">.</span><span class="n">remove_all_from_type</span><span class="p">(</span><span class="s1">&#39;plugin&#39;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">absolute_file_path</span><span class="p">(</span><span class="s2">&quot;motey/val/plugins&quot;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plugin_manager</span><span class="o">.</span><span class="n">setPluginPlaces</span><span class="p">([</span><span class="n">absolute_file_path</span><span class="p">(</span><span class="s2">&quot;motey/val/plugins&quot;</span><span class="p">)])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plugin_manager</span><span class="o">.</span><span class="n">collectPlugins</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin_manager</span><span class="o">.</span><span class="n">getAllPlugins</span><span class="p">():</span>
+            <span class="n">plugin</span><span class="o">.</span><span class="n">plugin_object</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span>
             <span class="n">plugin</span><span class="o">.</span><span class="n">plugin_object</span><span class="o">.</span><span class="n">activate</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">labeling_repository</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">plugin</span><span class="o">.</span><span class="n">plugin_object</span><span class="o">.</span><span class="n">get_plugin_type</span><span class="p">(),</span> <span class="s1">&#39;plugin&#39;</span><span class="p">)</span></div>
 
