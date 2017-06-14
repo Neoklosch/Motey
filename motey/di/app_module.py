@@ -45,13 +45,13 @@ class DIServices(containers.DeclarativeContainer):
                                      port=config['WEBSERVER']['port'])
 
     mqtt_server = providers.Singleton(MQTTServer,
-                                     logger=DICore.logger,
-                                     nodes_repository=DIRepositories.nodes_repository,
-                                     host=config['MQTT']['ip'],
-                                     port=int(config['MQTT']['port']),
-                                     username=config['MQTT']['username'],
-                                     password=config['MQTT']['password'],
-                                     keepalive=int(config['MQTT']['keepalive']))
+                                      logger=DICore.logger,
+                                      nodes_repository=DIRepositories.nodes_repository,
+                                      host=config['MQTT']['ip'],
+                                      port=int(config['MQTT']['port']),
+                                      username=config['MQTT']['username'],
+                                      password=config['MQTT']['password'],
+                                      keepalive=int(config['MQTT']['keepalive']))
 
     communication_manager = providers.Singleton(CommunicationManager,
                                                 api_server=api_server,
