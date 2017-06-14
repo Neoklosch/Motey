@@ -11,15 +11,28 @@ from motey.utils.network_utils import get_own_ip
 
 class InterNodeOrchestrator(object):
     """
-    This class orchestpassrates yaml blueprints.
-    It will start and stop virtual instances of images defined in the blueprint.
+    This class orchestrates services.
+    It will start and stop virtual instances of images defined in the service.
     It also can communicate with other nodes to start instances there if the requirements does not fit with the
     possibilities of the current node.
     """
     def __init__(self, logger, valmanager, service_repository, labeling_repository, node_repository,
                  communication_manager):
         """
-        Instantiates the ``Logger``, the ``VALManagger``, ``ServiceRepository`` and subscribe to the blueprint endpoint.
+        Constructor of the class.
+
+        :param logger: DI injected
+        :type logger: motey.utils.logger.Logger
+        :param valmanager: DI injected
+        :type valmanager: motey.val.valmanager.VALManager
+        :param service_repository: DI injected
+        :type service_repository: motey.repositories.service_repository.ServiceRepository
+        :param labeling_repository: DI injected
+        :type labeling_repository: motey.labelingengine.LabelingEngine
+        :param node_repository: DI injected
+        :type node_repository: motey.repositories.node_repository.NodeRepository
+        :param communication_manager: DI injected
+        :type communication_manager: motey.communication.communication_manager.CommunicationManager
         """
         self.logger = logger
         self.valmanager = valmanager
@@ -34,6 +47,7 @@ class InterNodeOrchestrator(object):
         Parse a local yaml file and start the virtual images defined in the blueprint.
 
         :param file_path: Path to the local blueprint file.
+        :type file_path: str
         """
         with open(file_path, 'r') as stream:
             self.handle_blueprint(stream)
@@ -43,6 +57,7 @@ class InterNodeOrchestrator(object):
         Instantiate a service.
 
         :param service: the service to be used.
+        :type service: motey.models.service.Service
         """
         if service.action == Service.ServiceAction.ADD:
             self.service_repository.add(dict(service))
@@ -79,12 +94,25 @@ class InterNodeOrchestrator(object):
                 self.deploy_service(service=service)
 
     def deploy_service(self, service):
+        """
+        Deploy all images of a service to the related nodes.
+
+        :param service: the service which should be deployed
+        :type service: motey.models.service.Service
+        """
         for image in service.images:
             image.id = self.communication_manager.deploy_image(image)
         # store new image id
         self.service_repository.update(dict(service))
 
     def get_service_status(self, service):
+        """
+        Retruns the service status.
+
+        :param service: the service which should be used
+        :type service: motey.models.service.Service
+        :return: the status of the service
+        """
         for image in service.images:
             image_status = self.communication_manager.request_image_status(image)
             # TODO: calculate service state based on instance states
@@ -94,7 +122,9 @@ class InterNodeOrchestrator(object):
         Compares two dicts with capabilities.
 
         :param needed_capabilities: the capabilities to compare with
+        :type needed_capabilities: dict
         :param node_capabilities: the capabilties to check
+        :type node_capabilities: dict
         :return: True if all capabilities are fulfilled, otherwiese False
         """
         for capability in needed_capabilities:
@@ -108,6 +138,13 @@ class InterNodeOrchestrator(object):
         return True
 
     def find_node(self, image):
+        """
+        Try to find a node in the cluster which can be used to deploy the given image.
+
+        :param image: the image to be used
+        :type image: motey.models.image.Image
+        :return: the IP of the node to be used or None if it does not found a node which fulfill all capabilities
+        """
         for node in self.node_repository.all():
             capabilities = self.communication_manager.request_capabilities(node['ip'])
             if self.compare_capabilities(needed_capabilities=image.capabilities, node_capabilities=capabilities):

@@ -54,10 +54,20 @@ class ZeroMQServer(object):
 
     @property
     def after_capabilities_request(self):
+        """
+        Returns the handler which will be executed after a capability request was received.
+
+        :return: the handler which will be executed after a capability request was received.
+        """
         return self.after_capabilities_request_handler
 
     @after_capabilities_request.setter
     def after_capabilities_request(self, handler):
+        """
+        Will set the handler which will be executed after a capability request was received.
+
+        :param handler: the handler which will be executed after a capability request was received.
+        """
         self.after_capabilities_request_handler = handler
 
     def start(self):
@@ -119,6 +129,13 @@ class ZeroMQServer(object):
                 self.capabilities_replier.send_string(json.dumps([]))
 
     def __run_deploy_image_replier_thread(self):
+        """
+        Private function which is be executed after the start method is called.
+        The method will wait for an event where it is subscribed on.
+        After receiving an event the data will be parsed as JSON and validated.
+        Afterwards it will be used to instantiate an image instance.
+        Finally it will send out the id of the instantiated instance or None if something went wrong.
+        """
         while not self.stopped:
             result = self.deploy_image_replier.recv_string()
             image_id = None
@@ -132,11 +149,21 @@ class ZeroMQServer(object):
             self.deploy_image_replier.send_string(image_id if image_id else '')
 
     def __run_image_status_replier_thread(self):
+        """
+        Private function which is be executed after the start method is called.
+        The method will wait for an event where it is subscribed on.
+        After receiving an event the status of an image instance will be returned.
+        """
         while not self.stopped:
             result = self.image_status_replier.recv_string()
             # TODO: send image status
 
     def __run_image_termiate_thread(self):
+        """
+        Private function which is be executed after the start method is called.
+        The method will wait for an event where it is subscribed on.
+        After receiving an event the image instance which matches the send id will be terminated.
+        """
         while not self.stopped:
             image_id = self.image_terminate_replier.recv_string()
             self.valmanager.terminate(instance_name=image_id, plugin_type='docker')
@@ -166,6 +193,14 @@ class ZeroMQServer(object):
         return json_capabilities
 
     def deploy_image(self, image):
+        """
+        Will deploy an image to the node stored in the ``Image.node`` attribute.
+
+        :param image: Image to be deployed.
+        :type image: motey.models.image.Image
+        :return: the id of the deployed image or None if something went wrong.
+        """
+
         if not image or not image.node:
             return None
 
@@ -176,6 +211,13 @@ class ZeroMQServer(object):
         return external_image_id
 
     def request_image_status(self, image):
+        """
+        Request the status of an specific image instance or None if something went wrong.
+
+        :param image: Image to be used to get the status.
+        :type image: motey.models.image.Image
+        :return: the status of the image or None if something went wrong
+        """
         if not image or not image.id or not image.node:
             return None
 
@@ -186,6 +228,12 @@ class ZeroMQServer(object):
         return external_image_status
 
     def terminate_image(self, image):
+        """
+        Will terminate an image instance.
+
+        :param image: the image instance to be terminated
+        :type image: motey.models.image.Image
+        """
         if not image or not image.id or not image.node:
             return None
 
