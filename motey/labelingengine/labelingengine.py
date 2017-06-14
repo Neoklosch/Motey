@@ -8,10 +8,9 @@ from motey.models.schemas import label_json_schema
 class LabelingEngine(object):
     """
     This module provides a connection endpoint for the hardware layer.
-    New labels can be added via a ZeroMQ tcp publisher which is defined in the ``ZeroMQServer``.
     """
 
-    def __init__(self, logger, labeling_repository, zeromq_server):
+    def __init__(self, logger, labeling_repository, communication_manager):
         """
         Constructor the the labeling engine.
 
@@ -19,21 +18,21 @@ class LabelingEngine(object):
         :type logger: motey.utils.logger.Logger
         :param labeling_repository: DI injected
         :type labeling_repository: motey.repositories.labeling_repository.LabelingRepository
-        :param zeromq_server: DI injected
-        :type zeromq_server: motey.communication.zeromq_server.ZeroMQServer
+        :param communication_manager: DI injected
+        :type communication_manager: motey.communication.communication_manager.CommunicationManager
         """
 
         self.logger = logger
         self.labeling_repository = labeling_repository
-        self.zeromq_server = zeromq_server
-        self.zeromq_server.after_capabilities_request = self.handle_capabilities_request
+        self.communication_manager = communication_manager
+        self.communication_manager.after_capabilities_request = self.handle_capabilities_request
 
     def start(self):
         """
-        Subscibes to the ``ZeroMQServer`` event stream.
+        Subscibes to the capability event stream.
         """
 
-        self.zeromq_server.capability_event_stream.subscribe(self.handle_capability_event)
+        self.communication_manager.capability_event_stream.subscribe(self.handle_capability_event)
         self.logger.info('labeling engine started')
 
     def stop(self):
@@ -41,7 +40,7 @@ class LabelingEngine(object):
         Should be executed to clean up the labeling engine
         """
 
-        self.zeromq_server.capability_event_stream.unsubscribe()
+        self.communication_manager.capability_event_stream.unsubscribe()
         self.logger.info('labeling engine stopped')
 
     def handle_capability_event(self, data):

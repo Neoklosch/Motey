@@ -2,7 +2,11 @@ import dependency_injector.containers as containers
 import dependency_injector.providers as providers
 from yapsy.PluginManager import PluginManager
 
+from motey.communication.apiserver import APIServer
+from motey.communication.communication_manager import CommunicationManager
+from motey.communication.mqttserver import MQTTServer
 from motey.communication.zeromq_server import ZeroMQServer
+from motey.configuration.configreader import config
 from motey.core import Core
 from motey.labelingengine.labelingengine import LabelingEngine
 from motey.orchestrator.inter_node_orchestrator import InterNodeOrchestrator
@@ -35,10 +39,29 @@ class DIServices(containers.DeclarativeContainer):
                                         logger=DICore.logger,
                                         valmanager=valmanager)
 
+    api_server = providers.Singleton(APIServer,
+                                     logger=DICore.logger,
+                                     host=config['WEBSERVER']['ip'],
+                                     port=config['WEBSERVER']['port'])
+
+    mqtt_server = providers.Singleton(MQTTServer,
+                                     logger=DICore.logger,
+                                     nodes_repository=DIRepositories.nodes_repository,
+                                     host=config['MQTT']['ip'],
+                                     port=int(config['MQTT']['port']),
+                                     username=config['MQTT']['username'],
+                                     password=config['MQTT']['password'],
+                                     keepalive=int(config['MQTT']['keepalive']))
+
+    communication_manager = providers.Singleton(CommunicationManager,
+                                                api_server=api_server,
+                                                mqtt_server=mqtt_server,
+                                                zeromq_server=zeromq_server)
+
     labeling_engine = providers.Singleton(LabelingEngine,
                                           logger=DICore.logger,
                                           labeling_repository=DIRepositories.labeling_repository,
-                                          zeromq_server=zeromq_server)
+                                          communication_manager=communication_manager)
 
     inter_node_orchestrator = providers.Singleton(InterNodeOrchestrator,
                                                   logger=DICore.logger,
@@ -46,7 +69,7 @@ class DIServices(containers.DeclarativeContainer):
                                                   service_repository=DIRepositories.service_repository,
                                                   labeling_repository=DIRepositories.labeling_repository,
                                                   node_repository=DIRepositories.nodes_repository,
-                                                  zeromq_server=zeromq_server)
+                                                  communication_manager=communication_manager)
 
 
 class Application(containers.DeclarativeContainer):
@@ -56,5 +79,5 @@ class Application(containers.DeclarativeContainer):
                               nodes_repository=DIRepositories.nodes_repository,
                               valmanager=DIServices.valmanager,
                               inter_node_orchestrator=DIServices.inter_node_orchestrator,
-                              zeromq_server=DIServices.zeromq_server,
+                              communication_manager=DIServices.communication_manager,
                               hardware_event_engine=DIServices.labeling_engine)

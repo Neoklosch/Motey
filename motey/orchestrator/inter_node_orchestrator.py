@@ -16,7 +16,8 @@ class InterNodeOrchestrator(object):
     It also can communicate with other nodes to start instances there if the requirements does not fit with the
     possibilities of the current node.
     """
-    def __init__(self, logger, valmanager, service_repository, labeling_repository, node_repository, zeromq_server):
+    def __init__(self, logger, valmanager, service_repository, labeling_repository, node_repository,
+                 communication_manager):
         """
         Instantiates the ``Logger``, the ``VALManagger``, ``ServiceRepository`` and subscribe to the blueprint endpoint.
         """
@@ -25,7 +26,7 @@ class InterNodeOrchestrator(object):
         self.service_repository = service_repository
         self.labeling_repository = labeling_repository
         self.node_repository = node_repository
-        self.zeromq_server = zeromq_server
+        self.communication_manager = communication_manager
         self.blueprint_stream = ServiceEndpoint.yaml_post_stream.subscribe(self.handle_blueprint)
 
     def parse_local_blueprint_file(self, file_path):
@@ -79,13 +80,13 @@ class InterNodeOrchestrator(object):
 
     def deploy_service(self, service):
         for image in service.images:
-            image.id = self.zeromq_server.deploy_image(image)
+            image.id = self.communication_manager.deploy_image(image)
         # store new image id
         self.service_repository.update(dict(service))
 
     def get_service_status(self, service):
         for image in service.images:
-            image_status = self.zeromq_server.request_image_status(image)
+            image_status = self.communication_manager.request_image_status(image)
             # TODO: calculate service state based on instance states
 
     def compare_capabilities(self, needed_capabilities, node_capabilities):
@@ -108,7 +109,7 @@ class InterNodeOrchestrator(object):
 
     def find_node(self, image):
         for node in self.node_repository.all():
-            capabilities = self.zeromq_server.request_capabilities(node['ip'])
+            capabilities = self.communication_manager.request_capabilities(node['ip'])
             if self.compare_capabilities(needed_capabilities=image.capabilities, node_capabilities=capabilities):
                 return node
         return None
@@ -124,7 +125,7 @@ class InterNodeOrchestrator(object):
                 service.state = Service.ServiceState.STOPPING
                 self.service_repository.update(dict(service))
                 for image in service.images:
-                    self.zeromq_server.terminate_image(image)
+                    self.communication_manager.terminate_image(image)
             else:
                 self.logger.error('Service `%s` with the id `%s` is not available' % (service.name, service.id))
 
