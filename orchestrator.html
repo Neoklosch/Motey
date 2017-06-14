@@ -170,9 +170,9 @@
 <span id="documentation-orchestrator"></span><h1>Documentation Orchestrator<a class="headerlink" href="#module-motey.orchestrator.inter_node_orchestrator" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator">
-<em class="property">class </em><code class="descclassname">motey.orchestrator.inter_node_orchestrator.</code><code class="descname">InterNodeOrchestrator</code><span class="sig-paren">(</span><em>logger</em>, <em>valmanager</em>, <em>service_repository</em>, <em>labeling_repository</em>, <em>node_repository</em>, <em>zeromq_server</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/orchestrator/inter_node_orchestrator.html#InterNodeOrchestrator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator" title="Permalink to this definition">¶</a></dt>
-<dd><p>This class orchestpassrates yaml blueprints.
-It will start and stop virtual instances of images defined in the blueprint.
+<em class="property">class </em><code class="descclassname">motey.orchestrator.inter_node_orchestrator.</code><code class="descname">InterNodeOrchestrator</code><span class="sig-paren">(</span><em>logger</em>, <em>valmanager</em>, <em>service_repository</em>, <em>labeling_repository</em>, <em>node_repository</em>, <em>communication_manager</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/orchestrator/inter_node_orchestrator.html#InterNodeOrchestrator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class orchestrates services.
+It will start and stop virtual instances of images defined in the service.
 It also can communicate with other nodes to start instances there if the requirements does not fit with the
 possibilities of the current node.</p>
 <dl class="method">
@@ -184,13 +184,59 @@ possibilities of the current node.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>needed_capabilities</strong> – the capabilities to compare with</li>
-<li><strong>node_capabilities</strong> – the capabilties to check</li>
+<li><strong>needed_capabilities</strong> (<a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) – the capabilities to compare with</li>
+<li><strong>node_capabilities</strong> (<a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) – the capabilties to check</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">True if all capabilities are fulfilled, otherwiese False</p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator.deploy_service">
+<code class="descname">deploy_service</code><span class="sig-paren">(</span><em>service</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/orchestrator/inter_node_orchestrator.html#InterNodeOrchestrator.deploy_service"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator.deploy_service" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deploy all images of a service to the related nodes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>service</strong> (<a class="reference internal" href="models.html#motey.models.service.Service" title="motey.models.service.Service"><em>motey.models.service.Service</em></a>) – the service which should be deployed</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator.find_node">
+<code class="descname">find_node</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/orchestrator/inter_node_orchestrator.html#InterNodeOrchestrator.find_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator.find_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Try to find a node in the cluster which can be used to deploy the given image.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>image</strong> (<a class="reference internal" href="models.html#motey.models.image.Image" title="motey.models.image.Image"><em>motey.models.image.Image</em></a>) – the image to be used</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the IP of the node to be used or None if it does not found a node which fulfill all capabilities</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator.get_service_status">
+<code class="descname">get_service_status</code><span class="sig-paren">(</span><em>service</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/orchestrator/inter_node_orchestrator.html#InterNodeOrchestrator.get_service_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator.get_service_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retruns the service status.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>service</strong> (<a class="reference internal" href="models.html#motey.models.service.Service" title="motey.models.service.Service"><em>motey.models.service.Service</em></a>) – the service which should be used</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the status of the service</td>
 </tr>
 </tbody>
 </table>
@@ -220,7 +266,7 @@ If the data is valid, they will be transformed into a services model and handed 
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>service</strong> – the service to be used.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>service</strong> (<a class="reference internal" href="models.html#motey.models.service.Service" title="motey.models.service.Service"><em>motey.models.service.Service</em></a>) – the service to be used.</td>
 </tr>
 </tbody>
 </table>
@@ -234,7 +280,7 @@ If the data is valid, they will be transformed into a services model and handed 
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_path</strong> – Path to the local blueprint file.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_path</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Path to the local blueprint file.</td>
 </tr>
 </tbody>
 </table>

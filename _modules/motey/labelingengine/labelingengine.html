@@ -176,10 +176,9 @@
 <div class="viewcode-block" id="LabelingEngine"><a class="viewcode-back" href="../../../labelingengine.html#motey.labelingengine.labelingengine.LabelingEngine">[docs]</a><span class="k">class</span> <span class="nc">LabelingEngine</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This module provides a connection endpoint for the hardware layer.</span>
-<span class="sd">    New labels can be added via a ZeroMQ tcp publisher which is defined in the ``ZeroMQServer``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">labeling_repository</span><span class="p">,</span> <span class="n">zeromq_server</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">labeling_repository</span><span class="p">,</span> <span class="n">communication_manager</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructor the the labeling engine.</span>
 
@@ -187,21 +186,21 @@
 <span class="sd">        :type logger: motey.utils.logger.Logger</span>
 <span class="sd">        :param labeling_repository: DI injected</span>
 <span class="sd">        :type labeling_repository: motey.repositories.labeling_repository.LabelingRepository</span>
-<span class="sd">        :param zeromq_server: DI injected</span>
-<span class="sd">        :type zeromq_server: motey.communication.zeromq_server.ZeroMQServer</span>
+<span class="sd">        :param communication_manager: DI injected</span>
+<span class="sd">        :type communication_manager: motey.communication.communication_manager.CommunicationManager</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logger</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">labeling_repository</span> <span class="o">=</span> <span class="n">labeling_repository</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">zeromq_server</span> <span class="o">=</span> <span class="n">zeromq_server</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">zeromq_server</span><span class="o">.</span><span class="n">after_capabilities_request</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_capabilities_request</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">communication_manager</span> <span class="o">=</span> <span class="n">communication_manager</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">communication_manager</span><span class="o">.</span><span class="n">after_capabilities_request</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_capabilities_request</span>
 
 <div class="viewcode-block" id="LabelingEngine.start"><a class="viewcode-back" href="../../../labelingengine.html#motey.labelingengine.labelingengine.LabelingEngine.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Subscibes to the ``ZeroMQServer`` event stream.</span>
+<span class="sd">        Subscibes to the capability event stream.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">zeromq_server</span><span class="o">.</span><span class="n">capability_event_stream</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_capability_event</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">communication_manager</span><span class="o">.</span><span class="n">capability_event_stream</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_capability_event</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;labeling engine started&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="LabelingEngine.stop"><a class="viewcode-back" href="../../../labelingengine.html#motey.labelingengine.labelingengine.LabelingEngine.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -209,7 +208,7 @@
 <span class="sd">        Should be executed to clean up the labeling engine</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">zeromq_server</span><span class="o">.</span><span class="n">capability_event_stream</span><span class="o">.</span><span class="n">unsubscribe</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">communication_manager</span><span class="o">.</span><span class="n">capability_event_stream</span><span class="o">.</span><span class="n">unsubscribe</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;labeling engine stopped&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="LabelingEngine.handle_capability_event"><a class="viewcode-back" href="../../../labelingengine.html#motey.labelingengine.labelingengine.LabelingEngine.handle_capability_event">[docs]</a>    <span class="k">def</span> <span class="nf">handle_capability_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>

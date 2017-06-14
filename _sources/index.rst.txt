@@ -135,9 +135,9 @@ Capabilities Engine
 
 REST API
     A REST API is provided on port 5023.
-    Endpoints are ``/v1/blueprint`` to upload a YAML blueprint, ``/v1/capabilities`` to add capabilities, which is
-    basically another possiblity to communicate with the capabilities engine and ``/v1/nodestatus`` to get the current
-    node status.
+    Endpoints are ``/v1/service`` to upload a YAML blueprint and get informations about the status of a service,
+    ``/v1/capabilities`` to add capabilities, which is basically another possiblity to communicate with the
+    capabilities engine and ``/v1/nodestatus`` to get the current node status.
 
 MQTT
     Motey will try to connect to a MQTT broker on startup.

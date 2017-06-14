@@ -166,9 +166,9 @@
            <div itemprop="articleBody">
             
   <h1>Source code for motey.val.valmanager</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="kn">from</span> <span class="nn">rx.subjects</span> <span class="k">import</span> <span class="n">Subject</span>
 
-<span class="kn">from</span> <span class="nn">rx.subjects</span> <span class="k">import</span> <span class="n">Subject</span>
+<span class="kn">from</span> <span class="nn">motey.utils.path_helper</span> <span class="k">import</span> <span class="n">absolute_file_path</span>
 
 
 <div class="viewcode-block" id="VALManager"><a class="viewcode-back" href="../../../val.html#motey.val.valmanager.VALManager">[docs]</a><span class="k">class</span> <span class="nc">VALManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -210,7 +210,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">labeling_repository</span><span class="o">.</span><span class="n">remove_all_from_type</span><span class="p">(</span><span class="s1">&#39;plugin&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">plugin_manager</span><span class="o">.</span><span class="n">setPluginPlaces</span><span class="p">([</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;motey/val/plugins&quot;</span><span class="p">)])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">absolute_file_path</span><span class="p">(</span><span class="s2">&quot;motey/val/plugins&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugin_manager</span><span class="o">.</span><span class="n">setPluginPlaces</span><span class="p">([</span><span class="n">absolute_file_path</span><span class="p">(</span><span class="s2">&quot;motey/val/plugins&quot;</span><span class="p">)])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plugin_manager</span><span class="o">.</span><span class="n">collectPlugins</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin_manager</span><span class="o">.</span><span class="n">getAllPlugins</span><span class="p">():</span>
             <span class="n">plugin</span><span class="o">.</span><span class="n">plugin_object</span><span class="o">.</span><span class="n">activate</span><span class="p">()</span>

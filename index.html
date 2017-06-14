@@ -277,9 +277,9 @@ In the default configuration port 5090 is exposed as a <a class="reference exter
 You can connect to them witho one ore more <a class="reference external" href="http://zeromq.org/">ZeroMQ</a> publisher to add or remove capabilities.</dd>
 <dt>REST API</dt>
 <dd>A REST API is provided on port 5023.
-Endpoints are <code class="docutils literal"><span class="pre">/v1/blueprint</span></code> to upload a YAML blueprint, <code class="docutils literal"><span class="pre">/v1/capabilities</span></code> to add capabilities, which is
-basically another possiblity to communicate with the capabilities engine and <code class="docutils literal"><span class="pre">/v1/nodestatus</span></code> to get the current
-node status.</dd>
+Endpoints are <code class="docutils literal"><span class="pre">/v1/service</span></code> to upload a YAML blueprint and get informations about the status of a service,
+<code class="docutils literal"><span class="pre">/v1/capabilities</span></code> to add capabilities, which is basically another possiblity to communicate with the
+capabilities engine and <code class="docutils literal"><span class="pre">/v1/nodestatus</span></code> to get the current node status.</dd>
 <dt>MQTT</dt>
 <dd>Motey will try to connect to a MQTT broker on startup.
 Default config is set to url <code class="docutils literal"><span class="pre">172.17.0.3</span></code> and port <code class="docutils literal"><span class="pre">1883</span></code>.

@@ -214,6 +214,115 @@ Checks if all the requirements for a healthy webserver are fulfilled.
 
 </dd></dl>
 
+<span class="target" id="module-motey.communication.communication_manager"></span><dl class="class">
+<dt id="motey.communication.communication_manager.CommunicationManager">
+<em class="property">class </em><code class="descclassname">motey.communication.communication_manager.</code><code class="descname">CommunicationManager</code><span class="sig-paren">(</span><em>api_server</em>, <em>mqtt_server</em>, <em>zeromq_server</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/communication_manager.html#CommunicationManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.communication_manager.CommunicationManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class acts as an facade for the communication endpoints like the <code class="docutils literal"><span class="pre">MQTT</span> <span class="pre">server</span></code>, the <code class="docutils literal"><span class="pre">API</span> <span class="pre">server</span></code> and the
+<code class="docutils literal"><span class="pre">ZeroMQ</span> <span class="pre">server</span></code>.
+It covers all method calls and can start and stop the mentioned components.</p>
+<dl class="attribute">
+<dt id="motey.communication.communication_manager.CommunicationManager.after_capabilities_request">
+<code class="descname">after_capabilities_request</code><a class="headerlink" href="#motey.communication.communication_manager.CommunicationManager.after_capabilities_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Facades the <code class="docutils literal"><span class="pre">ZeroMQServer.after_capabilities_request_handler()</span></code> getter.
+Returns the handler which will be executed after a capability request was received.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the handler which will be executed after a capability request was received.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.communication.communication_manager.CommunicationManager.after_connect_callback">
+<code class="descname">after_connect_callback</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/communication_manager.html#CommunicationManager.after_connect_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.communication_manager.CommunicationManager.after_connect_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Will be called after the MQTTServer has established a connection to the broker.
+Send out a request to fetch the ip from all existing nodes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.communication.communication_manager.CommunicationManager.deploy_image">
+<code class="descname">deploy_image</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/communication_manager.html#CommunicationManager.deploy_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.communication_manager.CommunicationManager.deploy_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Facades the <code class="docutils literal"><span class="pre">ZeroMQServer.deploy_image()</span></code> method.
+Will deploy an image to the node stored in the <code class="docutils literal"><span class="pre">Image.node</span></code> attribute.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>image</strong> (<a class="reference internal" href="models.html#motey.models.image.Image" title="motey.models.image.Image"><em>motey.models.image.Image</em></a>) – Image to be deployed.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the id of the deployed image or None if something went wrong.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.communication.communication_manager.CommunicationManager.request_capabilities">
+<code class="descname">request_capabilities</code><span class="sig-paren">(</span><em>ip</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/communication_manager.html#CommunicationManager.request_capabilities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.communication_manager.CommunicationManager.request_capabilities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Facades the <code class="docutils literal"><span class="pre">ZeroMQServer.request_capabilities()</span></code> method.
+Will fetch the capabilities of a specific node and will return them.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ip</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – The ip of the node to be requested.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the capabilities of a specific node</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.communication.communication_manager.CommunicationManager.request_image_status">
+<code class="descname">request_image_status</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/communication_manager.html#CommunicationManager.request_image_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.communication_manager.CommunicationManager.request_image_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Facades the <code class="docutils literal"><span class="pre">ZeroMQServer.request_image_status()</span></code> method.
+Request the status of an specific image instance or None if something went wrong.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>image</strong> (<a class="reference internal" href="models.html#motey.models.image.Image" title="motey.models.image.Image"><em>motey.models.image.Image</em></a>) – Image to be used to get the status.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the status of the image or None if something went wrong</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.communication.communication_manager.CommunicationManager.start">
+<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/communication_manager.html#CommunicationManager.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.communication_manager.CommunicationManager.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start all the connected communication components.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.communication.communication_manager.CommunicationManager.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/communication_manager.html#CommunicationManager.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.communication_manager.CommunicationManager.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop all the connected communication components.
+Will send out a mqtt message to remove the current node.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.communication.communication_manager.CommunicationManager.terminate_image">
+<code class="descname">terminate_image</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/communication_manager.html#CommunicationManager.terminate_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.communication_manager.CommunicationManager.terminate_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Facades the <code class="docutils literal"><span class="pre">ZeroMQServer.terminate_image()</span></code> method.
+Will terminate an image instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>image</strong> (<a class="reference internal" href="models.html#motey.models.image.Image" title="motey.models.image.Image"><em>motey.models.image.Image</em></a>) – the image instance to be terminated</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 <span class="target" id="module-motey.communication.mqttserver"></span><dl class="class">
 <dt id="motey.communication.mqttserver.MQTTServer">
 <em class="property">class </em><code class="descclassname">motey.communication.mqttserver.</code><code class="descname">MQTTServer</code><span class="sig-paren">(</span><em>logger</em>, <em>nodes_repository</em>, <em>host=‘127.0.0.1’</em>, <em>port=1883</em>, <em>username=None</em>, <em>password=None</em>, <em>keepalive=60</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/mqttserver.html#MQTTServer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.mqttserver.MQTTServer" title="Permalink to this definition">¶</a></dt>
@@ -395,6 +504,36 @@ Also adds an error message to the logs if the broker is not available.</p>
 <em class="property">class </em><code class="descclassname">motey.communication.zeromq_server.</code><code class="descname">ZeroMQServer</code><span class="sig-paren">(</span><em>logger</em>, <em>valmanager</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/zeromq_server.html#ZeroMQServer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.zeromq_server.ZeroMQServer" title="Permalink to this definition">¶</a></dt>
 <dd><p>ZeroMQ server to communicate with adjacent fog nodes and to reply to requests.
 The different listeners will be executed in a separate thread and will not block the main thread.</p>
+<dl class="attribute">
+<dt id="motey.communication.zeromq_server.ZeroMQServer.after_capabilities_request">
+<code class="descname">after_capabilities_request</code><a class="headerlink" href="#motey.communication.zeromq_server.ZeroMQServer.after_capabilities_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the handler which will be executed after a capability request was received.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the handler which will be executed after a capability request was received.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.communication.zeromq_server.ZeroMQServer.deploy_image">
+<code class="descname">deploy_image</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/zeromq_server.html#ZeroMQServer.deploy_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.zeromq_server.ZeroMQServer.deploy_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Will deploy an image to the node stored in the <code class="docutils literal"><span class="pre">Image.node</span></code> attribute.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>image</strong> (<a class="reference internal" href="models.html#motey.models.image.Image" title="motey.models.image.Image"><em>motey.models.image.Image</em></a>) – Image to be deployed.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the id of the deployed image or None if something went wrong.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="motey.communication.zeromq_server.ZeroMQServer.request_capabilities">
 <code class="descname">request_capabilities</code><span class="sig-paren">(</span><em>ip</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/zeromq_server.html#ZeroMQServer.request_capabilities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.zeromq_server.ZeroMQServer.request_capabilities" title="Permalink to this definition">¶</a></dt>
@@ -414,6 +553,22 @@ After the request is send, the method will wait for the response.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="motey.communication.zeromq_server.ZeroMQServer.request_image_status">
+<code class="descname">request_image_status</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/zeromq_server.html#ZeroMQServer.request_image_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.zeromq_server.ZeroMQServer.request_image_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request the status of an specific image instance or None if something went wrong.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>image</strong> (<a class="reference internal" href="models.html#motey.models.image.Image" title="motey.models.image.Image"><em>motey.models.image.Image</em></a>) – Image to be used to get the status.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the status of the image or None if something went wrong</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="motey.communication.zeromq_server.ZeroMQServer.start">
 <code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/zeromq_server.html#ZeroMQServer.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.zeromq_server.ZeroMQServer.start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Starts the listening on a given port.
@@ -424,6 +579,20 @@ This method will be executed on a separate thread.</p>
 <dt id="motey.communication.zeromq_server.ZeroMQServer.stop">
 <code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/zeromq_server.html#ZeroMQServer.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.zeromq_server.ZeroMQServer.stop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Should be executed to clean up the labeling engine</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="motey.communication.zeromq_server.ZeroMQServer.terminate_image">
+<code class="descname">terminate_image</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/communication/zeromq_server.html#ZeroMQServer.terminate_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.communication.zeromq_server.ZeroMQServer.terminate_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Will terminate an image instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>image</strong> (<a class="reference internal" href="models.html#motey.models.image.Image" title="motey.models.image.Image"><em>motey.models.image.Image</em></a>) – the image instance to be terminated</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>

@@ -186,7 +186,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">valmanager</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Constructor ot the MQTT server.</span>
+<span class="sd">        Constructor ot the ZeroMQ server.</span>
 
 <span class="sd">        :param logger: DI injected</span>
 <span class="sd">        :type logger: motey.utils.logger.Logger</span>
@@ -222,10 +222,20 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">after_capabilities_request</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the handler which will be executed after a capability request was received.</span>
+
+<span class="sd">        :return: the handler which will be executed after a capability request was received.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">after_capabilities_request_handler</span>
 
     <span class="nd">@after_capabilities_request</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">after_capabilities_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Will set the handler which will be executed after a capability request was received.</span>
+
+<span class="sd">        :param handler: the handler which will be executed after a capability request was received.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">after_capabilities_request_handler</span> <span class="o">=</span> <span class="n">handler</span>
 
 <div class="viewcode-block" id="ZeroMQServer.start"><a class="viewcode-back" href="../../../communication.html#motey.communication.zeromq_server.ZeroMQServer.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -287,6 +297,13 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">capabilities_replier</span><span class="o">.</span><span class="n">send_string</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">([]))</span>
 
     <span class="k">def</span> <span class="nf">__run_deploy_image_replier_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Private function which is be executed after the start method is called.</span>
+<span class="sd">        The method will wait for an event where it is subscribed on.</span>
+<span class="sd">        After receiving an event the data will be parsed as JSON and validated.</span>
+<span class="sd">        Afterwards it will be used to instantiate an image instance.</span>
+<span class="sd">        Finally it will send out the id of the instantiated instance or None if something went wrong.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">stopped</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deploy_image_replier</span><span class="o">.</span><span class="n">recv_string</span><span class="p">()</span>
             <span class="n">image_id</span> <span class="o">=</span> <span class="kc">None</span>
@@ -300,11 +317,21 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">deploy_image_replier</span><span class="o">.</span><span class="n">send_string</span><span class="p">(</span><span class="n">image_id</span> <span class="k">if</span> <span class="n">image_id</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__run_image_status_replier_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Private function which is be executed after the start method is called.</span>
+<span class="sd">        The method will wait for an event where it is subscribed on.</span>
+<span class="sd">        After receiving an event the status of an image instance will be returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">stopped</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_status_replier</span><span class="o">.</span><span class="n">recv_string</span><span class="p">()</span>
             <span class="c1"># TODO: send image status</span>
 
     <span class="k">def</span> <span class="nf">__run_image_termiate_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Private function which is be executed after the start method is called.</span>
+<span class="sd">        The method will wait for an event where it is subscribed on.</span>
+<span class="sd">        After receiving an event the image instance which matches the send id will be terminated.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">stopped</span><span class="p">:</span>
             <span class="n">image_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_terminate_replier</span><span class="o">.</span><span class="n">recv_string</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">valmanager</span><span class="o">.</span><span class="n">terminate</span><span class="p">(</span><span class="n">instance_name</span><span class="o">=</span><span class="n">image_id</span><span class="p">,</span> <span class="n">plugin_type</span><span class="o">=</span><span class="s1">&#39;docker&#39;</span><span class="p">)</span>
@@ -333,7 +360,15 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Got invalid json from capability request&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">json_capabilities</span></div>
 
-    <span class="k">def</span> <span class="nf">deploy_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+<div class="viewcode-block" id="ZeroMQServer.deploy_image"><a class="viewcode-back" href="../../../communication.html#motey.communication.zeromq_server.ZeroMQServer.deploy_image">[docs]</a>    <span class="k">def</span> <span class="nf">deploy_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Will deploy an image to the node stored in the ``Image.node`` attribute.</span>
+
+<span class="sd">        :param image: Image to be deployed.</span>
+<span class="sd">        :type image: motey.models.image.Image</span>
+<span class="sd">        :return: the id of the deployed image or None if something went wrong.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">if</span> <span class="ow">not</span> <span class="n">image</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">image</span><span class="o">.</span><span class="n">node</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
@@ -341,9 +376,16 @@
         <span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;tcp://</span><span class="si">%s</span><span class="s2">:</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">node</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;ZEROMQ&#39;</span><span class="p">][</span><span class="s1">&#39;deploy_image_replier&#39;</span><span class="p">]))</span>
         <span class="n">socket</span><span class="o">.</span><span class="n">send_string</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">image</span><span class="p">)))</span>
         <span class="n">external_image_id</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv_string</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">external_image_id</span>
+        <span class="k">return</span> <span class="n">external_image_id</span></div>
 
-    <span class="k">def</span> <span class="nf">request_image_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+<div class="viewcode-block" id="ZeroMQServer.request_image_status"><a class="viewcode-back" href="../../../communication.html#motey.communication.zeromq_server.ZeroMQServer.request_image_status">[docs]</a>    <span class="k">def</span> <span class="nf">request_image_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request the status of an specific image instance or None if something went wrong.</span>
+
+<span class="sd">        :param image: Image to be used to get the status.</span>
+<span class="sd">        :type image: motey.models.image.Image</span>
+<span class="sd">        :return: the status of the image or None if something went wrong</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">image</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">image</span><span class="o">.</span><span class="n">id</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">image</span><span class="o">.</span><span class="n">node</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
@@ -351,16 +393,22 @@
         <span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;tcp://</span><span class="si">%s</span><span class="s2">:</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">node</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;ZEROMQ&#39;</span><span class="p">][</span><span class="s1">&#39;image_status_replier&#39;</span><span class="p">]))</span>
         <span class="n">socket</span><span class="o">.</span><span class="n">send_string</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
         <span class="n">external_image_status</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv_string</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">external_image_status</span>
+        <span class="k">return</span> <span class="n">external_image_status</span></div>
 
-    <span class="k">def</span> <span class="nf">terminate_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+<div class="viewcode-block" id="ZeroMQServer.terminate_image"><a class="viewcode-back" href="../../../communication.html#motey.communication.zeromq_server.ZeroMQServer.terminate_image">[docs]</a>    <span class="k">def</span> <span class="nf">terminate_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Will terminate an image instance.</span>
+
+<span class="sd">        :param image: the image instance to be terminated</span>
+<span class="sd">        :type image: motey.models.image.Image</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">image</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">image</span><span class="o">.</span><span class="n">id</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">image</span><span class="o">.</span><span class="n">node</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
         <span class="n">socket</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">REQ</span><span class="p">)</span>
         <span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;tcp://</span><span class="si">%s</span><span class="s2">:</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">node</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;ZEROMQ&#39;</span><span class="p">][</span><span class="s1">&#39;image_terminate_replier&#39;</span><span class="p">]))</span>
         <span class="n">socket</span><span class="o">.</span><span class="n">send_string</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv_string</span><span class="p">()</span></div>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv_string</span><span class="p">()</span></div></div>
 </pre></div>
 
            </div>

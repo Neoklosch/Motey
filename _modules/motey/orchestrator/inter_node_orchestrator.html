@@ -171,7 +171,7 @@
 <span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">from</span> <span class="nn">jsonschema</span> <span class="k">import</span> <span class="n">validate</span><span class="p">,</span> <span class="n">ValidationError</span>
 
-<span class="kn">from</span> <span class="nn">motey.communication.api_routes.blueprintendpoint</span> <span class="k">import</span> <span class="n">BlueprintEndpoint</span>
+<span class="kn">from</span> <span class="nn">motey.communication.api_routes.service</span> <span class="k">import</span> <span class="n">Service</span> <span class="k">as</span> <span class="n">ServiceEndpoint</span>
 <span class="kn">from</span> <span class="nn">motey.models.schemas</span> <span class="k">import</span> <span class="n">blueprint_yaml_schema</span>
 <span class="kn">from</span> <span class="nn">motey.models.service</span> <span class="k">import</span> <span class="n">Service</span>
 <span class="kn">from</span> <span class="nn">motey.utils.network_utils</span> <span class="k">import</span> <span class="n">get_own_ip</span>
@@ -179,28 +179,43 @@
 
 <div class="viewcode-block" id="InterNodeOrchestrator"><a class="viewcode-back" href="../../../orchestrator.html#motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator">[docs]</a><span class="k">class</span> <span class="nc">InterNodeOrchestrator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This class orchestpassrates yaml blueprints.</span>
-<span class="sd">    It will start and stop virtual instances of images defined in the blueprint.</span>
+<span class="sd">    This class orchestrates services.</span>
+<span class="sd">    It will start and stop virtual instances of images defined in the service.</span>
 <span class="sd">    It also can communicate with other nodes to start instances there if the requirements does not fit with the</span>
 <span class="sd">    possibilities of the current node.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">valmanager</span><span class="p">,</span> <span class="n">service_repository</span><span class="p">,</span> <span class="n">labeling_repository</span><span class="p">,</span> <span class="n">node_repository</span><span class="p">,</span> <span class="n">zeromq_server</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">valmanager</span><span class="p">,</span> <span class="n">service_repository</span><span class="p">,</span> <span class="n">labeling_repository</span><span class="p">,</span> <span class="n">node_repository</span><span class="p">,</span>
+                 <span class="n">communication_manager</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Instantiates the ``Logger``, the ``VALManagger``, ``ServiceRepository`` and subscribe to the blueprint endpoint.</span>
+<span class="sd">        Constructor of the class.</span>
+
+<span class="sd">        :param logger: DI injected</span>
+<span class="sd">        :type logger: motey.utils.logger.Logger</span>
+<span class="sd">        :param valmanager: DI injected</span>
+<span class="sd">        :type valmanager: motey.val.valmanager.VALManager</span>
+<span class="sd">        :param service_repository: DI injected</span>
+<span class="sd">        :type service_repository: motey.repositories.service_repository.ServiceRepository</span>
+<span class="sd">        :param labeling_repository: DI injected</span>
+<span class="sd">        :type labeling_repository: motey.labelingengine.LabelingEngine</span>
+<span class="sd">        :param node_repository: DI injected</span>
+<span class="sd">        :type node_repository: motey.repositories.node_repository.NodeRepository</span>
+<span class="sd">        :param communication_manager: DI injected</span>
+<span class="sd">        :type communication_manager: motey.communication.communication_manager.CommunicationManager</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logger</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">valmanager</span> <span class="o">=</span> <span class="n">valmanager</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">service_repository</span> <span class="o">=</span> <span class="n">service_repository</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">labeling_repository</span> <span class="o">=</span> <span class="n">labeling_repository</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">node_repository</span> <span class="o">=</span> <span class="n">node_repository</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">zeromq_server</span> <span class="o">=</span> <span class="n">zeromq_server</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">blueprint_stream</span> <span class="o">=</span> <span class="n">BlueprintEndpoint</span><span class="o">.</span><span class="n">yaml_post_stream</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_blueprint</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">communication_manager</span> <span class="o">=</span> <span class="n">communication_manager</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blueprint_stream</span> <span class="o">=</span> <span class="n">ServiceEndpoint</span><span class="o">.</span><span class="n">yaml_post_stream</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_blueprint</span><span class="p">)</span>
 
 <div class="viewcode-block" id="InterNodeOrchestrator.parse_local_blueprint_file"><a class="viewcode-back" href="../../../orchestrator.html#motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator.parse_local_blueprint_file">[docs]</a>    <span class="k">def</span> <span class="nf">parse_local_blueprint_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parse a local yaml file and start the virtual images defined in the blueprint.</span>
 
 <span class="sd">        :param file_path: Path to the local blueprint file.</span>
+<span class="sd">        :type file_path: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">stream</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">handle_blueprint</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span></div>
@@ -210,6 +225,7 @@
 <span class="sd">        Instantiate a service.</span>
 
 <span class="sd">        :param service: the service to be used.</span>
+<span class="sd">        :type service: motey.models.service.Service</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">service</span><span class="o">.</span><span class="n">action</span> <span class="o">==</span> <span class="n">Service</span><span class="o">.</span><span class="n">ServiceAction</span><span class="o">.</span><span class="n">ADD</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">service_repository</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">service</span><span class="p">))</span>
@@ -245,14 +261,28 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">service_repository</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">service</span><span class="p">))</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">deploy_service</span><span class="p">(</span><span class="n">service</span><span class="o">=</span><span class="n">service</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">deploy_service</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">service</span><span class="o">.</span><span class="n">images</span><span class="p">:</span>
-            <span class="n">image</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">zeromq_server</span><span class="o">.</span><span class="n">deploy_image</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
-        <span class="c1"># self.service_repository.update(dict(service))</span>
+<div class="viewcode-block" id="InterNodeOrchestrator.deploy_service"><a class="viewcode-back" href="../../../orchestrator.html#motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator.deploy_service">[docs]</a>    <span class="k">def</span> <span class="nf">deploy_service</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deploy all images of a service to the related nodes.</span>
 
-    <span class="k">def</span> <span class="nf">get_service_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="p">):</span>
+<span class="sd">        :param service: the service which should be deployed</span>
+<span class="sd">        :type service: motey.models.service.Service</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">service</span><span class="o">.</span><span class="n">images</span><span class="p">:</span>
-            <span class="n">image_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">zeromq_server</span><span class="o">.</span><span class="n">request_image_status</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+            <span class="n">image</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">communication_manager</span><span class="o">.</span><span class="n">deploy_image</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="c1"># store new image id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service_repository</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">service</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="InterNodeOrchestrator.get_service_status"><a class="viewcode-back" href="../../../orchestrator.html#motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator.get_service_status">[docs]</a>    <span class="k">def</span> <span class="nf">get_service_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retruns the service status.</span>
+
+<span class="sd">        :param service: the service which should be used</span>
+<span class="sd">        :type service: motey.models.service.Service</span>
+<span class="sd">        :return: the status of the service</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">service</span><span class="o">.</span><span class="n">images</span><span class="p">:</span>
+            <span class="n">image_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">communication_manager</span><span class="o">.</span><span class="n">request_image_status</span><span class="p">(</span><span class="n">image</span><span class="p">)</span></div>
             <span class="c1"># TODO: calculate service state based on instance states</span>
 
 <div class="viewcode-block" id="InterNodeOrchestrator.compare_capabilities"><a class="viewcode-back" href="../../../orchestrator.html#motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator.compare_capabilities">[docs]</a>    <span class="k">def</span> <span class="nf">compare_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">needed_capabilities</span><span class="p">,</span> <span class="n">node_capabilities</span><span class="p">):</span>
@@ -260,7 +290,9 @@
 <span class="sd">        Compares two dicts with capabilities.</span>
 
 <span class="sd">        :param needed_capabilities: the capabilities to compare with</span>
+<span class="sd">        :type needed_capabilities: dict</span>
 <span class="sd">        :param node_capabilities: the capabilties to check</span>
+<span class="sd">        :type node_capabilities: dict</span>
 <span class="sd">        :return: True if all capabilities are fulfilled, otherwiese False</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">capability</span> <span class="ow">in</span> <span class="n">needed_capabilities</span><span class="p">:</span>
@@ -273,12 +305,19 @@
                 <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
-    <span class="k">def</span> <span class="nf">find_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+<div class="viewcode-block" id="InterNodeOrchestrator.find_node"><a class="viewcode-back" href="../../../orchestrator.html#motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator.find_node">[docs]</a>    <span class="k">def</span> <span class="nf">find_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Try to find a node in the cluster which can be used to deploy the given image.</span>
+
+<span class="sd">        :param image: the image to be used</span>
+<span class="sd">        :type image: motey.models.image.Image</span>
+<span class="sd">        :return: the IP of the node to be used or None if it does not found a node which fulfill all capabilities</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_repository</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
-            <span class="n">capabilities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">zeromq_server</span><span class="o">.</span><span class="n">request_capabilities</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;ip&#39;</span><span class="p">])</span>
+            <span class="n">capabilities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">communication_manager</span><span class="o">.</span><span class="n">request_capabilities</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;ip&#39;</span><span class="p">])</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compare_capabilities</span><span class="p">(</span><span class="n">needed_capabilities</span><span class="o">=</span><span class="n">image</span><span class="o">.</span><span class="n">capabilities</span><span class="p">,</span> <span class="n">node_capabilities</span><span class="o">=</span><span class="n">capabilities</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">node</span>
-        <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="InterNodeOrchestrator.terminate_instances"><a class="viewcode-back" href="../../../orchestrator.html#motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator.terminate_instances">[docs]</a>    <span class="k">def</span> <span class="nf">terminate_instances</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -291,7 +330,7 @@
                 <span class="n">service</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">Service</span><span class="o">.</span><span class="n">ServiceState</span><span class="o">.</span><span class="n">STOPPING</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">service_repository</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">service</span><span class="p">))</span>
                 <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">service</span><span class="o">.</span><span class="n">images</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">zeromq_server</span><span class="o">.</span><span class="n">terminate_image</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">communication_manager</span><span class="o">.</span><span class="n">terminate_image</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Service `</span><span class="si">%s</span><span class="s1">` with the id `</span><span class="si">%s</span><span class="s1">` is not available&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">service</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">service</span><span class="o">.</span><span class="n">id</span><span class="p">))</span></div>
 

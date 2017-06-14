@@ -166,9 +166,7 @@
            <div itemprop="articleBody">
             
   <h1>Source code for motey.repositories.service_repository</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
-
-<span class="kn">from</span> <span class="nn">tinydb</span> <span class="k">import</span> <span class="n">TinyDB</span><span class="p">,</span> <span class="n">Query</span>
+<span></span><span class="kn">from</span> <span class="nn">tinydb</span> <span class="k">import</span> <span class="n">TinyDB</span><span class="p">,</span> <span class="n">Query</span>
 
 <span class="kn">from</span> <span class="nn">motey.configuration.configreader</span> <span class="k">import</span> <span class="n">config</span>
 <span class="kn">from</span> <span class="nn">motey.repositories.base_repository</span> <span class="k">import</span> <span class="n">BaseRepository</span>
@@ -185,7 +183,7 @@
 <span class="sd">        The database location can be configured via the ``config.ini`` file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">ServiceRepository</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="o">=</span> <span class="n">TinyDB</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/services.json&#39;</span> <span class="o">%</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;DATABASE&#39;</span><span class="p">][</span><span class="s1">&#39;path&#39;</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="o">=</span> <span class="n">TinyDB</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/services.json&#39;</span> <span class="o">%</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;DATABASE&#39;</span><span class="p">][</span><span class="s1">&#39;path&#39;</span><span class="p">])</span>
 
 <div class="viewcode-block" id="ServiceRepository.add"><a class="viewcode-back" href="../../../repositories.html#motey.repositories.service_repository.ServiceRepository.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

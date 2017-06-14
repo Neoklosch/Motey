@@ -213,7 +213,7 @@
         <span class="n">SLAVE</span> <span class="o">=</span> <span class="s1">&#39;slave&#39;</span></div>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">images</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">ServiceState</span><span class="o">.</span><span class="n">INITIAL</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">ServiceAction</span><span class="o">.</span><span class="n">ADD</span><span class="p">,</span>
-                 <span class="n">node_type</span><span class="o">=</span><span class="n">ServiceType</span><span class="o">.</span><span class="n">MASTER</span><span class="p">):</span>
+                 <span class="n">node_type</span><span class="o">=</span><span class="n">ServiceType</span><span class="o">.</span><span class="n">MASTER</span><span class="p">,</span> <span class="n">state_message</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructor of the service model.</span>
 
@@ -229,6 +229,8 @@
 <span class="sd">        :type action: motey.models.service.Service.ServiceAction</span>
 <span class="sd">        :param node_type: node type of the service. Default `MASER`.</span>
 <span class="sd">        :type node_type: motey.models.service.Service.ServiceType</span>
+<span class="sd">        :param state_message: message for the current service state</span>
+<span class="sd">        :type state_message: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="nb">id</span>
@@ -237,6 +239,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">images</span> <span class="o">=</span> <span class="n">images</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">node_type</span> <span class="o">=</span> <span class="n">node_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state_message</span> <span class="o">=</span> <span class="n">state_message</span>
 
     <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">yield</span> <span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
@@ -244,6 +247,7 @@
         <span class="k">yield</span> <span class="s1">&#39;action&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span>
         <span class="k">yield</span> <span class="s1">&#39;node_type&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_type</span>
         <span class="k">yield</span> <span class="s1">&#39;images&#39;</span><span class="p">,</span> <span class="p">[</span><span class="nb">dict</span><span class="p">(</span><span class="n">image</span><span class="p">)</span> <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">]</span>
+        <span class="k">yield</span> <span class="s1">&#39;state_message&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_message</span>
 
 <div class="viewcode-block" id="Service.transform"><a class="viewcode-back" href="../../../models.html#motey.models.service.Service.transform">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
@@ -262,7 +266,8 @@
             <span class="nb">id</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;id&#39;</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">else</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span><span class="p">,</span>
             <span class="n">state</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;state&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;state&#39;</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">else</span> <span class="n">Service</span><span class="o">.</span><span class="n">ServiceState</span><span class="o">.</span><span class="n">INITIAL</span><span class="p">,</span>
             <span class="n">action</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;action&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;action&#39;</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">else</span> <span class="n">Service</span><span class="o">.</span><span class="n">ServiceAction</span><span class="o">.</span><span class="n">ADD</span><span class="p">,</span>
-            <span class="n">node_type</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;node_type&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;node_type&#39;</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">else</span> <span class="n">Service</span><span class="o">.</span><span class="n">ServiceType</span><span class="o">.</span><span class="n">MASTER</span>
+            <span class="n">node_type</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;node_type&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;node_type&#39;</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">else</span> <span class="n">Service</span><span class="o">.</span><span class="n">ServiceType</span><span class="o">.</span><span class="n">MASTER</span><span class="p">,</span>
+            <span class="n">state_message</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;state_message&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;state_message&#39;</span> <span class="ow">in</span> <span class="n">data</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
         <span class="p">)</span></div></div>
 </pre></div>
 

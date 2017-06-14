@@ -4,6 +4,9 @@ Documentation Communication
 .. automodule:: motey.communication.apiserver
     :members:
 
+.. automodule:: motey.communication.communication_manager
+    :members:
+
 .. automodule:: motey.communication.mqttserver
     :members:
 

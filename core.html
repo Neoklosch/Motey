@@ -170,20 +170,13 @@
 <span id="documentation-core"></span><h1>Documentation Core<a class="headerlink" href="#module-motey.core" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="motey.core.Core">
-<em class="property">class </em><code class="descclassname">motey.core.</code><code class="descname">Core</code><span class="sig-paren">(</span><em>logger</em>, <em>labeling_repository</em>, <em>nodes_repository</em>, <em>valmanager</em>, <em>inter_node_orchestrator</em>, <em>zeromq_server</em>, <em>hardware_event_engine</em>, <em>as_daemon=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/core.html#Core"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.core.Core" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">motey.core.</code><code class="descname">Core</code><span class="sig-paren">(</span><em>logger</em>, <em>labeling_repository</em>, <em>nodes_repository</em>, <em>valmanager</em>, <em>inter_node_orchestrator</em>, <em>communication_manager</em>, <em>hardware_event_engine</em>, <em>as_daemon=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/core.html#Core"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.core.Core" title="Permalink to this definition">¶</a></dt>
 <dd><p>This module provides the core functionality of Motey.
 It can be executed as a daemon service or can be executed in foreground.
 It will start an API webserver and a MQTTServer which can be configured via the config.ini file.
 The core will also start all the necessary components like the LabelingDatabase, the VALManager,
 the InterNodeOrchestrator and the HardwareEventEngine.
 After it is started via self.start() it will be executed until self.stop() is executed.</p>
-<dl class="method">
-<dt id="motey.core.Core.after_connect_callback">
-<code class="descname">after_connect_callback</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/core.html#Core.after_connect_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.core.Core.after_connect_callback" title="Permalink to this definition">¶</a></dt>
-<dd><p>Will be called after the MQTTServer has established a connection to the broker.
-Send out a request to fetch the ip from all existing nodes.</p>
-</dd></dl>
-
 <dl class="method">
 <dt id="motey.core.Core.restart">
 <code class="descname">restart</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/core.html#Core.restart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.core.Core.restart" title="Permalink to this definition">¶</a></dt>
@@ -194,8 +187,7 @@ Send out a request to fetch the ip from all existing nodes.</p>
 <dt id="motey.core.Core.run">
 <code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/core.html#Core.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.core.Core.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>The method is the main app loop.
-It starts the API server as well as the MQTT server, ZeroMQ server and it will be executed until self.stop()
-is executed.</p>
+It starts the <code class="docutils literal"><span class="pre">Communication</span> <span class="pre">Manager</span> <span class="pre">Components</span></code> and it will be executed until <code class="docutils literal"><span class="pre">self.stop()</span></code> is executed.</p>
 </dd></dl>
 
 <dl class="method">
@@ -217,8 +209,7 @@ If self.as_daemon is set to False, the component will be executed in foreground.
 <dt id="motey.core.Core.stop">
 <code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motey/core.html#Core.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motey.core.Core.stop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clean up the started services.
-At first it sends a MQTTServer.remove_node() command.
-Afterwards it will stop the MQTTServer instance as well as the VALManager.
+It will stop the <code class="docutils literal"><span class="pre">Communication</span> <span class="pre">Manager</span> <span class="pre">Components</span></code>.
 Finally it stops the daemon if self.as_daemon is set to True.</p>
 </dd></dl>
 

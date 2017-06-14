@@ -169,10 +169,12 @@
 <span></span><span class="kn">import</span> <span class="nn">threading</span>
 
 <span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">request</span>
+<span class="kn">from</span> <span class="nn">flask_cors</span> <span class="k">import</span> <span class="n">CORS</span>
 
-<span class="kn">from</span> <span class="nn">motey.communication.api_routes.blueprintendpoint</span> <span class="k">import</span> <span class="n">BlueprintEndpoint</span>
 <span class="kn">from</span> <span class="nn">motey.communication.api_routes.capabilities</span> <span class="k">import</span> <span class="n">Capabilities</span>
+<span class="kn">from</span> <span class="nn">motey.communication.api_routes.nodes</span> <span class="k">import</span> <span class="n">Nodes</span>
 <span class="kn">from</span> <span class="nn">motey.communication.api_routes.nodestatus</span> <span class="k">import</span> <span class="n">NodeStatus</span>
+<span class="kn">from</span> <span class="nn">motey.communication.api_routes.service</span> <span class="k">import</span> <span class="n">Service</span>
 <span class="kn">from</span> <span class="nn">motey.utils.heartbeat</span> <span class="k">import</span> <span class="n">register_callback</span><span class="p">,</span> <span class="n">register_heartbeat</span>
 
 
@@ -196,6 +198,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logger</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">webserver</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="n">CORS</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">webserver</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">configure_url</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">run_server_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">run_server</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">run_server_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
@@ -217,9 +220,10 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds all the configured api endpoints.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">webserver</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s1">&#39;/v1/blueprint&#39;</span><span class="p">,</span> <span class="n">view_func</span><span class="o">=</span><span class="n">BlueprintEndpoint</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span><span class="s1">&#39;blueprintendpoint&#39;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">webserver</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s1">&#39;/v1/capabilities&#39;</span><span class="p">,</span> <span class="n">view_func</span><span class="o">=</span><span class="n">Capabilities</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span><span class="s1">&#39;capabilities&#39;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">webserver</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s1">&#39;/v1/nodestatus&#39;</span><span class="p">,</span> <span class="n">view_func</span><span class="o">=</span><span class="n">NodeStatus</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span><span class="s1">&#39;nodestatus&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">webserver</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s1">&#39;/v1/service&#39;</span><span class="p">,</span> <span class="n">view_func</span><span class="o">=</span><span class="n">Service</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span><span class="s1">&#39;service&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">webserver</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s1">&#39;/v1/nodes&#39;</span><span class="p">,</span> <span class="n">view_func</span><span class="o">=</span><span class="n">Nodes</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span><span class="s1">&#39;nodes&#39;</span><span class="p">))</span>
         <span class="n">register_callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">check_heartbeat</span><span class="p">)</span>
         <span class="n">register_heartbeat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">webserver</span><span class="p">)</span></div>
 

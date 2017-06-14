@@ -1,0 +1,362 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>motey.communication.communication_manager &mdash; Motey 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="Motey 0.0.1 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Motey
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../core.html">Documentation Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cli.html">Documentation cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../communication.html">Documentation Communication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../communication_api_routes.html">Documentation Communication - API Routes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../labelingengine.html">Documentation Labeling Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models.html">Documentation Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../orchestrator.html">Documentation Orchestrator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../repositories.html">Documentation Repositories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Documentation Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../val.html">Documentation Virtualization Abstraction Layer (VAL)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../val_plugins.html">Documentation Virtualization Abstraction Layer (VAL) Plugins</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Motey</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>motey.communication.communication_manager</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for motey.communication.communication_manager</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">motey.utils</span> <span class="k">import</span> <span class="n">network_utils</span>
+<span class="kn">from</span> <span class="nn">rx.subjects</span> <span class="k">import</span> <span class="n">Subject</span>
+
+
+<div class="viewcode-block" id="CommunicationManager"><a class="viewcode-back" href="../../../communication.html#motey.communication.communication_manager.CommunicationManager">[docs]</a><span class="k">class</span> <span class="nc">CommunicationManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class acts as an facade for the communication endpoints like the ``MQTT server``, the ``API server`` and the</span>
+<span class="sd">    ``ZeroMQ server``.</span>
+<span class="sd">    It covers all method calls and can start and stop the mentioned components.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">capability_event_stream</span> <span class="o">=</span> <span class="n">Subject</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_server</span><span class="p">,</span> <span class="n">mqtt_server</span><span class="p">,</span> <span class="n">zeromq_server</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor of the class.</span>
+
+<span class="sd">        :param api_server: DI injected.</span>
+<span class="sd">        :type api_server: motey.communication.apiserver.APIServer</span>
+<span class="sd">        :param mqtt_server: DI injected.</span>
+<span class="sd">        :type mqtt_server: motey.communication.mqttserver.MQTTServer</span>
+<span class="sd">        :param zeromq_server: DI injected.</span>
+<span class="sd">        :type zeromq_server: motey.communication.zeromq_server.ZeroMQServer</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">api_server</span> <span class="o">=</span> <span class="n">api_server</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mqtt_server</span> <span class="o">=</span> <span class="n">mqtt_server</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zeromq_server</span> <span class="o">=</span> <span class="n">zeromq_server</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">mqtt_server</span><span class="o">.</span><span class="n">after_connect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">after_connect_callback</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mqtt_server</span><span class="o">.</span><span class="n">nodes_request_callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__nodes_request_callback</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">after_capabilities_request</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Facades the ``ZeroMQServer.after_capabilities_request_handler()`` getter.</span>
+<span class="sd">        Returns the handler which will be executed after a capability request was received.</span>
+
+<span class="sd">        :return: the handler which will be executed after a capability request was received.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">zeromq_server</span><span class="o">.</span><span class="n">after_capabilities_request_handler</span>
+
+    <span class="nd">@after_capabilities_request</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">after_capabilities_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Facades the ``ZeroMQServer.after_capabilities_request`` setter.</span>
+<span class="sd">        Will set the handler which will be executed after a capability request was received.</span>
+
+<span class="sd">        :param handler: the handler which will be executed after a capability request was received.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zeromq_server</span><span class="o">.</span><span class="n">after_capabilities_request_handler</span> <span class="o">=</span> <span class="n">handler</span>
+
+<div class="viewcode-block" id="CommunicationManager.start"><a class="viewcode-back" href="../../../communication.html#motey.communication.communication_manager.CommunicationManager.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Start all the connected communication components.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">api_server</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mqtt_server</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zeromq_server</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CommunicationManager.stop"><a class="viewcode-back" href="../../../communication.html#motey.communication.communication_manager.CommunicationManager.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stop all the connected communication components.</span>
+<span class="sd">        Will send out a mqtt message to remove the current node.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zeromq_server</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mqtt_server</span><span class="o">.</span><span class="n">remove_node</span><span class="p">(</span><span class="n">network_utils</span><span class="o">.</span><span class="n">get_own_ip</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mqtt_server</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">api_server</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CommunicationManager.after_connect_callback"><a class="viewcode-back" href="../../../communication.html#motey.communication.communication_manager.CommunicationManager.after_connect_callback">[docs]</a>    <span class="k">def</span> <span class="nf">after_connect_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Will be called after the MQTTServer has established a connection to the broker.</span>
+<span class="sd">        Send out a request to fetch the ip from all existing nodes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mqtt_server</span><span class="o">.</span><span class="n">publish_node_request</span><span class="p">(</span><span class="n">network_utils</span><span class="o">.</span><span class="n">get_own_ip</span><span class="p">())</span></div>
+
+    <span class="k">def</span> <span class="nf">__nodes_request_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Will be called if a request to fetch the ip from all existing nodes comes in.</span>
+<span class="sd">        Send out the ip of the node.</span>
+
+<span class="sd">        :param client:     the client instance for this callback</span>
+<span class="sd">        :param userdata:   the private user data as set in Client() or userdata_set()</span>
+<span class="sd">        :param message:    the data which was send</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mqtt_server</span><span class="o">.</span><span class="n">publish_new_node</span><span class="p">(</span><span class="n">network_utils</span><span class="o">.</span><span class="n">get_own_ip</span><span class="p">())</span>
+
+<div class="viewcode-block" id="CommunicationManager.deploy_image"><a class="viewcode-back" href="../../../communication.html#motey.communication.communication_manager.CommunicationManager.deploy_image">[docs]</a>    <span class="k">def</span> <span class="nf">deploy_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Facades the ``ZeroMQServer.deploy_image()`` method.</span>
+<span class="sd">        Will deploy an image to the node stored in the ``Image.node`` attribute.</span>
+
+<span class="sd">        :param image: Image to be deployed.</span>
+<span class="sd">        :type image: motey.models.image.Image</span>
+<span class="sd">        :return: the id of the deployed image or None if something went wrong.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">zeromq_server</span><span class="o">.</span><span class="n">deploy_image</span><span class="p">(</span><span class="n">image</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CommunicationManager.request_image_status"><a class="viewcode-back" href="../../../communication.html#motey.communication.communication_manager.CommunicationManager.request_image_status">[docs]</a>    <span class="k">def</span> <span class="nf">request_image_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Facades the ``ZeroMQServer.request_image_status()`` method.</span>
+<span class="sd">        Request the status of an specific image instance or None if something went wrong.</span>
+
+<span class="sd">        :param image: Image to be used to get the status.</span>
+<span class="sd">        :type image: motey.models.image.Image</span>
+<span class="sd">        :return: the status of the image or None if something went wrong</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">zeromq_server</span><span class="o">.</span><span class="n">request_image_status</span><span class="p">(</span><span class="n">image</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CommunicationManager.request_capabilities"><a class="viewcode-back" href="../../../communication.html#motey.communication.communication_manager.CommunicationManager.request_capabilities">[docs]</a>    <span class="k">def</span> <span class="nf">request_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Facades the ``ZeroMQServer.request_capabilities()`` method.</span>
+<span class="sd">        Will fetch the capabilities of a specific node and will return them.</span>
+
+<span class="sd">        :param ip: The ip of the node to be requested.</span>
+<span class="sd">        :type ip: str</span>
+<span class="sd">        :return: the capabilities of a specific node</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">zeromq_server</span><span class="o">.</span><span class="n">request_capabilities</span><span class="p">(</span><span class="n">ip</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CommunicationManager.terminate_image"><a class="viewcode-back" href="../../../communication.html#motey.communication.communication_manager.CommunicationManager.terminate_image">[docs]</a>    <span class="k">def</span> <span class="nf">terminate_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Facades the ``ZeroMQServer.terminate_image()`` method.</span>
+<span class="sd">        Will terminate an image instance.</span>
+
+<span class="sd">        :param image: the image instance to be terminated</span>
+<span class="sd">        :type image: motey.models.image.Image</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zeromq_server</span><span class="o">.</span><span class="n">terminate_image</span><span class="p">(</span><span class="n">image</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Markus Paeschke.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
