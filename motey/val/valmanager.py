@@ -42,10 +42,10 @@ class VALManager(object):
         """
 
         self.labeling_repository.remove_all_from_type('plugin')
-        print(absolute_file_path("motey/val/plugins"))
         self.plugin_manager.setPluginPlaces([absolute_file_path("motey/val/plugins")])
         self.plugin_manager.collectPlugins()
         for plugin in self.plugin_manager.getAllPlugins():
+            plugin.plugin_object.logger = self.logger
             plugin.plugin_object.activate()
             self.labeling_repository.add(plugin.plugin_object.get_plugin_type(), 'plugin')
 

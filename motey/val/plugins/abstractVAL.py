@@ -1,7 +1,5 @@
 from yapsy.IPlugin import IPlugin
 
-from motey.di.app_module import DICore
-
 
 class AbstractVAL(IPlugin):
     """
@@ -17,7 +15,7 @@ class AbstractVAL(IPlugin):
         Constructor of the AbstractVAL.
         """
         super().__init__()
-        self.logger = DICore.logger()
+        self.logger = None
 
     def get_plugin_type(self):
         """
@@ -117,10 +115,12 @@ class AbstractVAL(IPlugin):
         """
         Called at plugin activation.
         """
-        self.logger.info("%s plugin activated" % self.get_plugin_type())
+        if self.logger:
+            self.logger.info("%s plugin activated" % self.get_plugin_type())
 
     def deactivate(self):
         """
         Called when the plugin is disabled.
         """
-        self.logger.info("%s plugin deactivated" % self.get_plugin_type())
+        if self.logger:
+            self.logger.info("%s plugin deactivated" % self.get_plugin_type())

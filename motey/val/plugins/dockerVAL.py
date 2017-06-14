@@ -99,11 +99,14 @@ class DockerVAL(abstractVAL.AbstractVAL):
                 parameters.pop('detach')
                 container = client.containers.create(image_name, detach=True, **parameters)
         except ContainerError as ce:
-            self.logger.error("create docker instance > container could not be created")
+            if self.logger:
+                self.logger.error("create docker instance > container could not be created")
         except ImageNotFound as inf:
-            self.logger.error("create docker instance > image not found")
+            if self.logger:
+                self.logger.error("create docker instance > image not found")
         except APIError as apie:
-            self.logger.error("create docker instance > api error")
+            if self.logger:
+                self.logger.error("create docker instance > api error")
         return container_id
 
     def start_instance(self, instance_name, parameters={}):
@@ -123,11 +126,14 @@ class DockerVAL(abstractVAL.AbstractVAL):
             container = client.containers.run(instance_name, detach=True, **parameters)
             container_id = container.id
         except ContainerError as ce:
-            self.logger.error("start docker instance > container could not be created")
+            if self.logger:
+                self.logger.error("start docker instance > container could not be created")
         except ImageNotFound as inf:
-            self.logger.error("start docker instance > image not found")
+            if self.logger:
+                self.logger.error("start docker instance > image not found")
         except APIError as apie:
-            self.logger.error("start docker instance > api error")
+            if self.logger:
+                self.logger.error("start docker instance > api error")
         return container_id
 
     def stop_instance(self, container_name):
