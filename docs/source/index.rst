@@ -51,7 +51,7 @@ The easiest way to use Motey is to run the docker container.
     $ docker pull neoklosch/motey
 
     # run the container
-    $ docker run -ti -v /var/run/docker.sock:/var/run/docker.sock -p 5023:5023 -p 5024:5024 -p 5090:5090 neoklosch/motey
+    $ docker run -ti -v /var/run/docker.sock:/var/run/docker.sock -p 5023:5023 -p 5024:5024 neoklosch/motey
 
     # to enter the container
     $ docker exec -ti <container_name> bash
@@ -127,7 +127,7 @@ Communication
 
 Motey provide several endpoints to communicate with the system.
 
-Capabilities Engine
+Capabilities Engine (only inter-process communication)
     You can communicate with the capabilities engine via ZeroMQ_.
     In the default configuration port 5090 is exposed as a ZeroMQ_ subscriber.
     You can connect to them witho one ore more ZeroMQ_ publisher to add or remove capabilities.

@@ -28,7 +28,7 @@ def signal_handler(signal, frame):
 
 def main():
     options = docopt(__doc__, version='0.0.1')
-    publisher.connect('tcp://localhost:5090')
+    publisher.connect('ipc://localhost:5090')
     # sleep is important because the connection took some time, but the publisher will immediately send out data
     sleep(2)
     json_data = [

@@ -76,7 +76,7 @@ class ZeroMQServer(object):
         This method will be executed on a separate thread.
         """
 
-        self.capabilities_subscriber.bind('tcp://*:%s' % config['ZEROMQ']['capability_engine'])
+        self.capabilities_subscriber.bind('ipc://*:%s' % config['ZEROMQ']['capability_engine'])
         self.capabilities_subscriber.setsockopt_string(zmq.SUBSCRIBE, 'capabilityevent')
         self.capabilities_subscriber_thread.start()
 

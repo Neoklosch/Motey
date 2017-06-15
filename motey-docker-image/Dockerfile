@@ -6,6 +6,6 @@ ADD ./setup.sh /tmp/setup.sh
 ADD ./requirements.txt /tmp/requirements.txt
 RUN /bin/bash /tmp/setup.sh
 
-EXPOSE 5023 5090 5091 5092 5094 5094 1883
+EXPOSE 5023 5091 5092 5094 5094 1883
 
 CMD ["motey", "start"]
