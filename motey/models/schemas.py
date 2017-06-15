@@ -46,30 +46,30 @@ capability_json_schema = {
     "items": {
         "type": "object",
         "properties": {
-            "label": {
+            "capability": {
                 "type": "string"
             },
-            "label_type": {
+            "capability_type": {
                 "type": "string"
             }
         },
-        "required": ["label", "label_type"]
+        "required": ["capability", "capability_type"]
     }
 }
 
-# JSON schema for a valid label entry
-label_json_schema = {
+# JSON schema for a valid capability entry
+capability_action_json_schema = {
     "type": "object",
     "properties": {
-        "label": {
+        "capability": {
             "type": "string"
         },
-        "label_type": {
+        "capability_type": {
             "type": "string"
         },
         "action": {
             "enum": ["add", "remove"]
         }
     },
-    "required": ["label", "label_type", "action"]
+    "required": ["capability", "capability_type", "action"]
 }

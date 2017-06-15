@@ -16,7 +16,7 @@ Welcome to Motey's documentation!
    cli
    communication
    communication_api_routes
-   labelingengine
+   capabilityengine
    models
    orchestrator
    repositories

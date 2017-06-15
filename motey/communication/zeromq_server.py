@@ -76,8 +76,8 @@ class ZeroMQServer(object):
         This method will be executed on a separate thread.
         """
 
-        self.capabilities_subscriber.bind('tcp://*:%s' % config['ZEROMQ']['labeling_engine'])
-        self.capabilities_subscriber.setsockopt_string(zmq.SUBSCRIBE, 'labelingevent')
+        self.capabilities_subscriber.bind('tcp://*:%s' % config['ZEROMQ']['capability_engine'])
+        self.capabilities_subscriber.setsockopt_string(zmq.SUBSCRIBE, 'capabilityevent')
         self.capabilities_subscriber_thread.start()
 
         self.capabilities_replier.bind('tcp://*:%s' % config['ZEROMQ']['capabilities_replier'])
@@ -96,7 +96,7 @@ class ZeroMQServer(object):
 
     def stop(self):
         """
-        Should be executed to clean up the labeling engine
+        Should be executed to clean up the capability engine
         """
 
         self.logger.info('ZeroMQ server stopped')
@@ -105,7 +105,7 @@ class ZeroMQServer(object):
         """
         Private function which is be executed after the start method is called.
         The method will wait for an event where it is subscribed on.
-        After receiving an event a new label will be added to the LabelingDatabase.
+        After receiving an event a new capability will be added to the capability database.
         """
 
         while not self.stopped:

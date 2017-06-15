@@ -8,7 +8,7 @@ from motey.models.schemas import capability_json_schema
 class Capabilities(MethodView):
     """
     This REST API endpoint for capability handling.
-    A capability is basically a label for the whole node.
+    A capability is basically a capability for the whole node.
     New capabilities can be added or deleted via this endpoint or a list with the existing ones can be fetched.
     """
 
@@ -19,7 +19,7 @@ class Capabilities(MethodView):
         :return: a JSON object with all the existing capabilities of this node
         """
         from motey.di.app_module import DIRepositories
-        results = DIRepositories.labeling_repository().all()
+        results = DIRepositories.capability_repository().all()
         return jsonify(results), 200
 
     def put(self):
@@ -36,12 +36,13 @@ class Capabilities(MethodView):
             data = request.json
             try:
                 validate(data, capability_json_schema)
-                labeling_repository = DIRepositories.labeling_repository()
+                capability_repository = DIRepositories.capability_repository()
                 nothing_added = True
                 for entry in data:
-                    if not labeling_repository.has_node(label=entry['label']):
+                    if not capability_repository.has_node(capability=entry['capability']):
                         nothing_added = False
-                        labeling_repository.add(label=entry['label'], label_type=entry['label_type'])
+                        capability_repository.add(capability=entry['capability'],
+                                                  capability_type=entry['capability_type'])
                 if nothing_added:
                     return '', 304
             except ValidationError:
@@ -64,12 +65,13 @@ class Capabilities(MethodView):
             data = request.json
             try:
                 validate(data, capability_json_schema)
-                labeling_repository = DIRepositories.labeling_repository()
+                capability_repository = DIRepositories.capability_repository()
                 nothing_removed = True
                 for entry in data:
-                    if labeling_repository.has_node(label=entry['label']):
+                    if capability_repository.has_node(capability=entry['capability']):
                         nothing_removed = False
-                        labeling_repository.remove(label=entry['label'], label_type=entry['label_type'])
+                        capability_repository.remove(capability=entry['capability'],
+                                                     capability_type=entry['capability_type'])
                 if nothing_removed:
                     return '', 304
             except ValidationError:

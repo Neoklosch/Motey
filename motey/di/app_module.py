@@ -8,9 +8,9 @@ from motey.communication.mqttserver import MQTTServer
 from motey.communication.zeromq_server import ZeroMQServer
 from motey.configuration.configreader import config
 from motey.core import Core
-from motey.labelingengine.labelingengine import LabelingEngine
+from motey.capabilityengine.capability_engine import CapabilityEngine
 from motey.orchestrator.inter_node_orchestrator import InterNodeOrchestrator
-from motey.repositories.labeling_repository import LabelingRepository
+from motey.repositories.capability_repository import CapabilityRepository
 from motey.repositories.nodes_repository import NodesRepository
 from motey.repositories.service_repository import ServiceRepository
 from motey.utils.logger import Logger
@@ -22,7 +22,7 @@ class DICore(containers.DeclarativeContainer):
 
 
 class DIRepositories(containers.DeclarativeContainer):
-    labeling_repository = providers.Singleton(LabelingRepository)
+    capability_repository = providers.Singleton(CapabilityRepository)
     nodes_repository = providers.Singleton(NodesRepository)
     service_repository = providers.Singleton(ServiceRepository)
 
@@ -32,7 +32,7 @@ class DIServices(containers.DeclarativeContainer):
 
     valmanager = providers.Singleton(VALManager,
                                      logger=DICore.logger,
-                                     labeling_repository=DIRepositories.labeling_repository,
+                                     capability_repository=DIRepositories.capability_repository,
                                      plugin_manager=plugin_manager)
 
     zeromq_server = providers.Singleton(ZeroMQServer,
@@ -58,16 +58,16 @@ class DIServices(containers.DeclarativeContainer):
                                                 mqtt_server=mqtt_server,
                                                 zeromq_server=zeromq_server)
 
-    labeling_engine = providers.Singleton(LabelingEngine,
-                                          logger=DICore.logger,
-                                          labeling_repository=DIRepositories.labeling_repository,
-                                          communication_manager=communication_manager)
+    capability_engine = providers.Singleton(CapabilityEngine,
+                                            logger=DICore.logger,
+                                            capability_repository=DIRepositories.capability_repository,
+                                            communication_manager=communication_manager)
 
     inter_node_orchestrator = providers.Singleton(InterNodeOrchestrator,
                                                   logger=DICore.logger,
                                                   valmanager=valmanager,
                                                   service_repository=DIRepositories.service_repository,
-                                                  labeling_repository=DIRepositories.labeling_repository,
+                                                  capability_repository=DIRepositories.capability_repository,
                                                   node_repository=DIRepositories.nodes_repository,
                                                   communication_manager=communication_manager)
 
@@ -75,9 +75,9 @@ class DIServices(containers.DeclarativeContainer):
 class Application(containers.DeclarativeContainer):
     core = providers.Callable(Core,
                               logger=DICore.logger,
-                              labeling_repository=DIRepositories.labeling_repository,
+                              capability_repository=DIRepositories.capability_repository,
                               nodes_repository=DIRepositories.nodes_repository,
                               valmanager=DIServices.valmanager,
                               inter_node_orchestrator=DIServices.inter_node_orchestrator,
                               communication_manager=DIServices.communication_manager,
-                              hardware_event_engine=DIServices.labeling_engine)
+                              hardware_event_engine=DIServices.capability_engine)

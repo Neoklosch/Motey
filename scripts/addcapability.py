@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 
 """
-Labeling event command line tool.
+Capability event command line tool.
 
 Usage:
-  __main__.py --label=<label> [--type=<labelingevent>] [--action=<add|remove>]
-  __main__.py -h | --help | --version
+  addcapability.py --capability=<capability> [--type=<capabilityevent>] [--action=<add|remove>]
+  addcapability.py -h | --help | --version
 """
 
 
 import json
 import signal
 import sys
-from time import sleep
 
 import zmq
 from docopt import docopt
+from time import sleep
 
 context = zmq.Context()
 publisher = context.socket(zmq.PUB)
@@ -32,11 +32,12 @@ def main():
     # sleep is important because the connection took some time, but the publisher will immediately send out data
     sleep(2)
     json_data = [
-        {'label': options['--label'], 'label_type': options['--type'] if options['--type'] else 'labelingevent', 'action': options['--action'] if options['--action'] else 'add'}
+        {'capability': options['--capability'], 'capability_type': options['--type'] if options['--type'] else 'capabilityevent', 'action': options['--action'] if options['--action'] else 'add'}
     ]
-    output = 'labelingevent#%s' % json.dumps(json_data)
+    output = 'capabilityevent#%s' % json.dumps(json_data)
     print('will send > %s' % output)
     publisher.send_string(output)
+
 
 
 if __name__ == '__main__':

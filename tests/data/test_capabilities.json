@@ -1,0 +1,14 @@
+[
+  {
+    "capability": "blub",
+    "capability_type": "api"
+  },
+  {
+    "capability": "another",
+    "capability_type": "api"
+  },
+  {
+    "capability": "last",
+    "capability_type": "hardware"
+  }
+]

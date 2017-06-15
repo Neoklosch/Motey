@@ -4,7 +4,7 @@ Documentation Repositories
 .. automodule:: motey.repositories.base_repository
     :members:
 
-.. automodule:: motey.repositories.labeling_repository
+.. automodule:: motey.repositories.capability_repository
     :members:
 
 .. automodule:: motey.repositories.nodes_repository

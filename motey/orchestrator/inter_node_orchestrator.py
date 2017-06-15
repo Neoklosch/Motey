@@ -16,7 +16,7 @@ class InterNodeOrchestrator(object):
     It also can communicate with other nodes to start instances there if the requirements does not fit with the
     possibilities of the current node.
     """
-    def __init__(self, logger, valmanager, service_repository, labeling_repository, node_repository,
+    def __init__(self, logger, valmanager, service_repository, capability_repository, node_repository,
                  communication_manager):
         """
         Constructor of the class.
@@ -27,8 +27,8 @@ class InterNodeOrchestrator(object):
         :type valmanager: motey.val.valmanager.VALManager
         :param service_repository: DI injected
         :type service_repository: motey.repositories.service_repository.ServiceRepository
-        :param labeling_repository: DI injected
-        :type labeling_repository: motey.labelingengine.LabelingEngine
+        :param capability_repository: DI injected
+        :type capability_repository: motey.capabilityengine.capabiltiy_engine.CapabilityEngine
         :param node_repository: DI injected
         :type node_repository: motey.repositories.node_repository.NodeRepository
         :param communication_manager: DI injected
@@ -37,7 +37,7 @@ class InterNodeOrchestrator(object):
         self.logger = logger
         self.valmanager = valmanager
         self.service_repository = service_repository
-        self.labeling_repository = labeling_repository
+        self.capability_repository = capability_repository
         self.node_repository = node_repository
         self.communication_manager = communication_manager
         self.blueprint_stream = ServiceEndpoint.yaml_post_stream.subscribe(self.handle_blueprint)
@@ -70,7 +70,7 @@ class InterNodeOrchestrator(object):
                     continue
 
                 for capability in image.capabilities:
-                    if not self.labeling_repository.has(label=capability):
+                    if not self.capability_repository.has(capability=capability):
                         # if a single capability is not satisfied, search for external node
                         node = self.find_node(image)
                         if node:
@@ -129,7 +129,7 @@ class InterNodeOrchestrator(object):
         """
         for capability in needed_capabilities:
             for node_capability in node_capabilities:
-                if node_capability['label'] == capability:
+                if node_capability['capability'] == capability:
                     # found them
                     break
             else:

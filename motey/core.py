@@ -10,20 +10,20 @@ class Core(object):
     This module provides the core functionality of Motey.
     It can be executed as a daemon service or can be executed in foreground.
     It will start an API webserver and a MQTTServer which can be configured via the config.ini file.
-    The core will also start all the necessary components like the LabelingDatabase, the VALManager,
-    the InterNodeOrchestrator and the HardwareEventEngine.
+    The core will also start all the necessary components like the VALManager, the InterNodeOrchestrator and the
+    HardwareEventEngine.
     After it is started via self.start() it will be executed until self.stop() is executed.
     """
 
-    def __init__(self, logger, labeling_repository, nodes_repository, valmanager, inter_node_orchestrator,
+    def __init__(self, logger, capability_repository, nodes_repository, valmanager, inter_node_orchestrator,
                  communication_manager, hardware_event_engine, as_daemon=True):
         """
         Constructor of the core.
 
         :param logger: DI injected
         :type logger: motey.utils.logger.Logger
-        :param labeling_repository: DI injected
-        :type labeling_repository: motey.repositories.labeling_repository.LabelingRepository
+        :param capability_repository: DI injected
+        :type capability_repository: motey.repositories.capability_repository.CapabilityRepository
         :param nodes_repository: DI injected
         :type nodes_repository: motey.repositories.nodes_repository.NodesRepository
         :param valmanager: DI injected
@@ -33,7 +33,7 @@ class Core(object):
         :param communication_manager: DI injected
         :type communication_manager: motey.communication.communication_manger.CommunicationManger
         :param hardware_event_engine: DI injected
-        :type hardware_event_engine: motey.labelingengine.labelingengine.LabelingEngine
+        :type hardware_event_engine: motey.capabilityengine.capability_engine.CapabilityEngine
         :param as_daemon: Executes the core as a daemon. Default is True.
         """
 
@@ -44,7 +44,7 @@ class Core(object):
         self.logger = logger
         self.logger.info("App started")
         self.communication_manager = communication_manager
-        self.labeling_repository = labeling_repository
+        self.capability_repository = capability_repository
         self.nodes_repository = nodes_repository
         self.valmanager = valmanager
         self.inter_node_orchestrator = inter_node_orchestrator
@@ -103,7 +103,7 @@ class Core(object):
 
     def startup_clean(self):
         """
-        Clean up the labeling and nodes database to remove old entries.
+        Clean up the capability and node database to remove old entries.
         """
-        self.labeling_repository.clear()
+        self.capability_repository.clear()
         self.nodes_repository.clear()

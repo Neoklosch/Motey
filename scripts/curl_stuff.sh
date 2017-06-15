@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# add label
-curl -X PUT -d '[{"label": "markus", "label_type": "person"}]' -H "Content-Type: application/json" http://localhost:5023/v1/capabilities -v
+# add capability
+curl -X PUT -d '[{"capability": "markus", "capability_type": "person"}]' -H "Content-Type: application/json" http://localhost:5023/v1/capabilities -v
 
-# remove label
-curl -X DELETE -d '[{"label": "keks", "label_type": "blub"}]' -H "Content-Type: application/json" http://localhost:5023/v1/capabilities -v
+# remove capability
+curl -X DELETE -d '[{"capability": "keks", "capability_type": "blub"}]' -H "Content-Type: application/json" http://localhost:5023/v1/capabilities -v
 
-# get all labels
+# get all capabilities
 curl -X GET http://localhost:5023/v1/capabilities -v
 
 # get node status
