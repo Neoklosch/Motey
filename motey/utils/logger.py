@@ -28,5 +28,4 @@ class Logger(LogbookLogger):
                 raise
 
         StreamHandler(sys.stdout).push_application()
-        log_handler = FileHandler('%s%s' % (self.logger_path, config['LOGGER']['file_name']))
-        log_handler.push_application()
+        FileHandler('%s%s' % (self.logger_path, config['LOGGER']['file_name'])).push_application()
