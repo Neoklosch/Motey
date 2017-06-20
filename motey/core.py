@@ -96,6 +96,7 @@ class Core(object):
 
         self.stopped = True
         self.valmanager.close()
+        self.capability_engine.stop()
         self.communication_manager.stop()
         if self.daemon:
             self.daemon.exit()
