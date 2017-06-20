@@ -80,4 +80,4 @@ class Application(containers.DeclarativeContainer):
                               valmanager=DIServices.valmanager,
                               inter_node_orchestrator=DIServices.inter_node_orchestrator,
                               communication_manager=DIServices.communication_manager,
-                              hardware_event_engine=DIServices.capability_engine)
+                              capability_engine=DIServices.capability_engine)

@@ -16,7 +16,7 @@ class Core(object):
     """
 
     def __init__(self, logger, capability_repository, nodes_repository, valmanager, inter_node_orchestrator,
-                 communication_manager, hardware_event_engine, as_daemon=True):
+                 communication_manager, capability_engine, as_daemon=True):
         """
         Constructor of the core.
 
@@ -32,8 +32,8 @@ class Core(object):
         :type inter_node_orchestrator: motey.orchestrator.inter_node_orchestrator.InterNodeOrchestrator
         :param communication_manager: DI injected
         :type communication_manager: motey.communication.communication_manger.CommunicationManger
-        :param hardware_event_engine: DI injected
-        :type hardware_event_engine: motey.capabilityengine.capability_engine.CapabilityEngine
+        :param capability_engine: DI injected
+        :type capability_engine: motey.capabilityengine.capability_engine.CapabilityEngine
         :param as_daemon: Executes the core as a daemon. Default is True.
         """
 
@@ -48,7 +48,7 @@ class Core(object):
         self.nodes_repository = nodes_repository
         self.valmanager = valmanager
         self.inter_node_orchestrator = inter_node_orchestrator
-        self.hardware_event_engine = hardware_event_engine
+        self.capability_engine = capability_engine
 
     def start(self):
         """
@@ -73,7 +73,7 @@ class Core(object):
 
         self.logger.info('Core started')
         self.communication_manager.start()
-        self.hardware_event_engine.start()
+        self.capability_engine.start()
         self.valmanager.start()
 
         while not self.stopped:
