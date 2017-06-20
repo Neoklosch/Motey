@@ -143,7 +143,7 @@ class ZeroMQServer(object):
                 image_json = json.loads(result)
                 image = Image.transform(image_json)
                 if image:
-                    image_id = self.valmanager.instantiate(image=image, plugin_type='docker')
+                    image_id = self.valmanager.instantiate(image=image)
             except json.JSONDecodeError:
                 pass
             self.deploy_image_replier.send_string(image_id if image_id else '')
@@ -166,7 +166,7 @@ class ZeroMQServer(object):
         """
         while not self.stopped:
             image_id = self.image_terminate_replier.recv_string()
-            self.valmanager.terminate(instance_name=image_id, plugin_type='docker')
+            self.valmanager.terminate(instance_name=image_id)
 
     def request_capabilities(self, ip):
         """

@@ -22,7 +22,7 @@ class Image(object):
         TERMINATED = 4
         ERROR = 5
 
-    def __init__(self, name, id='', parameters={}, capabilities={}, node=None, state=ImageState.INITIAL):
+    def __init__(self, name, engine, id='', parameters={}, capabilities={}, node=None, state=ImageState.INITIAL):
         """
         Construcotr of the model object.
 
@@ -43,6 +43,7 @@ class Image(object):
 
         self.id = id
         self.name = name
+        self.engine = engine
         self.parameters = parameters
         self.capabilities = capabilities
         self.node = node
@@ -51,6 +52,7 @@ class Image(object):
     def __iter__(self):
         yield 'id', self.id
         yield 'name', self.name
+        yield 'engine', self.engine
         yield 'parameters', self.parameters
         yield 'capabilities', self.capabilities
         yield 'node', self.node
@@ -65,10 +67,11 @@ class Image(object):
         :type data: dict
         :return: the translated image model, None if something goes wrong
         """
-        if 'name' not in data:
+        if 'name' not in data or 'engine' not in data:
             return None
         return Image(
             name=data['name'],
+            engine=data['engine'],
             id=data['id'] if 'id' in data else '',
             parameters=data['parameters'] if 'parameters' in data else {},
             capabilities=data['capabilities'] if 'capabilities' in data else {},

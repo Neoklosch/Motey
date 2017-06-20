@@ -48,8 +48,6 @@ class Service(object):
         :type id: uuid
         :param state: current state of the service. Default `INITIAL`.
         :type state: motey.models.service.Service.ServiceState
-        :param action: action type of the service. Default `ADD`.
-        :type action: motey.models.service.Service.ServiceAction
         :param node_type: node type of the service. Default `MASER`.
         :type node_type: motey.models.service.Service.ServiceType
         :param state_message: message for the current service state

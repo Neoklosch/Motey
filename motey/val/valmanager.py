@@ -49,35 +49,31 @@ class VALManager(object):
             plugin.plugin_object.activate()
             self.capability_repository.add(capability=plugin.plugin_object.get_plugin_type(), capability_type='plugin')
 
-    def instantiate(self, image, plugin_type):
+    def instantiate(self, image):
         """
         Instantiate an image.
 
         :param image: the image which should be executed
         :type image: motey.models.image.Image
-        :param plugin_type: Will only be executed with the given plugin
-        :type plugin_type: str
         :return: the image id of the instantiated image
         """
         image_id = None
         for plugin in self.plugin_manager.getAllPlugins():
-            if plugin_type and not plugin.plugin_object.get_plugin_type() == plugin_type:
+            if image.engine and not plugin.plugin_object.get_plugin_type() == image.engine:
                 continue
 
             image_id = plugin.plugin_object.start_instance(instance_name=image.name, parameters=image.parameters)
         return image_id
 
-    def terminate(self, instance_name, plugin_type):
+    def terminate(self, instance_name):
         """
         Terminate a running instance.
 
         :param instance_name: the name of the instance
         :type instance_name: str
-        :param plugin_type: The instance will only be terminated for the given plugin
-        :type plugin_type: str
         """
         for plugin in self.plugin_manager.getAllPlugins():
-            if plugin_type and not plugin.plugin_object.get_plugin_type() == plugin_type:
+            if image.engine and not plugin.plugin_object.get_plugin_type() == image.engine:
                 continue
 
             plugin.plugin_object.stop_instance(instance_name)

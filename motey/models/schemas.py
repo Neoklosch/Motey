@@ -16,6 +16,9 @@ blueprint_yaml_schema = {
                     "name": {
                         "type": "string"
                     },
+                    "engine": {
+                        "type": "string"
+                    },
                     "parameters": {
                         "type": "object"
                     },
@@ -28,7 +31,7 @@ blueprint_yaml_schema = {
                         "uniqueItems": True,
                     }
                 },
-                "required": ["name"]
+                "required": ["name", "engine"]
             },
             "minItems": 1,
             "uniqueItems": True

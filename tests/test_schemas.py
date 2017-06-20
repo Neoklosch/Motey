@@ -18,6 +18,7 @@ class TestSchemas(unittest.TestCase):
             'images': [
                 {
                     'name': 'test_image_name',
+                    'engine': 'docker',
                     'parameters': {
                         'ports': {
                             'tcp/80': 8080,
@@ -31,6 +32,7 @@ class TestSchemas(unittest.TestCase):
                 },
                 {
                     'name': 'second_test_image_name',
+                    'engine': 'docker',
                     'parameters': {
                         'ports': {
                             'tcp/9000': 9001,
