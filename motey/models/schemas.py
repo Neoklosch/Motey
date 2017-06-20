@@ -5,9 +5,6 @@ blueprint_yaml_schema = {
         "service_name": {
             "type": "string"
         },
-        "action": {
-            "type": "string"
-        },
         "node_type": {
             "type": "string"
         },
@@ -37,7 +34,7 @@ blueprint_yaml_schema = {
             "uniqueItems": True
         }
     },
-    "required": ["service_name", "images", "action"]
+    "required": ["service_name", "images"]
 }
 
 # The schema to validate capability json data.

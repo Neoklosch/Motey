@@ -14,7 +14,6 @@ class TestSchemas(unittest.TestCase):
     def test_blueprint_schema(self):
         data = {
             'service_name': 'test_service_name',
-            'action': 'ADD',
             'node_type': 'MASTER',
             'images': [
                 {

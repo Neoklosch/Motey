@@ -40,17 +40,8 @@ class InterNodeOrchestrator(object):
         self.capability_repository = capability_repository
         self.node_repository = node_repository
         self.communication_manager = communication_manager
-        self.blueprint_stream = ServiceEndpoint.yaml_post_stream.subscribe(self.handle_blueprint)
-
-    def parse_local_blueprint_file(self, file_path):
-        """
-        Parse a local yaml file and start the virtual images defined in the blueprint.
-
-        :param file_path: Path to the local blueprint file.
-        :type file_path: str
-        """
-        with open(file_path, 'r') as stream:
-            self.handle_blueprint(stream)
+        self.blueprint_stream = ServiceEndpoint.yaml_post_stream.subscribe(self.instantiate_service)
+        self.blueprint_stream = ServiceEndpoint.yaml_delete_stream.subscribe(self.terminate_instances)
 
     def instantiate_service(self, service):
         """
@@ -59,11 +50,17 @@ class InterNodeOrchestrator(object):
         :param service: the service to be used.
         :type service: motey.models.service.Service
         """
-        if service.action == Service.ServiceAction.ADD:
-            self.service_repository.add(dict(service))
-            service.state = Service.ServiceState.INSTANTIATING
-            self.service_repository.update(dict(service))
-            for image in service.images:
+        def __inner_instantiate(inner_service):
+            """
+            Inner function which is used to run in a thread to instantiate a service.
+
+            :param inner_service: the service to be used.
+            :type inner_service: motey.models.service.Service
+            """
+            self.service_repository.add(dict(inner_service))
+            inner_service.state = Service.ServiceState.INSTANTIATING
+            self.service_repository.update(dict(inner_service))
+            for image in inner_service.images:
                 if not image.capabilities:
                     # no capabilities, deploy locally
                     image.node = get_own_ip()
@@ -79,19 +76,23 @@ class InterNodeOrchestrator(object):
                             break
                         else:
                             # does not found any node - error
-                            service.state = Service.ServiceState.ERROR
+                            inner_service.state = Service.ServiceState.ERROR
                             break
                 else:
                     # never broke - all capabilities are succeeded locally
                     image.node = get_own_ip()
 
-                if service.state == Service.ServiceState.ERROR:
-                    self.service_repository.update(dict(service))
+                if inner_service.state == Service.ServiceState.ERROR:
+                    self.service_repository.update(dict(inner_service))
                     break
             else:
                 # never broke - no errors occurred - deploy
-                self.service_repository.update(dict(service))
-                self.deploy_service(service=service)
+                self.service_repository.update(dict(inner_service))
+                self.deploy_service(service=inner_service)
+
+        worker_thread = threading.Thread(target=__inner_instantiate, args=(service,))
+        worker_thread.daemon = True
+        worker_thread.start()
 
     def deploy_service(self, service):
         """
@@ -156,40 +157,23 @@ class InterNodeOrchestrator(object):
         Terminates a service.
 
         :param service: the service to be used.
+        :type service: motey.models.service.Service
         """
-        if service.action == Service.ServiceAction.REMOVE:
-            if self.service_repository.has(service_id=service.id):
-                service.state = Service.ServiceState.STOPPING
-                self.service_repository.update(dict(service))
-                for image in service.images:
+        def __inner_terminate(inner_service):
+            """
+            Inner function which is used to run in a thread to terminates a service.
+
+            :param inner_service: the service to be used.
+            :type inner_service: motey.models.service.Service
+            """
+            if self.service_repository.has(service_id=inner_service.id):
+                inner_service.state = Service.ServiceState.STOPPING
+                self.service_repository.update(dict(inner_service))
+                for image in inner_service.images:
                     self.communication_manager.terminate_image(image)
             else:
-                self.logger.error('Service `%s` with the id `%s` is not available' % (service.name, service.id))
+                self.logger.error('Service `%s` with the id `%s` is not available' % (inner_service.name, inner_service.id))
 
-    def handle_blueprint(self, blueprint_data):
-        """
-        Try to load the YAML data from the given blueprint data and validates them by using the
-        ``motey.models.schemas.blueprint_yaml_schema``.
-        If the data is valid, they will be transformed into a services model and handed over to the ``VALManager``.
-
-        :param blueprint_data: data in YAML format which matches the ``motey.models.schemas.blueprint_yaml_schema``
-        """
-        try:
-            loaded_data = yaml.load(blueprint_data)
-            validate(loaded_data, blueprint_yaml_schema)
-            service = Service.transform(loaded_data)
-            worker_thread = None
-            if service.action == Service.ServiceAction.ADD:
-                worker_thread = threading.Thread(target=self.instantiate_service, args=(service,))
-            elif service.action == Service.ServiceAction.REMOVE:
-                worker_thread = threading.Thread(target=self.terminate_instances, args=(service,))
-            else:
-                self.logger.error(
-                    'Action `%s` for service `%s` not a valid action type' % (service.action, service.name))
-
-            if worker_thread:
-                worker_thread.daemon = True
-                worker_thread.start()
-
-        except (yaml.YAMLError, ValidationError):
-            self.logger.error('YAML file could not be parsed: %s' % blueprint_data)
+        worker_thread = threading.Thread(target=__inner_terminate, args=(service,))
+        worker_thread.daemon = True
+        worker_thread.start()

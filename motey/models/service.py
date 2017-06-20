@@ -26,15 +26,6 @@ class Service(object):
         TERMINATED = 4
         ERROR = 5
 
-    class ServiceAction(object):
-        """
-        Enum with action types.
-         * ADD
-         * REMOVE
-        """
-        ADD = 'add'
-        REMOVE = 'remove'
-
     class ServiceType(object):
         """
         Enum with service types.
@@ -44,8 +35,8 @@ class Service(object):
         MASTER = 'master'
         SLAVE = 'slave'
 
-    def __init__(self, name, images, id=uuid.uuid4().hex, state=ServiceState.INITIAL, action=ServiceAction.ADD,
-                 node_type=ServiceType.MASTER, state_message=''):
+    def __init__(self, name, images, id=uuid.uuid4().hex, state=ServiceState.INITIAL, node_type=ServiceType.MASTER,
+                 state_message=''):
         """
         Constructor of the service model.
 
@@ -67,7 +58,6 @@ class Service(object):
 
         self.id = id
         self.state = state
-        self.action = action
         self.name = name
         self.images = images
         self.node_type = node_type
@@ -76,7 +66,6 @@ class Service(object):
     def __iter__(self):
         yield 'id', self.id
         yield 'state', self.state
-        yield 'action', self.action
         yield 'node_type', self.node_type
         yield 'images', [dict(image) for image in self.images]
         yield 'state_message', self.state_message
@@ -97,7 +86,6 @@ class Service(object):
             images=[Image.transform(image) for image in data['images']],
             id=data['id'] if 'id' in data else uuid.uuid4().hex,
             state=data['state'] if 'state' in data else Service.ServiceState.INITIAL,
-            action=data['action'] if 'action' in data else Service.ServiceAction.ADD,
             node_type=data['node_type'] if 'node_type' in data else Service.ServiceType.MASTER,
             state_message=data['state_message'] if 'state_message' in data else ''
         )

@@ -6,6 +6,7 @@ from jsonschema import validate, ValidationError
 from rx.subjects import Subject
 
 from motey.models.schemas import blueprint_yaml_schema
+from motey.models.service import Service
 
 
 class Service(MethodView):
@@ -16,6 +17,7 @@ class Service(MethodView):
 
     # RX subject which send a message, after a POST is received and successfully parsed.
     yaml_post_stream = Subject()
+    yaml_delete_stream = Subject()
 
     def get(self):
         """
@@ -33,6 +35,7 @@ class Service(MethodView):
         Receive the YAMl file and validates them.
         The content type of the request must be ``application/x-yaml``, otherwiese the request will end up in a HTTP
         status code 400 - Bad Request.
+        If validation was successful the given service will be instantiate by the ``InterNodeOrchestrator``.
 
         :return: HTTP status code 201 - Created, if the request is successful, otherwise 400 - Bad Request.
         """
@@ -41,7 +44,31 @@ class Service(MethodView):
             try:
                 loaded_data = yaml.load(result)
                 validate(loaded_data, blueprint_yaml_schema)
-                self.yaml_post_stream.on_next(result)
+                service = Service.transform(loaded_data)
+                self.yaml_post_stream.on_next(service)
+            except (yaml.YAMLError, ValidationError):
+                return abort(400)
+            return '', 201
+        else:
+            return abort(400)
+
+    def delete(self):
+        """
+        DELETE endpoint.
+        Receive the YAMl file and validates them.
+        The content type of the request must be ``application/x-yaml``, otherwiese the request will end up in a HTTP
+        status code 400 - Bad Request.
+        If validation was successful the given service will be terminated by the ``InterNodeOrchestrator``.
+
+        :return: HTTP status code 201 - Created, if the request is successful, otherwise 400 - Bad Request.
+        """
+        if request.content_type == 'application/x-yaml':
+            result = request.get_data(cache=False, as_text=True)
+            try:
+                loaded_data = yaml.load(result)
+                validate(loaded_data, blueprint_yaml_schema)
+                service = Service.transform(loaded_data)
+                self.yaml_delete_stream.on_next(service)
             except (yaml.YAMLError, ValidationError):
                 return abort(400)
             return '', 201
