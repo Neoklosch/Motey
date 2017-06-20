@@ -4,6 +4,7 @@ from docker.errors import APIError, NotFound, ContainerError, ImageNotFound
 import motey.val.plugins.abstractVAL as abstractVAL
 from motey.models.systemstatus import SystemStatus
 from motey.models.valinstancestatus import VALInstanceStatus
+from motey.configuration.configreader import config
 
 
 class DockerVAL(abstractVAL.AbstractVAL):
@@ -24,7 +25,7 @@ class DockerVAL(abstractVAL.AbstractVAL):
 
         :return: the docker client
         """
-        return docker.DockerClient(base_url='unix://var/run/docker.sock')
+        return docker.DockerClient(base_url=config['DOCKER']['url'])
 
     def get_plugin_type(self):
         """
