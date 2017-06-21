@@ -42,7 +42,8 @@ class TestSchemas(unittest.TestCase):
                     }
                 },
                 {
-                    'name': 'third_test_image_name'
+                    'name': 'third_test_image_name',
+                    'engine': 'XEN'
                 }
             ]
         }
