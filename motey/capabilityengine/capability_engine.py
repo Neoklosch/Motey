@@ -2,7 +2,8 @@ import json
 
 from jsonschema import validate, ValidationError
 
-from motey.models.schemas import capability_action_json_schema
+from motey.models.schemas import capability_json_schema
+from motey.models.capability import Capability
 
 
 class CapabilityEngine(object):
@@ -32,7 +33,8 @@ class CapabilityEngine(object):
         Subscibes to the capability event stream.
         """
 
-        self.communication_manager.capability_event_stream.subscribe(self.handle_capability_event)
+        self.communication_manager.add_capability_event_stream.subscribe(self.__perform_add_capability)
+        self.communication_manager.remove_capability_event_stream.subscribe(self.__perform_remove_capability)
         self.logger.info('capability engine started')
 
     def stop(self):
@@ -40,44 +42,54 @@ class CapabilityEngine(object):
         Should be executed to clean up the capability engine
         """
 
-        self.communication_manager.capability_event_stream.unsubscribe()
+        self.communication_manager.add_capability_event_stream.dispose()
+        self.communication_manager.remove_capability_event_stream.dispose()
         self.logger.info('capability engine stopped')
-
-    def handle_capability_event(self, data):
-        """
-        Private function which is be executed after an event is received.
-        After receiving an event a new capability will be added to the capability database.
-
-        :param data: the received data
-        """
-
-        try:
-            json_result = json.loads(data)
-            if isinstance(json_result, list):
-                for entry in json_result:
-                    self.__perform_capability_action(entry)
-            elif isinstance(json_result, dict):
-                self.__perform_capability_action(json_result)
-        except (TypeError, json.JSONDecodeError):
-            pass
 
     def handle_capabilities_request(self, capabilities_replier):
         capabilities_replier.send_string(json.dumps(self.capability_repository.all()))
 
-    def __perform_capability_action(self, entry):
+    def parse_capability(self, data):
         """
-        Perform a specific action for the given entry.
-        Possible action types are `add` and `remove`.
+        Parse a JSON string with capability data and transform them into an array with capability models
 
-        :param entry: the capability entry which should be used to perform the action.
-                      The entry must match the `motey.models.schemas.capability_action_json_schema`
+        :param data: the data that should be parsed
+        :param data: str
+        :return: an array with capability models or an empty array if something went wrong
         """
-
+        output = []
         try:
-            validate(entry, capability_action_json_schema)
-            if entry['action'] == 'add':
-                self.capability_repository.add(capability=entry['capability'], capability_type=entry['capability_type'])
-            elif entry['action'] == 'remove':
-                self.capability_repository.remove(capability=entry['capability'], capability_type=entry['capability_type'])
+            json_result = json.loads(data)
+            validate(json_result, capability_json_schema)
+            for entry in json_result:
+                capability_entry = Capability.transform(entry)
+                output.append(capability_entry)
         except ValidationError:
             pass
+        return output
+
+    def __perform_add_capability(self, data):
+        """
+        Adds a capability entry to the database.
+
+        :param data: the capability entry which should be added.
+                      The entry must match the `motey.models.schemas.capability_json_schema`
+        :type data: str
+        """
+
+        results = self.parse_capability(data=data)
+        for entry in results:
+            self.capability_repository.add(capability=entry.capability, capability_type=entry.capability_type)
+
+    def __perform_remove_capability(self, data):
+        """
+        Removes a capability entry from the database.
+
+        :param data: the capability entry which should be removed.
+                      The entry must match the `motey.models.schemas.capability_json_schema`
+        :type data: str
+        """
+
+        results = self.parse_capability(data=data)
+        for entry in results:
+            self.capability_repository.remove(capability=entry.capability, capability_type=entry.capability_type)

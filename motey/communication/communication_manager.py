@@ -9,8 +9,6 @@ class CommunicationManager(object):
     It covers all method calls and can start and stop the mentioned components.
     """
 
-    capability_event_stream = Subject()
-
     def __init__(self, api_server, mqtt_server, zeromq_server):
         """
         Constructor of the class.
@@ -28,6 +26,9 @@ class CommunicationManager(object):
 
         self.mqtt_server.after_connect = self.after_connect_callback
         self.mqtt_server.nodes_request_callback = self.__nodes_request_callback
+
+        self.add_capability_event_stream = self.zeromq_server.add_capability_event_stream
+        self.remove_capability_event_stream = self.zeromq_server.remove_capability_event_stream
 
     @property
     def after_capabilities_request(self):

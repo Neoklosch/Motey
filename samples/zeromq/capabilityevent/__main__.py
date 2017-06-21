@@ -28,13 +28,16 @@ def signal_handler(signal, frame):
 
 def main():
     options = docopt(__doc__, version='0.0.1')
-    publisher.connect('ipc://localhost:5090')
+    publisher.connect('ipc:///tmp/capability_engine.ipc')
     # sleep is important because the connection took some time, but the publisher will immediately send out data
     sleep(2)
     json_data = [
-        {'capability': options['--capability'], 'capability_type': options['--type'] if options['--type'] else 'capabilityevent', 'action': options['--action'] if options['--action'] else 'add'}
+        {'capability': options['--capability'], 'capability_type': options['--type'] if options['--type'] else 'capabilityevent'}
     ]
-    output = 'capabilityevent#%s' % json.dumps(json_data)
+    if options['--action'] == 'remove':
+        output = 'remove_capability#%s' % json.dumps(json_data)
+    else:
+        output = 'add_capability#%s' % json.dumps(json_data)
     print('will send > %s' % output)
     publisher.send_string(output)
 

@@ -56,20 +56,3 @@ capability_json_schema = {
         "required": ["capability", "capability_type"]
     }
 }
-
-# JSON schema for a valid capability entry
-capability_action_json_schema = {
-    "type": "object",
-    "properties": {
-        "capability": {
-            "type": "string"
-        },
-        "capability_type": {
-            "type": "string"
-        },
-        "action": {
-            "enum": ["add", "remove"]
-        }
-    },
-    "required": ["capability", "capability_type", "action"]
-}

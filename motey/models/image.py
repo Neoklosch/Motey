@@ -24,7 +24,7 @@ class Image(object):
 
     def __init__(self, name, engine, id='', parameters={}, capabilities={}, node=None, state=ImageState.INITIAL):
         """
-        Construcotr of the model object.
+        Constructor of the model object.
 
         :param name: the name of the image. Mostly related to the VAL plugin.
         :type name: str

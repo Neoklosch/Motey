@@ -14,7 +14,8 @@ class ZeroMQServer(object):
     The different listeners will be executed in a separate thread and will not block the main thread.
     """
 
-    capability_event_stream = Subject()
+    add_capability_event_stream = Subject()
+    remove_capability_event_stream = Subject()
 
     def __init__(self, logger, valmanager):
         """
@@ -76,8 +77,9 @@ class ZeroMQServer(object):
         This method will be executed on a separate thread.
         """
 
-        self.capabilities_subscriber.bind('ipc://*:%s' % config['ZEROMQ']['capability_engine'])
-        self.capabilities_subscriber.setsockopt_string(zmq.SUBSCRIBE, 'capabilityevent')
+        self.capabilities_subscriber.bind('ipc://%s' % config['ZEROMQ']['capability_engine_ipc_path'])
+        self.capabilities_subscriber.setsockopt_string(zmq.SUBSCRIBE, 'add_capability')
+        self.capabilities_subscriber.setsockopt_string(zmq.SUBSCRIBE, 'remove_capability')
         self.capabilities_subscriber_thread.start()
 
         self.capabilities_replier.bind('tcp://*:%s' % config['ZEROMQ']['capabilities_replier'])
@@ -111,7 +113,10 @@ class ZeroMQServer(object):
         while not self.stopped:
             result = self.capabilities_subscriber.recv_string()
             topic, output = result.split('#', 1)
-            self.capability_event_stream.on_next(output)
+            if topic == 'add_capability':
+                self.add_capability_event_stream.on_next(output)
+            elif topic == 'remove_capability':
+                self.remove_capability_event_stream.on_next(output)
 
     def __run_capabilities_replier_thread(self):
         """
