@@ -4,6 +4,7 @@ import yaml
 from jsonschema import validate, ValidationError
 
 from motey.communication.api_routes.service import Service as ServiceEndpoint
+from motey.models.image import Image
 from motey.models.schemas import blueprint_yaml_schema
 from motey.models.service import Service
 from motey.utils.network_utils import get_own_ip
@@ -16,6 +17,7 @@ class InterNodeOrchestrator(object):
     It also can communicate with other nodes to start instances there if the requirements does not fit with the
     possibilities of the current node.
     """
+
     def __init__(self, logger, valmanager, service_repository, capability_repository, node_repository,
                  communication_manager):
         """
@@ -41,7 +43,7 @@ class InterNodeOrchestrator(object):
         self.node_repository = node_repository
         self.communication_manager = communication_manager
         self.blueprint_stream = ServiceEndpoint.yaml_post_stream.subscribe(self.instantiate_service)
-        self.blueprint_stream = ServiceEndpoint.yaml_delete_stream.subscribe(self.terminate_instances)
+        self.blueprint_stream = ServiceEndpoint.yaml_delete_stream.subscribe(self.terminate_service)
 
     def instantiate_service(self, service):
         """
@@ -50,6 +52,7 @@ class InterNodeOrchestrator(object):
         :param service: the service to be used.
         :type service: motey.models.service.Service
         """
+
         def __inner_instantiate(inner_service):
             """
             Inner function which is used to run in a thread to instantiate a service.
@@ -108,15 +111,37 @@ class InterNodeOrchestrator(object):
 
     def get_service_status(self, service):
         """
-        Retruns the service status.
+        Returns the service status.
 
         :param service: the service which should be used
         :type service: motey.models.service.Service
         :return: the status of the service
         """
+        image_status_list = []
         for image in service.images:
             image_status = self.communication_manager.request_image_status(image)
-            # TODO: calculate service state based on instance states
+            image_status_list.append(image_status)
+
+        if Image.ImageState.ERROR in image_status_list:
+            service.state = Service.ServiceState.ERROR
+            self.terminate_service(service=service)
+        elif Image.ImageState.TERMINATED in image_status_list:
+            service.state = Service.ServiceState.TERMINATED
+            self.terminate_service(service=service)
+        elif Image.ImageState.STOPPING in image_status_list:
+            service.state = Service.ServiceState.STOPPING
+            self.terminate_service(service=service)
+        elif Image.ImageState.INSTANTIATING in image_status_list:
+            service.state = Service.ServiceState.INSTANTIATING
+        elif Image.ImageState.INITIAL in image_status_list:
+            service.state = Service.ServiceState.INITIAL
+        elif len(image_status_list) > 0 and image_status_list[1:] == image_status_list[:-1] and \
+                image_status_list[0] == Image.ImageState.RUNNING:
+            service.state = Service.ServiceState.RUNNING
+        else:
+            service.state = Service.ServiceState.ERROR
+
+        self.service_repository.update(dict(service))
 
     def compare_capabilities(self, needed_capabilities, node_capabilities):
         """
@@ -152,13 +177,14 @@ class InterNodeOrchestrator(object):
                 return node
         return None
 
-    def terminate_instances(self, service):
+    def terminate_service(self, service):
         """
         Terminates a service.
 
         :param service: the service to be used.
         :type service: motey.models.service.Service
         """
+
         def __inner_terminate(inner_service):
             """
             Inner function which is used to run in a thread to terminates a service.
@@ -172,7 +198,8 @@ class InterNodeOrchestrator(object):
                 for image in inner_service.images:
                     self.communication_manager.terminate_image(image)
             else:
-                self.logger.error('Service `%s` with the id `%s` is not available' % (inner_service.name, inner_service.id))
+                self.logger.error(
+                    'Service `%s` with the id `%s` is not available' % (inner_service.name, inner_service.id))
 
         worker_thread = threading.Thread(target=__inner_terminate, args=(service,))
         worker_thread.daemon = True

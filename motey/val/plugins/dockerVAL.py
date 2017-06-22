@@ -2,9 +2,10 @@ import docker
 from docker.errors import APIError, NotFound, ContainerError, ImageNotFound
 
 import motey.val.plugins.abstractVAL as abstractVAL
+from motey.configuration.configreader import config
+from motey.models.image import Image
 from motey.models.systemstatus import SystemStatus
 from motey.models.valinstancestatus import VALInstanceStatus
-from motey.configuration.configreader import config
 
 
 class DockerVAL(abstractVAL.AbstractVAL):
@@ -177,6 +178,31 @@ class DockerVAL(abstractVAL.AbstractVAL):
         """
         client = self.get_docker_client()
         return client.containers.list(filters={'status': 'running'})
+
+    def get_image_instance_state(self, container_name):
+        client = self.get_docker_client()
+        image_status = None
+        try:
+            container = client.containers.get(container_name)
+            status = container.attrs['State']['Status']
+            if status == 'created':
+                image_status = Image.ImageState.INSTANTIATING
+            if status == 'restarting':
+                image_status = Image.ImageState.INSTANTIATING
+            elif status == 'running':
+                image_status = Image.ImageState.RUNNING
+            elif status == 'paused':
+                image_status = Image.ImageState.STOPPING
+            elif status == 'removing':
+                image_status = Image.ImageState.STOPPING
+            elif status == 'exited':
+                image_status = Image.ImageState.TERMINATED
+            elif status == 'dead':
+                image_status = Image.ImageState.TERMINATED
+            else:
+                image_status = Image.ImageState.ERROR
+        except (NotFound, APIError):
+            image_status = Image.ImageState.ERROR
 
     def get_stats(self, container_name):
         """

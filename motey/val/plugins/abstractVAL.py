@@ -94,6 +94,9 @@ class AbstractVAL(IPlugin):
         """
         raise NotImplementedError("Should have implemented this")
 
+    def get_image_instance_state(self, instance_name):
+        raise NotImplementedError("Should have implemented this")
+
     def get_stats(self, instance_name):
         """
         Returns object which is type of ``Status``. Represents the status of an instance.

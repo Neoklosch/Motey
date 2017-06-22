@@ -22,7 +22,7 @@ class Image(object):
         TERMINATED = 4
         ERROR = 5
 
-    def __init__(self, name, engine, id='', parameters={}, capabilities={}, node=None, state=ImageState.INITIAL):
+    def __init__(self, name, engine, id='', parameters={}, capabilities={}, node=None):
         """
         Constructor of the model object.
 
@@ -37,8 +37,6 @@ class Image(object):
         :type capabilities: dict
         :param node: the node where the image is executed. Default None which is equivalent to the current node.
         :type node: str
-        :param state: current state of the image. Default `INITIAL`.
-        :type state: motey.models.image.Image.ImageState
         """
 
         self.id = id
@@ -47,7 +45,6 @@ class Image(object):
         self.parameters = parameters
         self.capabilities = capabilities
         self.node = node
-        self.status = state
 
     def __iter__(self):
         yield 'id', self.id
@@ -56,7 +53,6 @@ class Image(object):
         yield 'parameters', self.parameters
         yield 'capabilities', self.capabilities
         yield 'node', self.node
-        yield 'status', self.status
 
     @staticmethod
     def transform(data):
@@ -75,6 +71,5 @@ class Image(object):
             id=data['id'] if 'id' in data else '',
             parameters=data['parameters'] if 'parameters' in data else {},
             capabilities=data['capabilities'] if 'capabilities' in data else {},
-            node=data['node'] if 'node' in data else {},
-            state=data['state'] if 'state' in data else {}
+            node=data['node'] if 'node' in data else {}
         )

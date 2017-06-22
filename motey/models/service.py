@@ -26,17 +26,7 @@ class Service(object):
         TERMINATED = 4
         ERROR = 5
 
-    class ServiceType(object):
-        """
-        Enum with service types.
-         * MASTER
-         * SLAVE
-        """
-        MASTER = 'master'
-        SLAVE = 'slave'
-
-    def __init__(self, name, images, id=uuid.uuid4().hex, state=ServiceState.INITIAL, node_type=ServiceType.MASTER,
-                 state_message=''):
+    def __init__(self, name, images, id=uuid.uuid4().hex, state=ServiceState.INITIAL,state_message=''):
         """
         Constructor of the service model.
 
@@ -48,8 +38,6 @@ class Service(object):
         :type id: uuid
         :param state: current state of the service. Default `INITIAL`.
         :type state: motey.models.service.Service.ServiceState
-        :param node_type: node type of the service. Default `MASER`.
-        :type node_type: motey.models.service.Service.ServiceType
         :param state_message: message for the current service state
         :type state_message: str
         """
@@ -58,13 +46,11 @@ class Service(object):
         self.state = state
         self.name = name
         self.images = images
-        self.node_type = node_type
         self.state_message = state_message
 
     def __iter__(self):
         yield 'id', self.id
         yield 'state', self.state
-        yield 'node_type', self.node_type
         yield 'images', [dict(image) for image in self.images]
         yield 'state_message', self.state_message
 
@@ -84,6 +70,5 @@ class Service(object):
             images=[Image.transform(image) for image in data['images']],
             id=data['id'] if 'id' in data else uuid.uuid4().hex,
             state=data['state'] if 'state' in data else Service.ServiceState.INITIAL,
-            node_type=data['node_type'] if 'node_type' in data else Service.ServiceType.MASTER,
             state_message=data['state_message'] if 'state_message' in data else ''
         )

@@ -1,5 +1,6 @@
 from rx.subjects import Subject
 
+from motey.models.image import Image
 from motey.utils.path_helper import absolute_file_path
 
 
@@ -65,7 +66,15 @@ class VALManager(object):
             image_id = plugin.plugin_object.start_instance(instance_name=image.name, parameters=image.parameters)
         return image_id
 
-    def terminate(self, instance_name):
+    def get_instance_state(self, image):
+        state = Image.ImageState.ERROR
+        for plugin in self.plugin_manager.getAllPlugins():
+            if image.engine and not plugin.plugin_object.get_plugin_type() == image.engine:
+                continue
+            state = plugin.plugin_object.get_image_instance_state()
+        return state
+
+    def terminate(self, image):
         """
         Terminate a running instance.
 
@@ -76,7 +85,7 @@ class VALManager(object):
             if image.engine and not plugin.plugin_object.get_plugin_type() == image.engine:
                 continue
 
-            plugin.plugin_object.stop_instance(instance_name)
+            plugin.plugin_object.stop_instance(image.id)
 
     def close(self):
         """

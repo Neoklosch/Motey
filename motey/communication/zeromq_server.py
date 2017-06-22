@@ -157,11 +157,19 @@ class ZeroMQServer(object):
         """
         Private function which is be executed after the start method is called.
         The method will wait for an event where it is subscribed on.
-        After receiving an event the status of an image instance will be returned.
+        After receiving an event the ``Image.ImageState`` of an image instance will be returned.
         """
         while not self.stopped:
             result = self.image_status_replier.recv_string()
-            # TODO: send image status
+            state = Image.ImageState.ERROR
+            try:
+                image_json = json.loads(result)
+                image = Image.transform(image_json)
+                if image:
+                    state = self.valmanager.get_instance_state(image=image)
+            except json.JSONDecodeError:
+                state = Image.ImageState.ERROR
+            self.image_status_replier.send_string(state)
 
     def __run_image_termiate_thread(self):
         """
@@ -170,8 +178,15 @@ class ZeroMQServer(object):
         After receiving an event the image instance which matches the send id will be terminated.
         """
         while not self.stopped:
-            image_id = self.image_terminate_replier.recv_string()
-            self.valmanager.terminate(instance_name=image_id)
+            result = self.image_terminate_replier.recv_string()
+            try:
+                image_json = json.loads(result)
+                image = Image.transform(image_json)
+                if image:
+                    self.valmanager.terminate(image=image)
+            except json.JSONDecodeError:
+                pass
+            self.image_terminate_replier.send_string('')
 
     def request_capabilities(self, ip):
         """
@@ -217,18 +232,19 @@ class ZeroMQServer(object):
 
     def request_image_status(self, image):
         """
-        Request the status of an specific image instance or None if something went wrong.
+        Request the status of an specific ``Image.ImageState`` instance or ``Image.ImageState.ERROR`` if something went
+        wrong.
 
         :param image: Image to be used to get the status.
         :type image: motey.models.image.Image
-        :return: the status of the image or None if something went wrong
+        :return: the ``Image.ImageState`` or ``Image.ImageState.ERROR`` if something went wrong
         """
         if not image or not image.id or not image.node:
             return None
 
         socket = self.context.socket(zmq.REQ)
         socket.connect("tcp://%s:%s" % (image.node, config['ZEROMQ']['image_status_replier']))
-        socket.send_string(image.id)
+        socket.send_string(json.dumps(dict(image)))
         external_image_status = socket.recv_string()
         return external_image_status
 
@@ -244,5 +260,5 @@ class ZeroMQServer(object):
 
         socket = self.context.socket(zmq.REQ)
         socket.connect("tcp://%s:%s" % (image.node, config['ZEROMQ']['image_terminate_replier']))
-        socket.send_string(image.id)
+        socket.send_string(json.dumps(dict(image)))
         result = socket.recv_string()
