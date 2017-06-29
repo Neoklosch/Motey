@@ -11,7 +11,7 @@ install: "pip install -r motey-docker-image/requirements.txt"
 script:
   - pycodestyle --ignore=E241,E501 motey/
   - pycodestyle --ignore=E241,E501 samples/
-  - python3 -m unittest tests/test_*.py
+  - python3 -m unittest tests/capabilityengine/test_* tests/communication/test_* tests/models/test_* tests/orchestrator/test_* tests/repositories/test_* tests/utils/test_* tests/val/test_*
 
 after_success:
   - if [[ "$TRAVIS_BRANCH" = "master" ]]; then
