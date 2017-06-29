@@ -1,6 +1,6 @@
+import socket as Socket
 import unittest
 from unittest.mock import MagicMock, Mock
-import socket as Socket
 
 from motey.utils import network_utils
 

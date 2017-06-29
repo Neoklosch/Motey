@@ -38,8 +38,8 @@ class InterNodeOrchestrator(object):
         self.capability_repository = capability_repository
         self.node_repository = node_repository
         self.communication_manager = communication_manager
-        self.blueprint_stream = ServiceEndpoint.yaml_post_stream.subscribe(self.instantiate_service)
-        self.blueprint_stream = ServiceEndpoint.yaml_delete_stream.subscribe(self.terminate_service)
+        self.yaml_post_stream = ServiceEndpoint.yaml_post_stream.subscribe(self.instantiate_service)
+        self.yaml_delete_stream = ServiceEndpoint.yaml_delete_stream.subscribe(self.terminate_service)
 
     def instantiate_service(self, service):
         """
@@ -101,7 +101,7 @@ class InterNodeOrchestrator(object):
         """
         for image in service.images:
             image.id = self.communication_manager.deploy_image(image)
-        # store new image id
+        # TODO: store new image id
         self.service_repository.update(dict(service))
 
     def get_service_status(self, service):
@@ -118,14 +118,14 @@ class InterNodeOrchestrator(object):
             image_status_list.append(image_status)
 
         if ImageState.ERROR in image_status_list:
+            self.terminate_service(service=service)
             service.state = ServiceState.ERROR
-            self.terminate_service(service=service)
         elif ImageState.TERMINATED in image_status_list:
+            self.terminate_service(service=service)
             service.state = ServiceState.TERMINATED
-            self.terminate_service(service=service)
         elif ImageState.STOPPING in image_status_list:
-            service.state = ServiceState.STOPPING
             self.terminate_service(service=service)
+            service.state = ServiceState.STOPPING
         elif ImageState.INSTANTIATING in image_status_list:
             service.state = ServiceState.INSTANTIATING
         elif ImageState.INITIAL in image_status_list:
@@ -139,18 +139,18 @@ class InterNodeOrchestrator(object):
         self.service_repository.update(dict(service))
         return service.state
 
-    def compare_capabilities(self, needed_capabilities, node_capabilities):
+    def compare_capabilities(self, needed_capabilities_list, node_capabilities_dict):
         """
         Compares two dicts with capabilities.
 
-        :param needed_capabilities: the capabilities to compare with
-        :type needed_capabilities: dict
-        :param node_capabilities: the capabilties to check
-        :type node_capabilities: dict
+        :param needed_capabilities_list: the capabilities to compare with
+        :type needed_capabilities_list: list
+        :param node_capabilities_dict: the capabilties to check
+        :type node_capabilities_dict: list
         :return: True if all capabilities are fulfilled, otherwiese False
         """
-        for capability in needed_capabilities:
-            for node_capability in node_capabilities:
+        for capability in needed_capabilities_list:
+            for node_capability in node_capabilities_dict:
                 if node_capability['capability'] == capability:
                     # found them
                     break
@@ -169,7 +169,7 @@ class InterNodeOrchestrator(object):
         """
         for node in self.node_repository.all():
             capabilities = self.communication_manager.request_capabilities(node['ip'])
-            if self.compare_capabilities(needed_capabilities=image.capabilities, node_capabilities=capabilities):
+            if self.compare_capabilities(needed_capabilities_list=image.capabilities, node_capabilities_dict=capabilities):
                 return node
         return None
 

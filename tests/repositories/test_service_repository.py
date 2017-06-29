@@ -4,7 +4,6 @@ from unittest import mock
 
 from tinydb import TinyDB, Query
 
-from motey.models.service import Service
 from motey.repositories import service_repository
 
 

@@ -1,7 +1,6 @@
-import unittest
-from unittest import mock
 import os
 import sys
+import unittest
 
 from motey.utils.path_helper import absolute_file_path
 

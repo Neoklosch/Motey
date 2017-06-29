@@ -1,10 +1,10 @@
 import unittest
 
+from jsonschema import ValidationError
 from jsonschema import validate
 
 from motey.models.schemas import blueprint_yaml_schema
 from motey.models.schemas import capability_json_schema
-from jsonschema import ValidationError
 
 
 class TestSchemas(unittest.TestCase):

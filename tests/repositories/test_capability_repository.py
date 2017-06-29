@@ -1,5 +1,4 @@
 import unittest
-import uuid
 from unittest import mock
 
 from tinydb import TinyDB, Query

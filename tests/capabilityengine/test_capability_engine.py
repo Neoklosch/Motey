@@ -1,12 +1,13 @@
 import unittest
 from unittest import mock
 
+from rx.subjects import Subject
+
 from motey.capabilityengine.capability_engine import CapabilityEngine
 from motey.communication.communication_manager import CommunicationManager
 from motey.models.capability import Capability
 from motey.repositories.capability_repository import CapabilityRepository
 from motey.utils.logger import Logger
-from rx.subjects import Subject
 
 
 class TestCapabilityEngine(unittest.TestCase):
