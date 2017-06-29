@@ -22,11 +22,18 @@ class ServiceRepository(BaseRepository):
         Add a new service to the database if they not exist yet.
 
         :param service: a service model to be stored
+        :type service: dict
         """
         if not self.has(service['id']):
             self.db.insert(service)
 
     def update(self, service):
+        """
+        Update a service in the database.
+
+        :param service: a service model to be updated
+        :type service: dict
+        """
         self.db.update(service, Query().id == service['id'])
 
     def remove(self, service_id):
@@ -34,6 +41,7 @@ class ServiceRepository(BaseRepository):
         Remove a service from the database.
 
         :param service_id: the id of the service to be removed.
+        :type service: str
         """
         self.db.remove(Query().id == service_id)
 
@@ -42,6 +50,7 @@ class ServiceRepository(BaseRepository):
         Checks if the given ``id`` exist in the database.
 
         :param service_id: the id of the service to search for.
+        :type service: str
         :return: True if the service exists, otherwise False
         """
         return len(self.db.search(Query().id == service_id)) > 0

@@ -55,12 +55,3 @@ class CapabilityRepository(BaseRepository):
         :return: True if the lable exists, otherwise False
         """
         return len(self.db.search(Query().capability == capability)) > 0
-
-    def has_type(self, capability_type):
-        """
-        Checks if a capability with the given ``capability_type`` exist in the database.
-
-        :param capability_type: the type of the capability to search for.
-        :return: True if the capability type exists, otherwise False
-        """
-        return len(self.db.search(Query().type == capability_type)) > 0

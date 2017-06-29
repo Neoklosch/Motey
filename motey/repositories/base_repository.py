@@ -30,10 +30,11 @@ class BaseRepository(object):
 
         :return: a list of all existing entries.
         """
-        return self.db.all()
+        return self.db.all() if self.db else None
 
     def clear(self):
         """
         Remove all entries from the database.
         """
-        self.db.purge()
+        if self.db:
+            self.db.purge()
