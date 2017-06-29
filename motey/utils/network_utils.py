@@ -1,4 +1,4 @@
-import socket
+import socket as socket
 
 
 def get_own_ip():
