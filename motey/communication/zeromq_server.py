@@ -6,6 +6,7 @@ from rx.subjects import Subject
 
 from motey.configuration.configreader import config
 from motey.models.image import Image
+from motey.models.image_state import ImageState
 
 
 class ZeroMQServer(object):
@@ -157,18 +158,18 @@ class ZeroMQServer(object):
         """
         Private function which is be executed after the start method is called.
         The method will wait for an event where it is subscribed on.
-        After receiving an event the ``Image.ImageState`` of an image instance will be returned.
+        After receiving an event the ``ImageState`` of an image instance will be returned.
         """
         while not self.stopped:
             result = self.image_status_replier.recv_string()
-            state = Image.ImageState.ERROR
+            state = ImageState.ERROR
             try:
                 image_json = json.loads(result)
                 image = Image.transform(image_json)
                 if image:
                     state = self.valmanager.get_instance_state(image=image)
             except json.JSONDecodeError:
-                state = Image.ImageState.ERROR
+                state = ImageState.ERROR
             self.image_status_replier.send_string(state)
 
     def __run_image_termiate_thread(self):
@@ -232,12 +233,12 @@ class ZeroMQServer(object):
 
     def request_image_status(self, image):
         """
-        Request the status of an specific ``Image.ImageState`` instance or ``Image.ImageState.ERROR`` if something went
+        Request the status of an specific ``ImageState`` instance or ``ImageState.ERROR`` if something went
         wrong.
 
         :param image: Image to be used to get the status.
         :type image: motey.models.image.Image
-        :return: the ``Image.ImageState`` or ``Image.ImageState.ERROR`` if something went wrong
+        :return: the ``ImageState`` or ``ImageState.ERROR`` if something went wrong
         """
         if not image or not image.id or not image.node:
             return None

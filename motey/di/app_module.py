@@ -2,13 +2,13 @@ import dependency_injector.containers as containers
 import dependency_injector.providers as providers
 from yapsy.PluginManager import PluginManager
 
+from motey.capabilityengine.capability_engine import CapabilityEngine
 from motey.communication.apiserver import APIServer
 from motey.communication.communication_manager import CommunicationManager
 from motey.communication.mqttserver import MQTTServer
 from motey.communication.zeromq_server import ZeroMQServer
 from motey.configuration.configreader import config
 from motey.core import Core
-from motey.capabilityengine.capability_engine import CapabilityEngine
 from motey.orchestrator.inter_node_orchestrator import InterNodeOrchestrator
 from motey.repositories.capability_repository import CapabilityRepository
 from motey.repositories.nodes_repository import NodesRepository

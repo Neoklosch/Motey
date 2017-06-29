@@ -1,6 +1,6 @@
 from rx.subjects import Subject
 
-from motey.models.image import Image
+from motey.models.image_state import ImageState
 from motey.utils.path_helper import absolute_file_path
 
 
@@ -67,7 +67,7 @@ class VALManager(object):
         return image_id
 
     def get_instance_state(self, image):
-        state = Image.ImageState.ERROR
+        state = ImageState.ERROR
         for plugin in self.plugin_manager.getAllPlugins():
             if image.engine and not plugin.plugin_object.get_plugin_type() == image.engine:
                 continue

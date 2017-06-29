@@ -3,14 +3,11 @@ import unittest
 from jsonschema import validate
 
 from motey.models.schemas import blueprint_yaml_schema
+from motey.models.schemas import capability_json_schema
+from jsonschema import ValidationError
 
 
 class TestSchemas(unittest.TestCase):
-
-    @classmethod
-    def setUp(self):
-        pass
-
     def test_blueprint_schema(self):
         data = {
             'service_name': 'test_service_name',
@@ -47,8 +44,25 @@ class TestSchemas(unittest.TestCase):
                 }
             ]
         }
-        validate(data, blueprint_yaml_schema)
+        self.assertEqual(validate(data, blueprint_yaml_schema), None)
 
+    def test_blueprint_schema_error(self):
+        data = {
+            'service_name': 'test_service_name'
+        }
+        with self.assertRaises(ValidationError) as cm:
+            validate(data, blueprint_yaml_schema)
 
-if __name__ == '__main__':
-    unittest.main()
+    def test_capability_json_schema(self):
+        data = [{
+            "capability": 'test capability',
+            "capability_type": 'test capability type'
+        }]
+        self.assertEqual(validate(data, capability_json_schema), None)
+
+    def test_capability_json_schema_error(self):
+        data = [{
+            "capability_type": 'test capability type'
+        }]
+        with self.assertRaises(ValidationError) as cm:
+            validate(data, capability_json_schema)

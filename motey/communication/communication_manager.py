@@ -1,5 +1,4 @@
 from motey.utils import network_utils
-from rx.subjects import Subject
 
 
 class CommunicationManager(object):

@@ -5,23 +5,6 @@ class Image(object):
     All of them are optional.
     """
 
-    class ImageState(object):
-        """
-        Enum with service states.
-         * INITIAL
-         * INSTANTIATING
-         * RUNNING
-         * STOPPING
-         * TERMINATED
-         * ERROR
-        """
-        INITIAL = 0
-        INSTANTIATING = 1
-        RUNNING = 2
-        STOPPING = 3
-        TERMINATED = 4
-        ERROR = 5
-
     def __init__(self, name, engine, id='', parameters={}, capabilities={}, node=None):
         """
         Constructor of the model object.
@@ -36,7 +19,7 @@ class Image(object):
                              empty dict.
         :type capabilities: dict
         :param node: the node where the image is executed. Default None which is equivalent to the current node.
-        :type node: str
+        :type node: dict
         """
 
         self.id = id

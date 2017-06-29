@@ -2,8 +2,8 @@ import json
 
 from jsonschema import validate, ValidationError
 
-from motey.models.schemas import capability_json_schema
 from motey.models.capability import Capability
+from motey.models.schemas import capability_json_schema
 
 
 class CapabilityEngine(object):

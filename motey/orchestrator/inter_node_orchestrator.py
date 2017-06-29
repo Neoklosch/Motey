@@ -1,12 +1,8 @@
 import threading
 
-import yaml
-from jsonschema import validate, ValidationError
-
 from motey.communication.api_routes.service import Service as ServiceEndpoint
-from motey.models.image import Image
-from motey.models.schemas import blueprint_yaml_schema
-from motey.models.service import Service
+from motey.models.image_state import ImageState
+from motey.models.service_state import ServiceState
 from motey.utils.network_utils import get_own_ip
 
 
@@ -60,7 +56,7 @@ class InterNodeOrchestrator(object):
             :param inner_service: the service to be used.
             :type inner_service: motey.models.service.Service
             """
-            inner_service.state = Service.ServiceState.INSTANTIATING
+            inner_service.state = ServiceState.INSTANTIATING
             self.service_repository.add(dict(inner_service))
             for image in inner_service.images:
                 if not image.capabilities:
@@ -78,13 +74,13 @@ class InterNodeOrchestrator(object):
                             break
                         else:
                             # does not found any node - error
-                            inner_service.state = Service.ServiceState.ERROR
+                            inner_service.state = ServiceState.ERROR
                             break
                 else:
                     # never broke - all capabilities are succeeded locally
                     image.node = get_own_ip()
 
-                if inner_service.state == Service.ServiceState.ERROR:
+                if inner_service.state == ServiceState.ERROR:
                     self.service_repository.update(dict(inner_service))
                     break
             else:
@@ -121,24 +117,24 @@ class InterNodeOrchestrator(object):
             image_status = self.communication_manager.request_image_status(image)
             image_status_list.append(image_status)
 
-        if Image.ImageState.ERROR in image_status_list:
-            service.state = Service.ServiceState.ERROR
+        if ImageState.ERROR in image_status_list:
+            service.state = ServiceState.ERROR
             self.terminate_service(service=service)
-        elif Image.ImageState.TERMINATED in image_status_list:
-            service.state = Service.ServiceState.TERMINATED
+        elif ImageState.TERMINATED in image_status_list:
+            service.state = ServiceState.TERMINATED
             self.terminate_service(service=service)
-        elif Image.ImageState.STOPPING in image_status_list:
-            service.state = Service.ServiceState.STOPPING
+        elif ImageState.STOPPING in image_status_list:
+            service.state = ServiceState.STOPPING
             self.terminate_service(service=service)
-        elif Image.ImageState.INSTANTIATING in image_status_list:
-            service.state = Service.ServiceState.INSTANTIATING
-        elif Image.ImageState.INITIAL in image_status_list:
-            service.state = Service.ServiceState.INITIAL
+        elif ImageState.INSTANTIATING in image_status_list:
+            service.state = ServiceState.INSTANTIATING
+        elif ImageState.INITIAL in image_status_list:
+            service.state = ServiceState.INITIAL
         elif len(image_status_list) > 0 and image_status_list[1:] == image_status_list[:-1] and \
-                image_status_list[0] == Image.ImageState.RUNNING:
-            service.state = Service.ServiceState.RUNNING
+                image_status_list[0] == ImageState.RUNNING:
+            service.state = ServiceState.RUNNING
         else:
-            service.state = Service.ServiceState.ERROR
+            service.state = ServiceState.ERROR
 
         self.service_repository.update(dict(service))
         return service.state
@@ -193,13 +189,13 @@ class InterNodeOrchestrator(object):
             :type inner_service: motey.models.service.Service
             """
             if self.service_repository.has(service_id=inner_service.id):
-                inner_service.state = Service.ServiceState.STOPPING
+                inner_service.state = ServiceState.STOPPING
                 self.service_repository.update(dict(inner_service))
                 for image in inner_service.images:
                     self.communication_manager.terminate_image(image)
             else:
                 self.logger.error(
-                    'Service `%s` with the id `%s` is not available' % (inner_service.name, inner_service.id))
+                    'Service `%s` with the id `%s` is not available' % (inner_service.service_name, inner_service.id))
 
         worker_thread = threading.Thread(target=__inner_terminate, args=(service,))
         worker_thread.daemon = True
