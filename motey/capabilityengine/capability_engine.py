@@ -33,8 +33,8 @@ class CapabilityEngine(object):
         Subscibes to the capability event stream.
         """
 
-        self.communication_manager.add_capability_event_stream.subscribe(self.__perform_add_capability)
-        self.communication_manager.remove_capability_event_stream.subscribe(self.__perform_remove_capability)
+        self.communication_manager.add_capability_event_stream.subscribe(self.perform_add_capability)
+        self.communication_manager.remove_capability_event_stream.subscribe(self.perform_remove_capability)
         self.logger.info('capability engine started')
 
     def stop(self):
@@ -64,11 +64,11 @@ class CapabilityEngine(object):
             for entry in json_result:
                 capability_entry = Capability.transform(entry)
                 output.append(capability_entry)
-        except ValidationError:
+        except (ValidationError, json.JSONDecodeError):
             pass
         return output
 
-    def __perform_add_capability(self, data):
+    def perform_add_capability(self, data):
         """
         Adds a capability entry to the database.
 
@@ -81,7 +81,7 @@ class CapabilityEngine(object):
         for entry in results:
             self.capability_repository.add(capability=entry.capability, capability_type=entry.capability_type)
 
-    def __perform_remove_capability(self, data):
+    def perform_remove_capability(self, data):
         """
         Removes a capability entry from the database.
 

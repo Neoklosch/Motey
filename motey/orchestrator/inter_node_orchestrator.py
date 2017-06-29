@@ -60,9 +60,8 @@ class InterNodeOrchestrator(object):
             :param inner_service: the service to be used.
             :type inner_service: motey.models.service.Service
             """
-            self.service_repository.add(dict(inner_service))
             inner_service.state = Service.ServiceState.INSTANTIATING
-            self.service_repository.update(dict(inner_service))
+            self.service_repository.add(dict(inner_service))
             for image in inner_service.images:
                 if not image.capabilities:
                     # no capabilities, deploy locally
@@ -142,6 +141,7 @@ class InterNodeOrchestrator(object):
             service.state = Service.ServiceState.ERROR
 
         self.service_repository.update(dict(service))
+        return service.state
 
     def compare_capabilities(self, needed_capabilities, node_capabilities):
         """

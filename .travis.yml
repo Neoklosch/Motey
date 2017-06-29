@@ -1,14 +1,8 @@
 sudo: true
-services:
-  - docker
-
+services: docker
 language: python
-
-os:
-  - linux
-
+os: linux
 cache: pip
-
 python:
   - "3.6"
 
@@ -19,10 +13,8 @@ script:
   - pycodestyle --ignore=E241,E501 samples/
   - python3 -m unittest tests/test_*.py
 
-
 after_success:
   - if [[ "$TRAVIS_BRANCH" = "master" ]]; then
-    docker --version;
     docker build -t neoklosch/motey motey-docker-image;
     docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
     docker push neoklosch/motey;
