@@ -26,7 +26,6 @@ class CapabilityEngine(object):
         self.logger = logger
         self.capability_repository = capability_repository
         self.communication_manager = communication_manager
-        self.communication_manager.after_capabilities_request = self.handle_capabilities_request
 
     def start(self):
         """
@@ -45,9 +44,6 @@ class CapabilityEngine(object):
         self.communication_manager.add_capability_event_stream.dispose()
         self.communication_manager.remove_capability_event_stream.dispose()
         self.logger.info('capability engine stopped')
-
-    def handle_capabilities_request(self, capabilities_replier):
-        capabilities_replier.send_string(json.dumps(self.capability_repository.all()))
 
     def parse_capability(self, data):
         """

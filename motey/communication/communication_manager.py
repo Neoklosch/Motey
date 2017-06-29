@@ -29,26 +29,6 @@ class CommunicationManager(object):
         self.add_capability_event_stream = self.zeromq_server.add_capability_event_stream
         self.remove_capability_event_stream = self.zeromq_server.remove_capability_event_stream
 
-    @property
-    def after_capabilities_request(self):
-        """
-        Facades the ``ZeroMQServer.after_capabilities_request_handler()`` getter.
-        Returns the handler which will be executed after a capability request was received.
-
-        :return: the handler which will be executed after a capability request was received.
-        """
-        return self.zeromq_server.after_capabilities_request_handler
-
-    @after_capabilities_request.setter
-    def after_capabilities_request(self, handler):
-        """
-        Facades the ``ZeroMQServer.after_capabilities_request`` setter.
-        Will set the handler which will be executed after a capability request was received.
-
-        :param handler: the handler which will be executed after a capability request was received.
-        """
-        self.zeromq_server.after_capabilities_request_handler = handler
-
     def start(self):
         """
         Start all the connected communication components.

@@ -52,25 +52,6 @@ class ZeroMQServer(object):
         self.image_terminate_thread.daemon = True
 
         self.stopped = False
-        self.after_capabilities_request_handler = None
-
-    @property
-    def after_capabilities_request(self):
-        """
-        Returns the handler which will be executed after a capability request was received.
-
-        :return: the handler which will be executed after a capability request was received.
-        """
-        return self.after_capabilities_request_handler
-
-    @after_capabilities_request.setter
-    def after_capabilities_request(self, handler):
-        """
-        Will set the handler which will be executed after a capability request was received.
-
-        :param handler: the handler which will be executed after a capability request was received.
-        """
-        self.after_capabilities_request_handler = handler
 
     def start(self):
         """
@@ -129,10 +110,7 @@ class ZeroMQServer(object):
 
         while not self.stopped:
             result = self.capabilities_replier.recv_string()
-            if self.after_capabilities_request_handler:
-                self.after_capabilities_request_handler(self.capabilities_replier)
-            else:
-                self.capabilities_replier.send_string(json.dumps([]))
+            self.capabilities_replier.send_string(json.dumps([]))
 
     def __run_deploy_image_replier_thread(self):
         """
