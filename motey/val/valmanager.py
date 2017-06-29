@@ -22,10 +22,10 @@ class VALManager(object):
         :type plugin_manager: yapsy.PluginManager.PluginManager
         """
 
-        self.plugin_stream = Subject()
         self.logger = logger
         self.capability_repository = capability_repository
         self.plugin_manager = plugin_manager
+        self.plugin_stream = Subject()
 
     def start(self):
         """
