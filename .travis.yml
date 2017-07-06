@@ -19,8 +19,3 @@ after_success:
     docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
     docker push neoklosch/motey;
     fi
-  - if [[ "$TRAVIS_BRANCH" = "master" ]]; then
-    docker build -t neoklosch/motey-rpi motey-rpi-docker-image;
-    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker push neoklosch/motey-rpi;
-    fi
