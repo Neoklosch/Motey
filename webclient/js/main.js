@@ -16,7 +16,7 @@ var ServiceListing = {
   },
   methods: {
     fetchServices: function() {
-      this.$http.get('http://172.17.0.2:5023/v1/service').then(response => {
+      this.$http.get('http://172.18.0.10:5023/v1/service').then(response => {
         this.services = response.body;
       }, response => {
         console.error(response.body);
@@ -38,7 +38,7 @@ var NodesListing = {
   },
   methods: {
     fetchNodes: function() {
-      this.$http.get('http://172.17.0.2:5023/v1/nodes').then(response => {
+      this.$http.get('http://172.18.0.10:5023/v1/nodes').then(response => {
         console.log(response.body);
         this.nodes = response.body;
       }, response => {
@@ -58,7 +58,7 @@ var BlueprintTemplate = {
   },
   methods: {
     sendBlueprint: function(event) {
-      this.$http.post('http://172.17.0.2:5023/v1/service', this.blueprint, {headers: {'Content-Type': 'application/x-yaml'}}).then(response => {
+      this.$http.post('http://172.18.0.10:5023/v1/service', this.blueprint, {headers: {'Content-Type': 'application/x-yaml'}}).then(response => {
         console.log(response.body);
       }, response => {
         console.error(response.body);
