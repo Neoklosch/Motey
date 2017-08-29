@@ -15,7 +15,7 @@ images:
   engine: docker
   parameters:
     ports:
-      80/tcp: 8080
+      80/tcp: 8081
     name: busybox_from_motey
   capabilities:
     - blub
@@ -23,7 +23,7 @@ images:
   engine: docker
   parameters:
     ports:
-      80/tcp: 8080
+      80/tcp: 8082
     detach: true
     name: nginx_from_motey
   capabilities:
