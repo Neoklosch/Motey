@@ -6,7 +6,7 @@ from jsonschema import validate, ValidationError
 from rx.subjects import Subject
 
 from motey.models.schemas import blueprint_yaml_schema
-from motey.models.service import Service
+from motey.models.service import Service as ServiceModel
 
 
 class Service(MethodView):
@@ -44,7 +44,7 @@ class Service(MethodView):
             try:
                 loaded_data = yaml.load(result)
                 validate(loaded_data, blueprint_yaml_schema)
-                service = Service.transform(loaded_data)
+                service = ServiceModel.transform(loaded_data)
                 self.yaml_post_stream.on_next(service)
             except (yaml.YAMLError, ValidationError):
                 return abort(400)
@@ -67,7 +67,7 @@ class Service(MethodView):
             try:
                 loaded_data = yaml.load(result)
                 validate(loaded_data, blueprint_yaml_schema)
-                service = Service.transform(loaded_data)
+                service = ServiceModel.transform(loaded_data)
                 self.yaml_delete_stream.on_next(service)
             except (yaml.YAMLError, ValidationError):
                 return abort(400)
