@@ -18,7 +18,7 @@ class ZeroMQServer(object):
     add_capability_event_stream = Subject()
     remove_capability_event_stream = Subject()
 
-    def __init__(self, logger, valmanager):
+    def __init__(self, logger, valmanager, capability_repository):
         """
         Constructor ot the ZeroMQ server.
 
@@ -29,6 +29,7 @@ class ZeroMQServer(object):
         """
         self.logger = logger
         self.valmanager = valmanager
+        self.capability_repository = capability_repository
         self.context = zmq.Context()
         self.capabilities_subscriber = self.context.socket(zmq.SUB)
         self.capabilities_replier = self.context.socket(zmq.REP)
@@ -110,7 +111,7 @@ class ZeroMQServer(object):
 
         while not self.stopped:
             result = self.capabilities_replier.recv_string()
-            self.capabilities_replier.send_string(json.dumps([]))
+            self.capabilities_replier.send_string(json.dumps(self.capability_repository.all()))
 
     def __run_deploy_image_replier_thread(self):
         """

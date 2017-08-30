@@ -37,7 +37,8 @@ class DIServices(containers.DeclarativeContainer):
 
     zeromq_server = providers.Singleton(ZeroMQServer,
                                         logger=DICore.logger,
-                                        valmanager=valmanager)
+                                        valmanager=valmanager,
+                                        capability_repository=DIRepositories.capability_repository)
 
     api_server = providers.Singleton(APIServer,
                                      logger=DICore.logger,
