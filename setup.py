@@ -93,7 +93,7 @@ setup(
         'pytz==2017.2',
         'PyYAML==3.12',
         'pyzmq==16.0.2',
-        'requests==2.13.0',
+        'requests==2.22.0',
         'Rx==1.5.9',
         'sanic==0.5.2',
         'six==1.10.0',

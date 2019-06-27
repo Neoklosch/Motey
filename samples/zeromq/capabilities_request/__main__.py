@@ -6,7 +6,6 @@ from time import sleep
 import zmq
 
 context = zmq.Context()
-server = context.socket(zmq.REP)
 client = context.socket(zmq.REQ)
 
 
@@ -16,34 +15,13 @@ def signal_handler(signal, frame):
 
 
 def main():
-    server.bind("tcp://*:5555")
+    client.connect("tcp://172.18.0.11:5091")
 
-    server_thread = threading.Thread(target=start_server, args=())
-    server_thread.daemon = True
-    server_thread.start()
+    client.send_string("")
 
-    client.connect("tcp://localhost:5555")
-
-    for request in range(10):
-        print("Sending request %s" % request)
-        client.send_string("Hello ")
-
-        #  Get the reply.
-        message = client.recv_string()
-        print("Received reply %s [ %s ]" % (request, message))
-
-
-def start_server():
-    while True:
-        #  Wait for next request from client
-        message = server.recv_string()
-        print("Received request: %s" % message)
-
-        #  Do some 'work'
-        sleep(1)
-
-        #  Send reply back to client
-        server.send_string("World")
+    #  Get the reply.
+    message = client.recv_string()
+    print("Received reply %s [ %s ]" % (1, message))
 
 
 if __name__ == '__main__':
