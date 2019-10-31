@@ -47,6 +47,6 @@ ujson==1.35
 uvloop==0.8.0
 websocket-client==0.40.0
 websockets==3.3
-Werkzeug==0.12.1
+Werkzeug==0.15.3
 Yapsy==1.11.223
 zerorpc==0.6.1
