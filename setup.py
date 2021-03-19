@@ -77,7 +77,7 @@ setup(
         'httptools==0.0.9',
         'imagesize==0.7.1',
         'itsdangerous==0.24',
-        'Jinja2==2.9.6',
+        'Jinja2==2.11.3',
         'jsonschema==2.6.0',
         'lockfile==0.12.2',
         'Logbook==1.0.0',
