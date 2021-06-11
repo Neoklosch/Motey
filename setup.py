@@ -106,7 +106,7 @@ setup(
         'ujson==1.35',
         'uvloop==0.8.0',
         'websocket-client==0.40.0',
-        'websockets==3.3',
+        'websockets==9.1',
         'Werkzeug==0.12.1',
         'Yapsy==1.11.223',
         'zerorpc==0.6.1'
