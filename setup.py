@@ -61,7 +61,7 @@ setup(
         'aiofiles==0.3.1',
         'alabaster==0.7.10',
         'appdirs==1.4.3',
-        'Babel==2.4.0',
+        'Babel==2.9.1',
         'click==6.7',
         'daemonize==2.4.7',
         'dependency-injector==3.4.5',
