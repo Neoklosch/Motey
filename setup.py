@@ -95,7 +95,7 @@ setup(
         'pyzmq==16.0.2',
         'requests==2.22.0',
         'Rx==1.5.9',
-        'sanic==0.5.2',
+        'sanic==20.12.6',
         'six==1.10.0',
         'snowballstemmer==1.2.1',
         'Sphinx==1.6.2',
