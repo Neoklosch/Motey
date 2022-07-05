@@ -103,7 +103,7 @@ setup(
         'sphinxcontrib-websupport==1.0.1',
         'tinydb==3.2.3',
         'typing==3.6.1',
-        'ujson==1.35',
+        'ujson==5.4.0',
         'uvloop==0.8.0',
         'websocket-client==0.40.0',
         'websockets==3.3',
